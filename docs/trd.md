@@ -63,7 +63,7 @@ public/
 root (deploy & docs):
   Dockerfile          # produksi: multi-stage node:20-alpine → runner non-root, serve .next/standalone
   Dockerfile.dev      # development: Alpine + `npm run dev`, kode via bind-mount (tanpa build ulang)
-  docker-compose.yml  # service `sibermu` (prod, 3000:3000) + `sibermu-dev` (dev, 3001:3000, profile `dev`)
+  docker-compose.yml  # service `sibermu` (prod, 3000:3000) + `sibermu-dev` (dev, 3000:3000, profile `dev`)
   .dockerignore       # jaga konteks build tetap kecil
   README.md           # cara jalan lokal + Docker
 ```
@@ -137,7 +137,7 @@ docker compose --profile dev config --services
 - [ ] `docker compose config --services` mencetak `sibermu` (produksi:
   `image: sibermu:latest`, `container_name: sibermu`).
 - [ ] `docker compose --profile dev config --services` mencetak `sibermu` + `sibermu-dev`
-  (dev: `Dockerfile.dev`, bind-mount `.:/app`, `3001:3000`).
+  (dev: `Dockerfile.dev`, bind-mount `.:/app`, `3000:3000`).
 - [ ] Manual: splash exit sesuai kontrak (`design.md` §4.0); hero scrub + panah; 8 `StickySplit` pin desktop & HP; nav active state; overlay mobile `Esc`.
 - [ ] Viewport: `360×800`, `768×1024`, `1440×900` — tanpa overflow horizontal (Chrome Android + Safari iOS untuk `svh`/pin).
 - [ ] Reduced-motion: semua animasi non-essential mati, konten tetap lengkap.
@@ -151,7 +151,7 @@ docker compose --profile dev config --services
   service `sibermu` di `http://localhost:3000`. Image memakai base `node:20-alpine` +
   `libc6-compat` (untuk SWC), user non-root `nextjs`, dan hanya berisi output `standalone`.
 - Development via Docker (tanpa build ulang tiap edit): `docker compose --profile dev up --build sibermu-dev`
-  menjalankan `http://localhost:3001` dengan bind-mount `.:/app` (`Dockerfile.dev` + `WATCHPACK_POLLING=true`
+  menjalankan `http://localhost:3000` dengan bind-mount `.:/app` (`Dockerfile.dev` + `WATCHPACK_POLLING=true`
   agar hot-reload jalan di bind-mount Windows). Volume anonim `/app/node_modules` dan `/app/.next`
   menjaga biner Linux milik container. Rebuild dev hanya perlu saat `package*.json` berubah.
   Catatan: kontainer lokal bukan tautan publik lomba — untuk submit tetap butuh hosting publik.
