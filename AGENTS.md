@@ -1,9 +1,9 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Project: Landing Page Kemahasiswaan & AIK SiberMu (Lomba 2026)
 
-# This is NOT the Next.js you know
+Sumber kebenaran berurutan: `docs/prd.md` (kebutuhan) → `docs/design.md` (visual, menang jika konflik) → `docs/trd.md` (teknis). Baca ketiganya sebelum menulis kode.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+Aturan keras:
+- Stack: Next.js 16.3.5 App Router + React 19 + Tailwind v4 (`@theme` di `app/globals.css`, tanpa `tailwind.config.js`). GSAP hanya di `"use client"`.
+- Tanpa aset dummy (foto/video dari pemilik proyek → `MediaSlot` empty-state). Tanpa font komersial (`STK Bureau Serif` dilarang; pakai `Source Serif 4` + `Plus Jakarta Sans` via `next/font/google`).
+- Dilarang: smooth-scroll hijack, cursor custom, parallax berat, framework animasi selain GSAP ScrollTrigger.
+- Verifikasi: `npm run lint` + `npm run build` harus lolos dengan slot media kosong.
