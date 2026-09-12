@@ -17,7 +17,7 @@
 5. **Pola layout konten:** Split sticky — kiri teks (diam + crossfade per item), kanan media ganti per item. **Berlaku di desktop dan mobile** (sticky tetap jalan di HP).
 6. **Motion:** Ekspresif tapi terkontrol via GSAP ScrollTrigger (pin + scrub + reveal).
 7. **Aset:** Semua foto/video dari pemilik proyek. Komponen media hanya berisi slot + empty-state, bukan file dummy.
-8. **Splashscreen:** Layar pembuka fullscreen menampilkan tulisan `sibermu`. Detail animasi **ditentukan kemudian oleh pemilik proyek** — `design.md` hanya mengunci struktur, timing, dan kontrak exit agar build tidak terblokir.
+8. **Splashscreen:** Layar pembuka fullscreen background putih: logo `logo2.png` fade-in, bergeser, teks `SIBERMU` muncul sejajar, lalu fade-out. Total maksimal `3.5s`.
 
 ### 2. Design tokens
 
@@ -85,18 +85,17 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 
 ### 4. Spesifikasi per section
 
-#### 4.0 Splashscreen — overlay `sibermu` (animasi menyusul)
+#### 4.0 Splashscreen — overlay di atas web
 
-- Komponen `SplashScreen`, `position: fixed; inset: 0; z: 100`, background navy `#1A2A5B`, teks `sibermu` lowercase tengah (font Display `Source Serif 4`, putih, `clamp(3rem, 10vw, 7rem)`).
-- Tampil sekali per load awal (bukan per navigasi anchor). Durasi total maksimal `2.5s`: masuk → hold → exit (fade/slide, detail easing **TBD oleh pemilik proyek**).
-- Kontrak exit (wajib, agar tidak mengunci halaman): selesai via timer ATAU `window load` + timeout fallback `3.5s`; exit selalu fade `300ms`; setelah exit `display: none` + kembalikan scroll (`overflow` body dikunci selama splash tampil).
-- Aksesibilitas: `aria-hidden="true"`, `prefers-reduced-motion` → tampil statis `500ms` lalu langsung fade tanpa animasi teks; jangan blokir keyboard lebih dari durasi splash.
-- Jangan taruh CTA, logo gambar, atau video di splash. Satu-satunya slot animasi teks yang boleh diubah kemudian: easing, stagger huruf, dan efek reveal — tanpa mengubah struktur/exit di atas.
+- Komponen `SplashScreen`, `position: fixed; inset: 0; z: 100`, background putih, `aria-hidden="true"`. Lapisan di atas seluruh web, muncul sekali saat load.
+- Satu timeline GSAP: logo mulai besar-transparan di tengah → mengecil opaque (`0–1.0s`) → logo bergeser kiri + huruf keluar satu-satu dari kiri (dari balik logo ke kanan, U → S, jeda antar huruf `0.1s`), masing-masing meluncur smooth ke slotnya (`1.1–2.5s`), berakhir tepat `8px` di kanan logo dengan komposisi terkunci di tengah → logo+teks sebagai satu div membesar (`scale 1.4`) dan memudar bersama background (`2.6–3.5s`) → unmount.
+- Fallback `4s`. Tanpa scroll-lock — halaman bisa di-scroll sejak splash muncul. Tidak muncul lagi saat scroll ke atas.
+- Jika `logo2.png` belum ada, tampil teks `sibermu` sebagai fallback.
 
 #### 4.1 Header/Navbar
 
 - Di atas hero: full-width, transparan, teks putih, blur 0.
-- Setelah scrub hero selesai (event `hero:video-ended`) atau halaman sudah melewati section hero: morph menjadi pill mengambang `max-w-5xl rounded-full`, background `rgba(255,255,255,0.95)` + `backdrop-blur`, shadow `0 12px 32px rgba(16,24,40,0.12)`. Teks/logo putih → primary `#1A2A5B`. Tanpa garis/progress bar di bawah navbar. Scroll kembali ke atas me-reset (event `hero:video-reset`) sehingga navbar kembali transparan penuh di awal video.
+- Di awal hero navbar transparan penuh. Setelah scrub hero selesai (event `hero:video-ended`) atau halaman sudah melewati section hero: morph menjadi pill mengambang `max-w-5xl rounded-full`, background `rgba(255,255,255,0.95)` + `backdrop-blur`, shadow `0 12px 32px rgba(16,24,40,0.12)`. Teks/logo putih → primary `#1A2A5B`. Tanpa garis/progress bar di bawah navbar. Scroll kembali ke atas me-reset (event `hero:video-reset`) sehingga navbar kembali transparan penuh di awal video.
 - Morph memakai transisi `700ms cubic-bezier(0.22,1,0.36,1)` pada `max-width` (`100%` → `64rem`), `border-radius`, `background-color`, dan `box-shadow` agar interpolasi mulus tanpa snap. Tinggi `72px` desktop / `64px` mobile.
 - Active link ditandai underline aksen, dihitung dari posisi ScrollTrigger (bukan click saja).
 
@@ -162,12 +161,11 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 
 - Komponen `ScrollCue`: tombol bulat `48px`, border putih 40%, ikon panah bawah, label kecil di atasnya. Animasi `y` 8px loop 1.6s. Hilang (fade) setelah hero lewat.
 
-#### 5.5 `SplashScreen` (animasi teks TBD)
+#### 5.5 `SplashScreen` (overlay + unmount)
 
-- Props: `text = "sibermu"`, `onDone?: () => void`. Tidak ada props aset/media.
-- Struktur: wrapper fixed fullscreen + inner teks (pecah per huruf `<span>` agar siap untuk stagger/easing susulan tanpa refactor).
-- State: `entering → holding → exiting → done`. Transisi state via GSAP timeline tunggal agar mudah diganti easing oleh pemilik proyek nanti.
-- Yang boleh diubah kemudian (tanpa mengubah kontrak §4.0): easing, arah masuk huruf, stagger, efek blur/gradient teks. Yang tidak boleh diubah: durasi total >2.5s, z-index, dan mekanisme fallback exit.
+- Props: `onIntroDone?: () => void`. Path logo dari `SITE.splashLogo`.
+- Struktur: panel fixed fullscreen + satu baris flex logo dan teks (`gap-8px`), terpusat. Tanpa timeline intro.
+- Tampil statis → fade-out → unmount.
 
 ### 6. Motion (GSAP ScrollTrigger — ekspresif tapi hemat)
 
@@ -184,7 +182,8 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 | Hero frames | N (`scene1.jpg`, `scene2.jpg`, ...) | `.jpg` ≤300 KB per frame | full-bleed, `object-cover` | Path: `public/hero/scene<nn>.jpg`. Daftar dibaca server via `lib/hero-frames.ts`, di-pass sebagai props ke `Hero` |
 | Sticky media Kemahasiswaan | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/kemahasiswaan/<blok>-<nn>.webp` |
 | Sticky media AIK | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/aik/<blok>-<nn>.webp` |
-| Logo SiberMu | 1 SVG | SVG monokrom putih + navy | — | Sederhanakan, jangan stretch |
+| Logo navbar (`logo1`) | 1 | `.png` | tinggi `36–40px`, `object-contain` | Path: `public/logo/logo1.png`. Satu file dipakai di navbar transparan maupun pill — pastikan tetap terbaca di kedua background |
+| Logo splash (`logo2`) | 1 | `.png` | `64–80px`, `object-contain` | Path: `public/logo/logo2.png`. Dipakai di splashscreen §4.0 dengan background putih |
 
 - Render foto final dengan `next/image` (`sizes`, `lazy` kecuali frame pertama hero yang `priority`). Frame hero di-swap via ref agar scrub 60fps tanpa re-render.
 - Ikon UI: inline SVG (Lucide, ISC) — bukan font ikon eksternal, bukan emoji.
@@ -213,7 +212,7 @@ Bukan wewenang dokumen ini. Seluruh implementasi (struktur berkas, token `@theme
 ### 11. Checklist penerimaan desain (mapping kriteria juri PRD §9; verifikasi build & ukur di `trd.md` §8–§9)
 
 - [ ] Kedua bidang lengkap (8 blok) + transisi naratif, anchor nav bekerja.
-- [ ] Splashscreen `sibermu` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
+- [ ] Splashscreen logo + `SIBERMU` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
 - [ ] Warna/tipe/spasi sesuai §2, tidak ada dummy visual.
 - [ ] Hero frame scrub + panah sesuai §4.2, reduced-motion aman.
 - [ ] `StickySplit` sesuai §5.3 di desktop dan HP, keyboard + `aria-live` OK.

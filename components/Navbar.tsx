@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { NAV_LINKS } from "@/lib/content";
 import { HERO_VIDEO_ENDED_EVENT, HERO_VIDEO_RESET_EVENT } from "@/lib/media";
@@ -75,10 +76,17 @@ export default function Navbar() {
         >
           <a
             href="#beranda"
-            className={`font-display text-2xl font-semibold lowercase tracking-tight transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${textColor}`}
             aria-label="SiberMu — kembali ke beranda"
+            className="relative block h-9 w-36 shrink-0 sm:h-10 sm:w-40"
           >
-            sibermu<span className="text-brand-500">.</span>
+            <Image
+              src={SITE.logo}
+              alt="Logo Universitas Siber Muhammadiyah"
+              fill
+              sizes="(max-width: 640px) 144px, 160px"
+              priority
+              className="object-contain object-left"
+            />
           </a>
 
           <ul className="hidden items-center gap-8 md:flex">
@@ -127,8 +135,14 @@ export default function Navbar() {
           className="fixed inset-0 z-[60] flex flex-col bg-primary px-6 py-5"
         >
           <div className="flex h-16 items-center justify-between">
-            <span className="font-display text-2xl font-semibold lowercase text-white">
-              sibermu<span className="text-brand-500">.</span>
+            <span className="relative block h-9 w-36">
+              <Image
+                src={SITE.logo}
+                alt="Logo Universitas Siber Muhammadiyah"
+                fill
+                sizes="144px"
+                className="object-contain object-left"
+              />
             </span>
             <button
               type="button"

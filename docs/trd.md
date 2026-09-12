@@ -74,7 +74,7 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 
 | Komponen | Tipe | Props inti | Perilaku kode wajib |
 | --- | --- | --- | --- |
-| `SplashScreen` | client | `text="sibermu"`, `onDone?` | Timeline GSAP tunggal; kontrak waktu & exit: `design.md` §5.5; kunci `body overflow` selama tampil; `aria-hidden`; reduced-motion → statis + fade |
+| `SplashScreen` | client | `onIntroDone?` | Timeline intro + unmount; kontrak: `design.md` §5.5; `aria-hidden`; reduced-motion → statis + fade |
 | `Navbar` | client | — | Solid toggle + overlay mobile; ambang & warna: `design.md` §4.1; overlay trap fokus + `Esc` |
 | `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; decode semua frame dulu; gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
 | `StickySplit` | client | `id`, `eyebrow`, `items[]` | Pin + crossfade; `pinSpacing:true`; `aria-live="polite"`; 1 item → statis; grid & dimensi: `design.md` §5.3 |

@@ -7,6 +7,7 @@ import { HERO } from "@/lib/content";
 import { HERO_FPS, HERO_VIDEO_ENDED_EVENT, HERO_VIDEO_RESET_EVENT } from "@/lib/media";
 import MediaSlot from "./MediaSlot";
 import ScrollCue from "./ScrollCue";
+import SplashScreen from "./SplashScreen";
 
 function paint(canvas: HTMLCanvasElement, bmp: ImageBitmap) {
   const ctx = canvas.getContext("2d");
@@ -34,6 +35,7 @@ export default function Hero({ frames }: { frames: string[] }) {
   const endedSent = useRef(false);
   const [ready, setReady] = useState(frames.length === 0);
   const [failed, setFailed] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
   const heightVh = 100 * (1 + frames.length / HERO_FPS);
 
   useEffect(() => {
@@ -120,17 +122,18 @@ export default function Hero({ frames }: { frames: string[] }) {
       ref={rootRef}
       id="beranda"
       aria-label="Beranda — animasi frame SiberMu"
-      className="relative w-full bg-navy-900"
+      className="relative w-full bg-white"
       style={{ height: `${heightVh}vh` }}
     >
-      <div className="sticky top-0 h-[100svh] w-full overflow-clip">
+      <SplashScreen onIntroDone={() => setIntroDone(true)} />
+      <div className="sticky top-0 z-10 h-[100svh] w-full overflow-clip">
         {frames.length > 0 && !failed ? (
           <canvas
             ref={canvasRef}
             role="img"
             aria-label="Rangkaian visual kemahasiswaan SiberMu"
-            className="absolute inset-0 h-full w-full"
-            style={{ opacity: ready ? 1 : 0 }}
+            className="absolute inset-0 h-full w-full transition-opacity duration-700"
+            style={{ opacity: ready && introDone ? 1 : 0 }}
           />
         ) : (
           <MediaSlot
