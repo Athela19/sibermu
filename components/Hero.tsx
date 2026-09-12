@@ -43,19 +43,26 @@ export default function Hero({ frames }: { frames: string[] }) {
     let cancelled = false;
     (async () => {
       try {
-        const list = await Promise.all(
+        const blobs = await Promise.all(
           frames.map(async (src) => {
             const res = await fetch(src);
             if (!res.ok) throw new Error(src);
-            return createImageBitmap(await res.blob());
+            return res.blob();
           }),
         );
+        if (cancelled) return;
+        const list: ImageBitmap[] = [];
+        for (let i = 0; i < blobs.length; i++) {
+          if (cancelled) break;
+          list.push(await createImageBitmap(blobs[i]));
+          if (i % 2 === 1) await new Promise((r) => setTimeout(r, 0));
+        }
         if (cancelled) {
           list.forEach((b) => b.close());
           return;
         }
         bitmapsRef.current = list;
-        if (canvasRef.current) paint(canvasRef.current, list[0]);
+        if (canvasRef.current && list[0]) paint(canvasRef.current, list[0]);
         setReady(true);
       } catch {
         if (!cancelled) setFailed(true);
