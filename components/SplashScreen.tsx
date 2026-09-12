@@ -36,7 +36,8 @@ export default function SplashScreen({
     const shift = (8 + textW) / 2;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set("[data-splash-logo]", { x: -shift });
+      gsap.set("[data-splash-logo]", { opacity: 1, x: -shift });
+      gsap.set("[data-splash-letter]", { opacity: 1, x: 0 });
       gsap.set("[data-splash-text]", { x: -shift });
       const t = window.setTimeout(() => {
         gsap.to(root, { opacity: 0, duration: 0.3, onComplete: finish });
@@ -46,13 +47,15 @@ export default function SplashScreen({
       };
     }
 
-    const tl = gsap.timeline({ onComplete: finish });
-    tl.set("[data-splash-logo]", { opacity: 0, scale: 2.2 });
-    tl.set("[data-splash-text]", { x: -shift });
     const letters = root.querySelectorAll<HTMLElement>("[data-splash-letter]");
+
+    gsap.set("[data-splash-logo]", { opacity: 0, scale: 2.2 });
+    gsap.set("[data-splash-text]", { x: -shift });
     letters.forEach((el) => {
       gsap.set(el, { opacity: 0, x: -(el.offsetLeft + 40) });
     });
+
+    const tl = gsap.timeline({ onComplete: finish });
     tl.to(
       "[data-splash-logo]",
       { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" },
@@ -93,9 +96,19 @@ export default function SplashScreen({
   return (
     <div
       ref={rootRef}
+      data-splash-root
       aria-hidden="true"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-white"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100,
+        backgroundColor: "#fff",
+      }}
     >
+      <noscript>
+        <style>{`[data-splash-root]{display:none}`}</style>
+      </noscript>
       {logoOk ? (
         <div
           data-splash-lockup
@@ -104,7 +117,8 @@ export default function SplashScreen({
           <div className="relative">
             <span
               data-splash-logo
-              className="relative z-10 block h-20 w-20 sm:h-24 sm:w-24"
+              className="relative z-10 block h-20 w-20 opacity-0 sm:h-24 sm:w-24"
+              style={{ opacity: 0 }}
             >
               <Image
                 src={SITE.splashLogo}
@@ -122,7 +136,12 @@ export default function SplashScreen({
               className="whitespace-nowrap font-display text-4xl font-semibold uppercase tracking-[0.08em] text-primary sm:text-5xl"
             >
               {"SIBERMU".split("").map((ch, i) => (
-                <span key={i} data-splash-letter className="inline-block">
+                <span
+                  key={i}
+                  data-splash-letter
+                  className="inline-block opacity-0"
+                  style={{ opacity: 0 }}
+                >
                   {ch}
                 </span>
               ))}
@@ -137,7 +156,8 @@ export default function SplashScreen({
         >
           <span
             data-splash-logo
-            className="font-display text-5xl font-semibold lowercase text-primary"
+            className="font-display text-5xl font-semibold lowercase text-primary opacity-0"
+            style={{ opacity: 0 }}
           >
             sibermu
           </span>
