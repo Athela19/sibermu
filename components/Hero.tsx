@@ -154,7 +154,7 @@ export default function Hero({ frames }: { frames: string[] }) {
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-48"
           style={{
-            background: "linear-gradient(transparent, rgba(26,42,91,0.55))",
+            background: "linear-gradient(transparent, rgba(255,255,255,0.55))",
           }}
         />
 

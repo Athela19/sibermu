@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
+import RevealText from "@/components/RevealText";
 import { getHeroFrames } from "@/lib/hero-frames";
 
 export default function Home() {
@@ -17,9 +18,11 @@ export default function Home() {
           <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-secondary">
             Kemahasiswaan
           </p>
-          <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary">
-            Section Kemahasiswaan menyusul.
-          </h2>
+          <RevealText
+            as="h2"
+            text="Section Kemahasiswaan menyusul."
+            className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+          />
         </section>
         <section
           id="aik"
@@ -28,9 +31,11 @@ export default function Home() {
           <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-tertiary">
             Al-Islam &amp; Kemuhammadiyahan
           </p>
-          <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary">
-            Section AIK menyusul.
-          </h2>
+          <RevealText
+            as="h2"
+            text="Section AIK menyusul."
+            className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+          />
         </section>
         <section
           id="kontak"

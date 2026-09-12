@@ -9,6 +9,6 @@ export const HERO = {
   title: "Aktif Berorganisasi. Tumbuh dalam Nilai Islam.",
   subtitle:
     "Satu halaman untuk mengenal organisasi, UKM, prestasi, layanan, dan kehidupan AIK di Universitas Siber Muhammadiyah.",
-  scrollLabel: "Gulir untuk menjelajah",
+  scrollLabel: "Gulir",
   scrollTarget: "#kemahasiswaan",
 } as const;

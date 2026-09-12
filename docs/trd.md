@@ -44,15 +44,17 @@ components/
   Navbar.tsx          # "use client" — solid toggle + progress + overlay mobile
   Hero.tsx            # "use client" — video scrub + ScrollCue
   StickySplit.tsx     # "use client" — dipakai 8x, pin + crossfade, design.md §5.3
-  Transisi.tsx        # "use client" — stagger kata
+   Transisi.tsx        # "use client" — stagger kata
+   RevealText.tsx      # "use client" — teks reveal blur→jelas per kata (dipakai di H2/teks lain)
   Kredit.tsx          # server — list statis dari konstanta
   Footer.tsx          # server — CTA penutup + kontak + disclaimer
-  ScrollCue.tsx       # "use client" — tombol panah, loop y 8px
+   ScrollCue.tsx       # "use client" — pil indikator scroll (lingkaran + label), loop y dot
   MediaSlot.tsx       # server — empty-state / next/image jika src valid
 lib/
   content.ts          # teks ID semua section + anchor (sumber kebenaran konten)
   media.ts            # event scrub hero + konstanta HERO_FPS
-  hero-frames.ts      # server-only: daftar public/hero/scene*.jpg terurut
+   hero-frames.ts      # server-only: daftar public/hero/scene*.jpg terurut
+   reveal-text.ts      # util reveal teks: split kata + createTextReveal (set + to, anti snap-hide)
   site.ts             # metadata, kontak, sosmed, link pendaftaran
 public/
   hero/
@@ -88,7 +90,8 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 | `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; decode semua frame dulu; gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
 | `StickySplit` | client | `id`, `eyebrow`, `items[]` | Pin + crossfade; `pinSpacing:true`; `aria-live="polite"`; 1 item → statis; grid & dimensi: `design.md` §5.3 |
 | `Transisi` | client | `text` | Stagger kata; teks dari `lib/content.ts` |
-| `ScrollCue` | client | `target="#kemahasiswaan"` | Loop + fade setelah hero lewat; ukuran & label: `design.md` §5.4 |
+| `ScrollCue` | client | `target="#kemahasiswaan"` | Pil lingkaran + label; loop dot `y ±4px` + fade setelah hero lewat; detail: `design.md` §5.4 |
+| `RevealText` | client | `text`, `as`, `mode`, `split` | Blur→jelas per kata via `set` + `to` (tanpa snap-hide); default visual: `design.md` §6; reduced-motion → statis |
 | `MediaSlot` | server | `label`, `ratio`, `src?`, `alt` | `src` valid → `next/image` (`sizes`, lazy kecuali hero poster); kosong → empty-state tanpa error |
 | `Kredit`/`Footer` | server | — | Render dari `lib/`; isi: `design.md` §4.6 |
 
@@ -138,7 +141,7 @@ docker compose --profile dev config --services
   `image: sibermu:latest`, `container_name: sibermu`).
 - [ ] `docker compose --profile dev config --services` mencetak `sibermu` + `sibermu-dev`
   (dev: `Dockerfile.dev`, bind-mount `.:/app`, `3000:3000`).
-- [ ] Manual: splash exit sesuai kontrak (`design.md` §4.0); hero scrub + panah; 8 `StickySplit` pin desktop & HP; nav active state; overlay mobile `Esc`.
+- [ ] Manual: splash exit sesuai kontrak (`design.md` §4.0); hero scrub + pil scroll; 8 `StickySplit` pin desktop & HP; nav active state; overlay mobile `Esc`.
 - [ ] Viewport: `360×800`, `768×1024`, `1440×900` — tanpa overflow horizontal (Chrome Android + Safari iOS untuk `svh`/pin).
 - [ ] Reduced-motion: semua animasi non-essential mati, konten tetap lengkap.
 - [ ] Lighthouse mobile: Performance ≥85, Accessibility ≥95, nol error console.

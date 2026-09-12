@@ -12,7 +12,7 @@
 
 1. **Warna:** Primary `#1A2A5B` (navy), Secondary `#007CC4` (biru), Tertiary `#086D46` (hijau Muhammadiyah).
 2. **Font:** Head serif + body sans. Asli yang diminta `STK Bureau Serif` **tidak dipakai** karena komersial (Smuss Type Kiosk, lisensi berbayar) dan melanggar ketentuan lomba D.1.5. Pengganti bebas lisensi OFL di §3.
-3. **Hero:** Frame-sequence JPG scroll-driven milik pemilik proyek (`public/hero/scene1.jpg` dan seterusnya). Tengah bawah **hanya indikator panah scroll**, tanpa tombol ganda, tanpa dummy frame.
+3. **Hero:** Frame-sequence JPG scroll-driven milik pemilik proyek (`public/hero/scene1.jpg` dan seterusnya). Tengah bawah **hanya pil indikator scroll**, tanpa tombol ganda, tanpa dummy frame.
 4. **Narasi:** Unified + transisi. Satu bahasa visual untuk Kemahasiswaan & AIK, dipisah satu section statement transisi.
 5. **Pola layout konten:** Split sticky — kiri teks (diam + crossfade per item), kanan media ganti per item. **Berlaku di desktop dan mobile** (sticky tetap jalan di HP).
 6. **Motion:** Ekspresif tapi terkontrol via GSAP ScrollTrigger (pin + scrub + reveal).
@@ -36,7 +36,7 @@
 
 Aturan pakai:
 - Rasio utama: 70% netral terang (`paper`/`mist`), 20% navy, 10% aksen biru/hijau. Jangan pakai navy + hijau + biru sekaligus sebagai background penuh dalam satu viewport.
-- Scrim hero: `linear-gradient(transparent, rgba(26,42,91,0.55))` setinggi `192px` di bawah, agar label panah scroll putih terbaca di atas frame.
+- Scrim hero: `linear-gradient(transparent, rgba(255,255,255,0.92))` setinggi `192px` di bawah, agar transisi ke section putih mulus; label putih terbaca di atas pil `bg-black/20`.
 - Pembedaan Kemahasiswaan vs AIK **bukan** ganti background penuh. Bedakan lewat: badge section (`Kemahasiswaan` biru, `AIK` hijau), garis aksen kiri heading, dan ikon. Background tetap satu sistem.
 - Fokus keyboard: `outline: 2px solid #007CC4; offset 3px`.
 
@@ -99,13 +99,13 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 - Morph memakai transisi `700ms cubic-bezier(0.22,1,0.36,1)` pada `max-width` (`100%` → `64rem`), `border-radius`, `background-color`, dan `box-shadow` agar interpolasi mulus tanpa snap. Tinggi `72px` desktop / `64px` mobile.
 - Active link ditandai underline aksen, dihitung dari posisi ScrollTrigger (bukan click saja).
 
-#### 4.2 Hero `#beranda` — frame scrub + panah
+#### 4.2 Hero `#beranda` — frame scrub + pil scroll
 
 Struktur:
 - Section setinggi `100 × (1 + N/24)vh` (N = jumlah frame) berisi satu panel sticky `100svh` (pakai `svh` agar benar di mobile), `overflow: clip`. Footage diasumsikan `24fps`: tiap `100vh` scroll ≈ 1 detik animasi (24 frame), sehingga kerapatan scrub konstan berapa pun jumlah frame.
 - Layer 1: frame-sequence JPG dari pemilik proyek (`public/hero/scene1.jpg`, `scene2.jpg`, ... — lihat kontrak media §7). Seluruh frame di-decode menjadi `ImageBitmap` saat mount dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah semua bitmap siap; jika decode gagal, tampilkan empty-state navy + teks "Slot frame hero" — **bukan gambar dummy**.
 - Layer 2: scrim tipis bawah §2.1, hanya agar instruksi scroll terbaca.
-- Layer 3 (tengah bawah): satu-satunya CTA adalah indikator panah scroll: ikon panah + label `Gulir untuk menjelajah` + animasi bounce halus. Klik panah → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
+- Layer 3 (tengah bawah): satu-satunya CTA adalah pil indikator scroll: lingkaran + label `Gulir untuk menjelajah` + lingkaran animasi naik-turun halus. Klik pil → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
 - Perilaku scroll (GSAP): indeks frame = `round(progress × (N-1))`; swap `src` langsung via ref (tanpa re-render React). Hormati `prefers-reduced-motion`: tampil frame pertama statis, tidak ada scrub.
 - Kinerja: tiap frame `.jpg` ≤300 KB; frame pertama `priority` preload (LCP).
 
@@ -159,7 +159,7 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 
 #### 5.4 Panah scroll hero
 
-- Komponen `ScrollCue`: tombol bulat `48px`, border putih 40%, ikon panah bawah, label kecil di atasnya. Animasi `y` 8px loop 1.6s. Hilang (fade) setelah hero lewat.
+- Komponen `ScrollCue`: pil berborder berisi lingkaran + label (`Gulir untuk menjelajah`); lingkaran `8px` putih di kiri label, animasi naik-turun `y -4px ↔ 4px` loop; pil `rounded-full border-white/30 bg-black/20 backdrop-blur`, teks putih. Hilang (fade) setelah hero lewat.
 
 #### 5.5 `SplashScreen` (overlay + unmount)
 
@@ -170,7 +170,8 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 ### 6. Motion (GSAP ScrollTrigger — ekspresif tapi hemat)
 
 - Satu instance: `gsap.registerPlugin(ScrollTrigger)` di client component (`useLayoutEffect` + `gsap.context` + `revert()` pada unmount; wajib `ScrollTrigger.refresh()` setelah font/video load).
-- Pola yang diizinkan: (a) splash timeline §4.0/§5.5 (satu timeline, exit selalu ada), (b) hero frame scrub §4.2, (c) `StickySplit` pin + crossfade §5.3, (d) reveal umum `fade-up 24px, 0.7s, ease power2.out` untuk H2/badge/paragraf, (e) stagger kata di `#transisi`, (f) navbar morph toggle.
+- Pola yang diizinkan: (a) splash timeline §4.0/§5.5 (satu timeline, exit selalu ada), (b) hero frame scrub §4.2, (c) `StickySplit` pin + crossfade §5.3, (d) reveal umum `fade-up 24px, 0.7s, ease power2.out` untuk H2/badge/paragraf, (e) stagger kata di `#transisi`, (f) navbar morph toggle, (g) `RevealText` blur-to-clear per kata (`lib/reveal-text.ts` + `components/RevealText.tsx`).
+- `RevealText` (default visual): status awal dipasang via `gsap.set` (`opacity 0, y 24px, blur 8px`), lalu dianimasikan dengan `gsap.to` (`immediateRender: false`) agar tidak ada snap-hide; default `duration 1.2s, stagger 0.5s, start "top 90%", once: true`, `clearProps` setelah selesai. Dipakai untuk heading/teks di section lain (contoh: H2 `#kemahasiswaan` dan `#aik`).
 - Yang dilarang: parallax multi-layer berat, smooth-scroll hijack (Lenis/Locomotive), cursor custom, animasi infinite selain `ScrollCue`, animasi di atas `#kredit`/footer selain reveal sekali.
 - `prefers-reduced-motion: reduce` → matikan scrub/pin/stagger, tampilkan konten final statis. Ini syarat lolos QA juri lintas perangkat.
 - Budget: total JS animasi tidak boleh bikin INP >200ms di HP mid-range; kill semua trigger yang off-screen (`toggleActions: "play none none reverse"` untuk reveal).
@@ -214,6 +215,6 @@ Bukan wewenang dokumen ini. Seluruh implementasi (struktur berkas, token `@theme
 - [ ] Kedua bidang lengkap (8 blok) + transisi naratif, anchor nav bekerja.
 - [ ] Splashscreen logo + `SIBERMU` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
 - [ ] Warna/tipe/spasi sesuai §2, tidak ada dummy visual.
-- [ ] Hero frame scrub + panah sesuai §4.2, reduced-motion aman.
+- [ ] Hero frame scrub + pil scroll sesuai §4.2, reduced-motion aman.
 - [ ] `StickySplit` sesuai §5.3 di desktop dan HP, keyboard + `aria-live` OK.
 - [ ] `#kredit` terisi jujur sesuai §9, tidak ada aset tanpa lisensi.
