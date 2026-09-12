@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sibermu — Landing Page Kemahasiswaan & AIK
 
-## Getting Started
+Karya untuk **Lomba Pembuatan Landing Page SiberMu 2026**: satu halaman (single-page)
+terpadu yang menggabungkan **Kemahasiswaan** (ormawa, UKM, prestasi, layanan)
+dan **Al-Islam & Kemuhammadiyahan / AIK** (kegiatan, kajian, syiar, nilai)
+dalam satu alur navigasi.
 
-First, run the development server:
+- Identitas & konten: [sibermu.ac.id](https://sibermu.ac.id/)
+- Acuan visual: [zero.university](https://www.zero.university/) (inspirasi tata letak, bukan salin aset/kode)
+
+## Teknologi
+
+- Next.js 16.3.5 (App Router) + React 19 + Tailwind CSS v4
+- GSAP ScrollTrigger (satu-satunya library animasi, hanya di komponen `"use client"`)
+- Font OFL via `next/font/google`: `Source Serif 4` + `Plus Jakarta Sans`
+- Docker image berbasis Alpine, output Next.js `standalone`
+
+Sumber kebenaran berurutan: `docs/prd.md` → `docs/design.md` (menang jika konflik visual) → `docs/trd.md`.
+
+## Prasyarat
+
+- Node.js 20+ dan npm
+- (Opsional) Docker + Docker Compose v2 untuk jalan via kontainer
+
+## Jalankan lokal
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Build produksi lokal:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Jalankan dengan Docker
 
-To learn more about Next.js, take a look at the following resources:
+Satu file `docker-compose.yml` berisi dua service:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Service | File Docker | Kapan dipakai | Alamat |
+| --- | --- | --- | --- |
+| `sibermu` | `Dockerfile` | Produksi — kode di-*bake* ke image, **wajib `--build` tiap edit kode** | [http://localhost:3000](http://localhost:3000) |
+| `sibermu-dev` | `Dockerfile.dev` | Development — kode di-mount dari laptop, **edit langsung reload tanpa build ulang** | [http://localhost:3001](http://localhost:3001) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Produksi (image ringan Alpine multi-stage, non-root `nextjs`):
 
-## Deploy on Vercel
+```bash
+docker compose up --build -d sibermu
+docker compose logs -f sibermu
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Development (bind-mount `.:/app`, hanya build sekali di awal):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+docker compose --profile dev up --build sibermu-dev
+```
+
+Lalu edit kode di laptop — browser me-reload sendiri. Rebuild hanya perlu jika
+`package.json` / `package-lock.json` berubah (atau `Dockerfile.dev` diubah).
+
+Hentikan:
+
+```bash
+docker compose down                      # matikan semua
+docker compose --profile dev down        # termasuk dev
+```
+
+Detail setup: `Dockerfile`, `Dockerfile.dev`, `docker-compose.yml`, `.dockerignore`.
+
+## Struktur proyek
+
+```text
+app/            # layout, page (server component), globals.css (@theme, tanpa tailwind.config.js)
+components/     # SplashScreen, Navbar, Hero, StickySplit, Transisi, MediaSlot, Kredit, Footer, ...
+lib/            # content.ts (teks ID), site.ts (metadata/kontak), media.ts, hero-frames.ts
+public/         # hero/ + media/ — diisi pemilik proyek; kosong = MediaSlot empty-state
+docs/           # prd.md, design.md, trd.md
+Dockerfile              # produksi: multi-stage node:20-alpine
+Dockerfile.dev          # development: Alpine + npm run dev (untuk bind-mount)
+docker-compose.yml      # service: sibermu (prod, :3000) + sibermu-dev (dev, :3001, profile dev)
+.dockerignore
+```
+
+Aturan keras: tanpa aset dummy, tanpa font komersial, tanpa smooth-scroll hijack /
+cursor custom / parallax berat, tanpa framework animasi selain GSAP ScrollTrigger.
+
+## Verifikasi
+
+```bash
+npm run lint
+npm run build
+```
+
+Keduanya harus lolos dengan slot media kosong (tanpa 404 / `next/image` error).
+
+## Dokumentasi lomba
+
+- `docs/prd.md` — kebutuhan & cakupan konten
+- `docs/design.md` — acuan visual
+- `docs/trd.md` — kontrak teknis & QA
+- Deliverable (tautan live, repo publik, PDF ≤ 5 halaman, formulir, pernyataan orisinalitas)
+  wajib aksesibel minimal s.d. **22 Oktober 2026**.
