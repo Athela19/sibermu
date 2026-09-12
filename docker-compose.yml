@@ -1,0 +1,46 @@
+name: sibermu
+
+services:
+  sibermu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sibermu:latest
+    container_name: sibermu
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      # PORT & HOSTNAME sudah di-set di Dockerfile, override bila perlu:
+      # PORT: 3000
+      # HOSTNAME: "0.0.0.0"
+    restart: unless-stopped
+    # Uncomment bila butuh .env produksi:
+    # env_file:
+    #   - .env.production
+
+  # --- Development: kode di-mount dari laptop, edit langsung reload ---
+  # Hanya jalan bila diminta eksplisit (profile `dev`), jadi
+  # `docker compose up` biasa tetap hanya menjalankan produksi.
+  # Jalankan dengan: docker compose --profile dev up --build sibermu-dev
+  # Buka http://localhost:3001 — TIDAK perlu build ulang tiap edit kode.
+  # Rebuild hanya perlu jika package*.json atau Dockerfile.dev berubah.
+  sibermu-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: sibermu:dev
+    container_name: sibermu-dev
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: development
+      # HOSTNAME/PORT/WATCHPACK_POLLING sudah di-set di Dockerfile.dev
+    volumes:
+      # Bind-mount: source laptop menimpa /app container (hot-reload).
+      # Volume anonim menjaga biner Linux milik container dari timpaan host.
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    profiles:
+      - dev

@@ -60,6 +60,12 @@ public/
   media/
     kemahasiswaan/<blok>-<nn>.webp
     aik/<blok>-<nn>.webp
+root (deploy & docs):
+  Dockerfile          # produksi: multi-stage node:20-alpine → runner non-root, serve .next/standalone
+  Dockerfile.dev      # development: Alpine + `npm run dev`, kode via bind-mount (tanpa build ulang)
+  docker-compose.yml  # service `sibermu` (prod, 3000:3000) + `sibermu-dev` (dev, 3001:3000, profile `dev`)
+  .dockerignore       # jaga konteks build tetap kecil
+  README.md           # cara jalan lokal + Docker
 ```
 
 Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use client"`. Tidak ada fetch data eksternal — seluruh konten statis dari `lib/`.
@@ -68,7 +74,10 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 
 - `app/globals.css`: definisikan `@theme` persis dari `design.md` §2 — `design.md` satu-satunya sumber angka, jangan salin nilai ke sini. Jangan buat `tailwind.config.js`.
 - `app/layout.tsx`: ganti `Geist` → `Source_Serif_4` + `Plus_Jakarta_Sans` via `next/font/google` (`subsets: ["latin"]`, `display: "swap"`), set `lang="id"`, metadata lomba (title, description ID, OG).
-- `next.config.ts`: biarkan default. Optimasi gambar default `next/image` sudah cukup; ubah hanya jika deploy target non-Vercel memerlukannya (catat alasannya di sini).
+- `next.config.ts`: `output: "standalone"` — alasan tercatat: stage `runner` di `Dockerfile`
+  (Alpine) hanya menyalin `.next/standalone` + `.next/static` + `public` agar image
+  produksi ringan. Optimasi gambar default `next/image` tetap dipakai; jangan ubah
+  opsi lain kecuali ada kebutuhan deploy spesifik (catat alasannya di sini).
 
 ### 5. Kontrak komponen (teknis saja; nilai visual di `design.md` §4–§5)
 
@@ -120,9 +129,15 @@ useLayoutEffect(() => {
 ```bash
 npm run lint
 npm run build
+docker compose config --services
+docker compose --profile dev config --services
 ```
 
 - [ ] `lint` bersih, `build` lolos **dengan slot media kosong**.
+- [ ] `docker compose config --services` mencetak `sibermu` (produksi:
+  `image: sibermu:latest`, `container_name: sibermu`).
+- [ ] `docker compose --profile dev config --services` mencetak `sibermu` + `sibermu-dev`
+  (dev: `Dockerfile.dev`, bind-mount `.:/app`, `3001:3000`).
 - [ ] Manual: splash exit sesuai kontrak (`design.md` §4.0); hero scrub + panah; 8 `StickySplit` pin desktop & HP; nav active state; overlay mobile `Esc`.
 - [ ] Viewport: `360×800`, `768×1024`, `1440×900` — tanpa overflow horizontal (Chrome Android + Safari iOS untuk `svh`/pin).
 - [ ] Reduced-motion: semua animasi non-essential mati, konten tetap lengkap.
@@ -132,6 +147,14 @@ npm run build
 ### 10. Deploy & deliverable lomba (ikut PRD §8)
 
 - Hosting publik tanpa login (rekomendasi Vercel). Repo publik. Keduanya tetap aksesibel minimal s.d. **22 Oktober 2026**.
+- Alternatif reproducible-build via Docker (Alpine): `docker compose up --build -d` menjalankan
+  service `sibermu` di `http://localhost:3000`. Image memakai base `node:20-alpine` +
+  `libc6-compat` (untuk SWC), user non-root `nextjs`, dan hanya berisi output `standalone`.
+- Development via Docker (tanpa build ulang tiap edit): `docker compose --profile dev up --build sibermu-dev`
+  menjalankan `http://localhost:3001` dengan bind-mount `.:/app` (`Dockerfile.dev` + `WATCHPACK_POLLING=true`
+  agar hot-reload jalan di bind-mount Windows). Volume anonim `/app/node_modules` dan `/app/.next`
+  menjaga biner Linux milik container. Rebuild dev hanya perlu saat `package*.json` berubah.
+  Catatan: kontainer lokal bukan tautan publik lomba — untuk submit tetap butuh hosting publik.
 - Dokumentasi PDF ≤5 halaman + formulir + pernyataan orisinalitas disiapkan terpisah (di luar repo kode).
 
 ### 11. Risiko & mitigasi
@@ -155,4 +178,5 @@ npm run build
 `prd.md` §5–§6 (cakupan & sitemap) → `design.md` §3–§4 (anchor & section) → TRD §3–§7 (komponen & kontrak).
 `prd.md` §7/§9 (teknis & kriteria juri) → `design.md` §6/§8 (motion & persyaratan) → TRD §6/§8 (pola & budget ukur).
 Checklist desain `design.md` §11 diverifikasi oleh QA TRD §9.
+`Dockerfile` + `docker-compose.yml` + `output: "standalone"` → TRD §3/§4 (struktur & config) → TRD §9/§10 (verifikasi & deploy).
 Setiap perubahan visual wajib ubah `design.md` dulu, lalu sesuaikan TRD; jangan tembak langsung ke kode.

@@ -1,0 +1,24 @@
+# --- Dev image: Alpine ringan, kode via bind-mount (lihat docker-compose.yml) ---
+FROM node:20-alpine
+# libc6-compat dibutuhkan Next.js (SWC) di Alpine
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+
+ENV NODE_ENV=development \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME="0.0.0.0" \
+    # Polling agar hot-reload jalan di bind-mount Windows (Docker Desktop)
+    WATCHPACK_POLLING=true
+
+# Install dependency dulu (ter-cache selama package*.json tak berubah)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Source code TIDAK di-copy: di-mount dari laptop via volumes .:/app,
+# sehingga edit langsung terasa tanpa build ulang.
+# node_modules & .next memakai volume anonim agar milik container
+# (biner Linux) tidak tertimpa milik host (Windows).
+
+EXPOSE 3000
+CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0", "--port", "3000"]
