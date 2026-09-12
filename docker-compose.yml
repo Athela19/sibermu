@@ -23,7 +23,7 @@ services:
   # Hanya jalan bila diminta eksplisit (profile `dev`), jadi
   # `docker compose up` biasa tetap hanya menjalankan produksi.
   # Jalankan dengan: docker compose --profile dev up --build sibermu-dev
-  # Buka http://localhost:3001 — TIDAK perlu build ulang tiap edit kode.
+  # Buka http://localhost:3000 — TIDAK perlu build ulang tiap edit kode.
   # Rebuild hanya perlu jika package*.json atau Dockerfile.dev berubah.
   sibermu-dev:
     build:
@@ -32,7 +32,7 @@ services:
     image: sibermu:dev
     container_name: sibermu-dev
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       NODE_ENV: development
       # HOSTNAME/PORT/WATCHPACK_POLLING sudah di-set di Dockerfile.dev
