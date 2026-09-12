@@ -8,7 +8,7 @@ services:
     image: sibermu:latest
     container_name: sibermu
     ports:
-      - "3000:3000"
+      - "3322:3000"
     environment:
       NODE_ENV: production
       # PORT & HOSTNAME sudah di-set di Dockerfile, override bila perlu:
