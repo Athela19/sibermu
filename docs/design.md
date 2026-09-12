@@ -12,7 +12,7 @@
 
 1. **Warna:** Primary `#1A2A5B` (navy), Secondary `#007CC4` (biru), Tertiary `#086D46` (hijau Muhammadiyah).
 2. **Font:** Head serif + body sans. Asli yang diminta `STK Bureau Serif` **tidak dipakai** karena komersial (Smuss Type Kiosk, lisensi berbayar) dan melanggar ketentuan lomba D.1.5. Pengganti bebas lisensi OFL di §3.
-3. **Hero:** Video scroll-driven milik pemilik proyek. CTA tengah **hanya indikator panah scroll**, tanpa tombol ganda, tanpa dummy video/poster.
+3. **Hero:** Frame-sequence JPG scroll-driven milik pemilik proyek (`public/hero/scene1.jpg` dan seterusnya). Tengah bawah **hanya indikator panah scroll**, tanpa tombol ganda, tanpa dummy frame.
 4. **Narasi:** Unified + transisi. Satu bahasa visual untuk Kemahasiswaan & AIK, dipisah satu section statement transisi.
 5. **Pola layout konten:** Split sticky — kiri teks (diam + crossfade per item), kanan media ganti per item. **Berlaku di desktop dan mobile** (sticky tetap jalan di HP).
 6. **Motion:** Ekspresif tapi terkontrol via GSAP ScrollTrigger (pin + scrub + reveal).
@@ -36,7 +36,7 @@
 
 Aturan pakai:
 - Rasio utama: 70% netral terang (`paper`/`mist`), 20% navy, 10% aksen biru/hijau. Jangan pakai navy + hijau + biru sekaligus sebagai background penuh dalam satu viewport.
-- Overlay video hero: `linear-gradient(rgba(26,42,91,0.72), rgba(26,42,91,0.55))` agar teks putih lolos kontras AA (≥4.5:1).
+- Scrim hero: `linear-gradient(transparent, rgba(26,42,91,0.55))` setinggi `192px` di bawah, agar label panah scroll putih terbaca di atas frame.
 - Pembedaan Kemahasiswaan vs AIK **bukan** ganti background penuh. Bedakan lewat: badge section (`Kemahasiswaan` biru, `AIK` hijau), garis aksen kiri heading, dan ikon. Background tetap satu sistem.
 - Fokus keyboard: `outline: 2px solid #007CC4; offset 3px`.
 
@@ -95,20 +95,20 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 
 #### 4.1 Header/Navbar
 
-- Di atas hero: transparan, teks putih, blur 0.
-- Setelah `scrollY > 24`: solid `rgba(26,42,91,0.88)` + `backdrop-blur`, border-bottom `1px rgba(255,255,255,0.12)`.
-- Tinggi `72px` desktop / `64px` mobile. Progress bar scroll 2px (`#007CC4`) di bawah navbar opsional tapi direkomendasikan karena halaman panjang.
+- Di atas hero: full-width, transparan, teks putih, blur 0.
+- Setelah scrub hero selesai (event `hero:video-ended`) atau halaman sudah melewati section hero: morph menjadi pill mengambang `max-w-5xl rounded-full`, background `rgba(255,255,255,0.95)` + `backdrop-blur`, shadow `0 12px 32px rgba(16,24,40,0.12)`. Teks/logo putih → primary `#1A2A5B`. Tanpa garis/progress bar di bawah navbar. Scroll kembali ke atas me-reset (event `hero:video-reset`) sehingga navbar kembali transparan penuh di awal video.
+- Morph memakai transisi `700ms cubic-bezier(0.22,1,0.36,1)` pada `max-width` (`100%` → `64rem`), `border-radius`, `background-color`, dan `box-shadow` agar interpolasi mulus tanpa snap. Tinggi `72px` desktop / `64px` mobile.
 - Active link ditandai underline aksen, dihitung dari posisi ScrollTrigger (bukan click saja).
 
-#### 4.2 Hero `#beranda` — video scrub + panah
+#### 4.2 Hero `#beranda` — frame scrub + panah
 
 Struktur:
-- Container `100svh` (pakai `svh` agar benar di mobile), `position: relative`, `overflow: clip`.
-- Layer 1: `<video>` dari pemilik proyek (lihat kontrak media §7). `object-fit: cover`, `muted`, `playsInline`, `preload="metadata"`, tanpa `autoplay` audio. Jika video belum diisi, tampilkan empty-state navy + teks "Slot video hero (pemilik proyek)" — **bukan gambar dummy**.
-- Layer 2: overlay navy gradient §2.1 + pattern garis islami halus opacity `0.08` (SVG inline, bukan gambar).
-- Layer 3 (tengah): eyebrow badge `Lomba Landing Page SiberMu 2026`, Display headline (contoh: `Aktif Berorganisasi. Tumbuh dalam Nilai Islam.` — final ikut konten pemilik), sub-copy 1 kalimat, **tanpa tombol primer**. Satu-satunya CTA adalah indikator panah scroll (bawah tengah): ikon panah + label `Gulir untuk menjelajah` + animasi bounce halus. Klik panah → `scrollTo(#kemahasiswaan)`.
-- Perilaku scroll (GSAP): video `currentTime` di-scrub mengikuti scroll hero (`scrub: 1`), teks tengah fade + `y: -80` saat keluar. Hormati `prefers-reduced-motion`: video diam di frame pertama, tidak ada scrub.
-- Kinerja: video wajib versi terkompresi (≤8 MB, 720p, tanpa audio track). Sediakan `poster` setelah file final ada.
+- Section setinggi `100 × (1 + N/24)vh` (N = jumlah frame) berisi satu panel sticky `100svh` (pakai `svh` agar benar di mobile), `overflow: clip`. Footage diasumsikan `24fps`: tiap `100vh` scroll ≈ 1 detik animasi (24 frame), sehingga kerapatan scrub konstan berapa pun jumlah frame.
+- Layer 1: frame-sequence JPG dari pemilik proyek (`public/hero/scene1.jpg`, `scene2.jpg`, ... — lihat kontrak media §7). Seluruh frame di-decode menjadi `ImageBitmap` saat mount dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah semua bitmap siap; jika decode gagal, tampilkan empty-state navy + teks "Slot frame hero" — **bukan gambar dummy**.
+- Layer 2: scrim tipis bawah §2.1, hanya agar instruksi scroll terbaca.
+- Layer 3 (tengah bawah): satu-satunya CTA adalah indikator panah scroll: ikon panah + label `Gulir untuk menjelajah` + animasi bounce halus. Klik panah → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
+- Perilaku scroll (GSAP): indeks frame = `round(progress × (N-1))`; swap `src` langsung via ref (tanpa re-render React). Hormati `prefers-reduced-motion`: tampil frame pertama statis, tidak ada scrub.
+- Kinerja: tiap frame `.jpg` ≤300 KB; frame pertama `priority` preload (LCP).
 
 #### 4.3 Section Kemahasiswaan `#kemahasiswaan`
 
@@ -172,7 +172,7 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 ### 6. Motion (GSAP ScrollTrigger — ekspresif tapi hemat)
 
 - Satu instance: `gsap.registerPlugin(ScrollTrigger)` di client component (`useLayoutEffect` + `gsap.context` + `revert()` pada unmount; wajib `ScrollTrigger.refresh()` setelah font/video load).
-- Pola yang diizinkan: (a) splash timeline §4.0/§5.5 (satu timeline, exit selalu ada), (b) hero video scrub §4.2, (c) `StickySplit` pin + crossfade §5.3, (d) reveal umum `fade-up 24px, 0.7s, ease power2.out` untuk H2/badge/paragraf, (e) stagger kata di `#transisi`, (f) navbar solid toggle + progress bar.
+- Pola yang diizinkan: (a) splash timeline §4.0/§5.5 (satu timeline, exit selalu ada), (b) hero frame scrub §4.2, (c) `StickySplit` pin + crossfade §5.3, (d) reveal umum `fade-up 24px, 0.7s, ease power2.out` untuk H2/badge/paragraf, (e) stagger kata di `#transisi`, (f) navbar morph toggle.
 - Yang dilarang: parallax multi-layer berat, smooth-scroll hijack (Lenis/Locomotive), cursor custom, animasi infinite selain `ScrollCue`, animasi di atas `#kredit`/footer selain reveal sekali.
 - `prefers-reduced-motion: reduce` → matikan scrub/pin/stagger, tampilkan konten final statis. Ini syarat lolos QA juri lintas perangkat.
 - Budget: total JS animasi tidak boleh bikin INP >200ms di HP mid-range; kill semua trigger yang off-screen (`toggleActions: "play none none reverse"` untuk reveal).
@@ -181,12 +181,12 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 
 | Slot | Jumlah | Format final | Rasio / ukuran | Catatan |
 | --- | --- | --- | --- | --- |
-| Hero video | 1 | `.mp4` (H.264, tanpa audio) ≤8 MB + poster `.jpg` | 16/9, 720p min | Path: `public/media/hero.mp4`. Komponen baca dari konstanta, bukan hardcode URL eksternal |
+| Hero frames | N (`scene1.jpg`, `scene2.jpg`, ...) | `.jpg` ≤300 KB per frame | full-bleed, `object-cover` | Path: `public/hero/scene<nn>.jpg`. Daftar dibaca server via `lib/hero-frames.ts`, di-pass sebagai props ke `Hero` |
 | Sticky media Kemahasiswaan | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/kemahasiswaan/<blok>-<nn>.webp` |
 | Sticky media AIK | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/aik/<blok>-<nn>.webp` |
 | Logo SiberMu | 1 SVG | SVG monokrom putih + navy | — | Sederhanakan, jangan stretch |
 
-- Render foto final dengan `next/image` (`sizes`, `priority` hanya hero poster, lainnya `lazy`).
+- Render foto final dengan `next/image` (`sizes`, `lazy` kecuali frame pertama hero yang `priority`). Frame hero di-swap via ref agar scrub 60fps tanpa re-render.
 - Ikon UI: inline SVG (Lucide, ISC) — bukan font ikon eksternal, bukan emoji.
 - Sampai file final ada, build harus lolos dengan `MediaSlot` kosong (tidak ada 404, tidak ada `next/image` error).
 
@@ -203,7 +203,7 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 - Font: `Source Serif 4 — SIL Open Font License 1.1`, `Plus Jakarta Sans — SIL Open Font License 1.1` (via Google Fonts / `next/font`).
 - Animasi: `GSAP + ScrollTrigger — GSAP Standard License (gratis)`.
 - Ikon: `Lucide Icons — ISC License`.
-- Foto/Video: `Menunggu file final dari pemilik proyek. Seluruh slot saat ini kosong dan tidak memakai aset dummy.`
+- Foto/Frame: `Frame hero (`public/hero/scene*.jpg`) dan seluruh slot media dari pemilik proyek. Selama aset belum ada, slot kosong dan tidak memakai aset dummy.`
 - Catatan STK: `STK Bureau Serif (Smuss Type Kiosk, komersial) dijadikan referensi gaya saja dan tidak di-bundle karena alasan lisensi lomba.`
 
 ### 10. Implementasi Next.js + Tailwind v4
@@ -215,6 +215,6 @@ Bukan wewenang dokumen ini. Seluruh implementasi (struktur berkas, token `@theme
 - [ ] Kedua bidang lengkap (8 blok) + transisi naratif, anchor nav bekerja.
 - [ ] Splashscreen `sibermu` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
 - [ ] Warna/tipe/spasi sesuai §2, tidak ada dummy visual.
-- [ ] Hero video scrub + panah sesuai §4.2, reduced-motion aman.
+- [ ] Hero frame scrub + panah sesuai §4.2, reduced-motion aman.
 - [ ] `StickySplit` sesuai §5.3 di desktop dan HP, keyboard + `aria-live` OK.
 - [ ] `#kredit` terisi jujur sesuai §9, tidak ada aset tanpa lisensi.

@@ -51,11 +51,13 @@ components/
   MediaSlot.tsx       # server — empty-state / next/image jika src valid
 lib/
   content.ts          # teks ID semua section + anchor (sumber kebenaran konten)
-  media.ts            # path slot media public/media/... (sumber kebenaran aset)
+  media.ts            # event scrub hero + konstanta HERO_FPS
+  hero-frames.ts      # server-only: daftar public/hero/scene*.jpg terurut
   site.ts             # metadata, kontak, sosmed, link pendaftaran
 public/
+  hero/
+    scene1.jpg, scene2.jpg, ... (frame hero, milik pemilik proyek)
   media/
-    hero.mp4 (+ hero-poster.jpg saat final ada)
     kemahasiswaan/<blok>-<nn>.webp
     aik/<blok>-<nn>.webp
 ```
@@ -73,8 +75,8 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 | Komponen | Tipe | Props inti | Perilaku kode wajib |
 | --- | --- | --- | --- |
 | `SplashScreen` | client | `text="sibermu"`, `onDone?` | Timeline GSAP tunggal; kontrak waktu & exit: `design.md` §5.5; kunci `body overflow` selama tampil; `aria-hidden`; reduced-motion → statis + fade |
-| `Navbar` | client | — | Solid toggle + progress + overlay mobile; ambang & warna: `design.md` §4.1; overlay trap fokus + `Esc` |
-| `Hero` | client | `videoSrc?`, `poster?` | Scrub via `currentTime`; atribut `muted playsInline preload="metadata"`; kosong → `MediaSlot`; dimensi & overlay: `design.md` §4.2 |
+| `Navbar` | client | — | Solid toggle + overlay mobile; ambang & warna: `design.md` §4.1; overlay trap fokus + `Esc` |
+| `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; decode semua frame dulu; gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
 | `StickySplit` | client | `id`, `eyebrow`, `items[]` | Pin + crossfade; `pinSpacing:true`; `aria-live="polite"`; 1 item → statis; grid & dimensi: `design.md` §5.3 |
 | `Transisi` | client | `text` | Stagger kata; teks dari `lib/content.ts` |
 | `ScrollCue` | client | `target="#kemahasiswaan"` | Loop + fade setelah hero lewat; ukuran & label: `design.md` §5.4 |
@@ -100,8 +102,8 @@ useLayoutEffect(() => {
 
 ### 7. Media & konten (slot, format, dan path: `design.md` §7 — jangan diduplikasi di sini)
 
-- `lib/media.ts` satu-satunya sumber path; komponen tidak hardcode URL. `lib/content.ts` satu-satunya sumber teks (8 blok + headline hero + statement transisi); item `kajian` yang ilustratif wajib `ilustratif: true` + label tampil "Jadwal ilustratif".
-- Render: foto final via `next/image` (`sizes` benar, `priority` hanya hero poster). `MediaSlot` kosong tidak boleh error build maupun 404 runtime.
+- `lib/hero-frames.ts` satu-satunya sumber daftar frame hero; komponen tidak hardcode URL. `lib/content.ts` satu-satunya sumber teks (8 blok + headline hero + statement transisi); item `kajian` yang ilustratif wajib `ilustratif: true` + label tampil "Jadwal ilustratif".
+- Render: foto final via `next/image` (`sizes` benar, `priority` untuk frame pertama hero). Daftar frame hero dari `lib/hero-frames.ts`. `MediaSlot` kosong tidak boleh error build maupun 404 runtime.
 
 ### 8. Budget & cara ukur (persyaratan yang diukur ada di `design.md` §8)
 
@@ -137,7 +139,7 @@ npm run build
 | Risiko | Mitigasi |
 | --- | --- |
 | Pin `StickySplit` jank di HP | `pinSpacing:true`, tinggi pin tetap di awal, uji Safari iOS; fallback statis jika 1 item |
-| Video hero berat → LCP jebol | Kompresi ≤8 MB, `preload="metadata"`, poster, scrub non-aktif saat reduced-motion |
+| Frame hero berat → LCP jebol | Tiap frame `.jpg` ≤300 KB, frame pertama `priority`, preload sisanya, scrub non-aktif saat reduced-motion |
 | Splash mengunci halaman jika JS error | Exit timer + `window load` fallback 3.5s; logika exit tanpa dependensi video |
 | Font/GSAP gagal load (offline) | System-serif/sans fallback di `@theme`; konten tetap terbaca tanpa animasi |
 | Aset final terlambat | Build/Deploy tetap jalan dengan `MediaSlot`; kredit tulis status menunggu |
