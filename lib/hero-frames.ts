@@ -1,7 +1,7 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
-const SCENE_PATTERN = /^scene(\d+)\.jpg$/i;
+const SCENE_PATTERN = /^scene(\d+)\.webp$/i;
 
 export function getHeroFrames(): string[] {
   try {

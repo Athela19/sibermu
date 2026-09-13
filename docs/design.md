@@ -12,7 +12,7 @@
 
 1. **Warna:** Primary `#1A2A5B` (navy), Secondary `#007CC4` (biru), Tertiary `#086D46` (hijau Muhammadiyah).
 2. **Font:** Head serif + body sans. Asli yang diminta `STK Bureau Serif` **tidak dipakai** karena komersial (Smuss Type Kiosk, lisensi berbayar) dan melanggar ketentuan lomba D.1.5. Pengganti bebas lisensi OFL di §3.
-3. **Hero:** Frame-sequence JPG scroll-driven milik pemilik proyek (`public/hero/scene1.jpg` dan seterusnya). Tengah bawah **hanya pil indikator scroll**, tanpa tombol ganda, tanpa dummy frame.
+3. **Hero:** Frame-sequence WebP scroll-driven milik pemilik proyek (`public/hero/scene1.webp` dan seterusnya). Tengah bawah **hanya pil indikator scroll**, tanpa tombol ganda, tanpa dummy frame.
 4. **Narasi:** Unified + transisi. Satu bahasa visual untuk Kemahasiswaan & AIK, dipisah satu section statement transisi.
 5. **Pola layout konten:** Split sticky — kiri teks (diam + crossfade per item), kanan media ganti per item. **Berlaku di desktop dan mobile** (sticky tetap jalan di HP).
 6. **Motion:** Ekspresif tapi terkontrol via GSAP ScrollTrigger (pin + scrub + reveal).
@@ -103,11 +103,11 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 
 Struktur:
 - Section setinggi `100 × (1 + N/24)vh` (N = jumlah frame) berisi satu panel sticky `100svh` (pakai `svh` agar benar di mobile), `overflow: clip`. Footage diasumsikan `24fps`: tiap `100vh` scroll ≈ 1 detik animasi (24 frame), sehingga kerapatan scrub konstan berapa pun jumlah frame.
-- Layer 1: frame-sequence JPG dari pemilik proyek (`public/hero/scene1.jpg`, `scene2.jpg`, ... — lihat kontrak media §7). Aktual: 60 frame `scene1–60.jpg`, tiap frame ≤300 KB (maks terukur `scene1.jpg` ≈290 KB). Seluruh frame di-decode menjadi `ImageBitmap` saat mount dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah semua bitmap siap (`ready && introDone`); jika decode gagal, tampilkan empty-state `mist` + teks "Slot frame hero" — **bukan gambar dummy**.
+- Layer 1: frame-sequence WebP dari pemilik proyek (`public/hero/scene1.webp`, `scene2.webp`, ... — lihat kontrak media §7). Aktual: 60 frame `scene1–60.webp`, tiap frame ≤300 KB (maks terukur `scene1.webp` ≈281 KB). Frame di-fetch sebagai `Blob` (concurrency 6) lalu di-decode menjadi `ImageBitmap` ber-window (cache 8 ke arah scroll + 3 ke belakang, pemanas latar, evict via `close()`) pada lebar tampil dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah frame pertama siap (`ready && introDone`); jika decode gagal, tampilkan empty-state `mist` + teks "Slot frame hero" — **bukan gambar dummy**.
 - Layer 2: scrim tipis bawah §2.1, hanya agar instruksi scroll terbaca.
 - Layer 3 (tengah bawah): satu-satunya CTA adalah pil indikator scroll: lingkaran + label `Gulir` (teks dari `HERO.scrollLabel`) + lingkaran animasi naik-turun halus. Klik pil → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
 - Perilaku scroll (GSAP): indeks frame = `round(progress × (N-1))`; swap `src` langsung via ref (tanpa re-render React). Hormati `prefers-reduced-motion`: tampil frame pertama statis, tidak ada scrub.
-- Kinerja: tiap frame `.jpg` ≤300 KB; frame pertama `priority` preload (LCP).
+- Kinerja: tiap frame `.webp` ≤300 KB; frame pertama `priority` preload (LCP).
 
 #### 4.3 Section Kemahasiswaan `#kemahasiswaan`
 
@@ -182,7 +182,7 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 
 | Slot | Jumlah | Format final | Rasio / ukuran | Catatan |
 | --- | --- | --- | --- | --- |
-| Hero frames | N (`scene1.jpg`, `scene2.jpg`, ...) | `.jpg` ≤300 KB per frame | full-bleed, `object-cover` | Path: `public/hero/scene<nn>.jpg`. Daftar dibaca server via `lib/hero-frames.ts`, di-pass sebagai props ke `Hero` |
+| Hero frames | N (`scene1.webp`, `scene2.webp`, ...) | `.webp` ≤300 KB per frame | full-bleed, `object-cover` | Path: `public/hero/scene<nn>.webp`. Daftar dibaca server via `lib/hero-frames.ts`, di-pass sebagai props ke `Hero` |
 | Sticky media Kemahasiswaan | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/kemahasiswaan/<blok>-<nn>.webp` |
 | Sticky media AIK | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/aik/<blok>-<nn>.webp` |
 | Logo navbar (`logo1`) | 1 | `.png`/`.webp` | tinggi `36–40px`, `object-contain` | Aktual: `public/logo/logo1.webp` (113 KB). Satu file dipakai di navbar transparan maupun pill — pastikan tetap terbaca di kedua background |
@@ -205,7 +205,7 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 - Font: `Source Serif 4 — SIL Open Font License 1.1`, `Plus Jakarta Sans — SIL Open Font License 1.1` (via Google Fonts / `next/font`).
 - Animasi: `GSAP + ScrollTrigger — GSAP Standard License (gratis)`.
 - Ikon: `Lucide Icons — ISC License`.
-- Foto/Frame: `Frame hero (`public/hero/scene*.jpg`) dan seluruh slot media dari pemilik proyek. Selama aset belum ada, slot kosong dan tidak memakai aset dummy.`
+- Foto/Frame: `Frame hero (`public/hero/scene*.webp`) dan seluruh slot media dari pemilik proyek. Selama aset belum ada, slot kosong dan tidak memakai aset dummy.`
 - Catatan STK: `STK Bureau Serif (Smuss Type Kiosk, komersial) dijadikan referensi gaya saja dan tidak di-bundle karena alasan lisensi lomba.`
 
 ### 10. Implementasi Next.js + Tailwind v4

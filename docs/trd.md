@@ -54,12 +54,12 @@ components/
 lib/
   content.ts          # teks ID semua section + anchor (sumber kebenaran konten) — aktual baru NAV/HERO/KEGIATAN_MAHASISWA; 7 blok + teks transisi + flag ilustratif kajian BELUM
   media.ts            # event scrub hero + konstanta HERO_FPS
-  hero-frames.ts      # server-only: daftar public/hero/scene*.jpg terurut (aktual 60 frame; tanpa import server-only — tambahkan saat sentuh file ini)
+  hero-frames.ts      # server-only: daftar public/hero/scene*.webp terurut (aktual 60 frame; tanpa import server-only — tambahkan saat sentuh file ini)
   reveal-text.ts      # util reveal teks: split kata + createTextReveal (set + to, anti snap-hide; stagger 0.04, toggleActions play none none none karena once:true)
   site.ts             # metadata, kontak, sosmed, link pendaftaran (aktual logo .webp — design.md §7 mengizinkan png/webp)
 public/
   hero/
-    scene1.jpg, scene2.jpg, ... (frame hero, milik pemilik proyek)
+    scene1.webp, scene2.webp, ... (frame hero, milik pemilik proyek)
   media/
     kemahasiswaan/<blok>-<nn>.webp
     aik/<blok>-<nn>.webp
@@ -88,7 +88,7 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 | --- | --- | --- | --- |
 | `SplashScreen` | client | `onIntroDone?` | Timeline intro + unmount; kontrak: `design.md` §5.5; `aria-hidden`; reduced-motion → statis + fade; fallback `4s` |
 | `Navbar` | client | — | Solid toggle TANPA progress bar + overlay mobile; ambang & warna: `design.md` §4.1; overlay `Esc` + kembalikan fokus (focus-trap penuh BELUM — lihat §9); active-link underline ScrollTrigger BELUM |
-| `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; decode semua frame dulu; gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
+| `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; fetch `Blob` concurrency-terbatas, decode ber-window pada lebar tampil + evict (`close()`); gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
 | `StickySplit` | client | `id`, `eyebrow`, `items[]` | CSS-sticky + `ScrollTrigger.create onToggle` penentu item aktif + crossfade kata; `aria-live="polite"`; 1 item → statis; grid & dimensi: `design.md` §5.3 (sengaja BUKAN `pin/pinSpacing`) |
 | `Transisi` | client | `text` | Stagger kata; teks dari `lib/content.ts` — BELUM ADA |
 | `ScrollCue` | client | `target="#kemahasiswaan"` | Pil lingkaran + label (`HERO.scrollLabel` = `Gulir`); loop dot `y ±4px` + fade setelah hero lewat; detail: `design.md` §5.4 |
