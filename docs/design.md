@@ -6,7 +6,7 @@
 | --- | --- |
 | Sumber kebutuhan | `docs/prd.md` v1.0 (12 Sep 2026) |
 | Stack implementasi | Next.js 16.3.5 (App Router) + React 19 + Tailwind CSS v4 + GSAP ScrollTrigger |
-| Status | Siap build. Semua aset foto/video disediakan pemilik proyek — **jangan buat/bundle dummy** |
+| Status | Audit 13 Sep 2026: fondasi terbangun (Navbar, Hero, 1× StickySplit, Splash, Reveal, MediaSlot). Belum lengkap: 7 blok StickySplit, Transisi, Kredit, Footer penuh — lihat §12. Semua aset foto/video disediakan pemilik proyek — **jangan buat/bundle dummy** |
 
 ### 1. Keputusan kunci yang sudah dikunci
 
@@ -36,7 +36,7 @@
 
 Aturan pakai:
 - Rasio utama: 70% netral terang (`paper`/`mist`), 20% navy, 10% aksen biru/hijau. Jangan pakai navy + hijau + biru sekaligus sebagai background penuh dalam satu viewport.
-- Scrim hero: `linear-gradient(transparent, rgba(255,255,255,0.92))` setinggi `192px` di bawah, agar transisi ke section putih mulus; label putih terbaca di atas pil `bg-black/20`.
+- Scrim hero: `linear-gradient(transparent, rgba(255,255,255,0.55))` setinggi `192px` (`h-48`) di bawah, agar transisi ke section putih mulus; label putih terbaca di atas pil `bg-black/20`. Nilai aktual implementasi `0.55` (audit 13 Sep 2026) — bukan `0.92`.
 - Pembedaan Kemahasiswaan vs AIK **bukan** ganti background penuh. Bedakan lewat: badge section (`Kemahasiswaan` biru, `AIK` hijau), garis aksen kiri heading, dan ikon. Background tetap satu sistem.
 - Fokus keyboard: `outline: 2px solid #007CC4; offset 3px`.
 
@@ -103,9 +103,9 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 
 Struktur:
 - Section setinggi `100 × (1 + N/24)vh` (N = jumlah frame) berisi satu panel sticky `100svh` (pakai `svh` agar benar di mobile), `overflow: clip`. Footage diasumsikan `24fps`: tiap `100vh` scroll ≈ 1 detik animasi (24 frame), sehingga kerapatan scrub konstan berapa pun jumlah frame.
-- Layer 1: frame-sequence JPG dari pemilik proyek (`public/hero/scene1.jpg`, `scene2.jpg`, ... — lihat kontrak media §7). Seluruh frame di-decode menjadi `ImageBitmap` saat mount dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah semua bitmap siap; jika decode gagal, tampilkan empty-state navy + teks "Slot frame hero" — **bukan gambar dummy**.
+- Layer 1: frame-sequence JPG dari pemilik proyek (`public/hero/scene1.jpg`, `scene2.jpg`, ... — lihat kontrak media §7). Aktual: 60 frame `scene1–60.jpg`, tiap frame ≤300 KB (maks terukur `scene1.jpg` ≈290 KB). Seluruh frame di-decode menjadi `ImageBitmap` saat mount dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah semua bitmap siap (`ready && introDone`); jika decode gagal, tampilkan empty-state `mist` + teks "Slot frame hero" — **bukan gambar dummy**.
 - Layer 2: scrim tipis bawah §2.1, hanya agar instruksi scroll terbaca.
-- Layer 3 (tengah bawah): satu-satunya CTA adalah pil indikator scroll: lingkaran + label `Gulir untuk menjelajah` + lingkaran animasi naik-turun halus. Klik pil → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
+- Layer 3 (tengah bawah): satu-satunya CTA adalah pil indikator scroll: lingkaran + label `Gulir` (teks dari `HERO.scrollLabel`) + lingkaran animasi naik-turun halus. Klik pil → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
 - Perilaku scroll (GSAP): indeks frame = `round(progress × (N-1))`; swap `src` langsung via ref (tanpa re-render React). Hormati `prefers-reduced-motion`: tampil frame pertama statis, tidak ada scrub.
 - Kinerja: tiap frame `.jpg` ≤300 KB; frame pertama `priority` preload (LCP).
 
@@ -152,26 +152,28 @@ Struktur:
 
 Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 
-- Desktop (`lg+`): grid 2 kolom (kiri `5/12`, kanan `7/12`, gap `64px`). Kolom kiri `position: sticky; top: 104px`, teks crossfade per item aktif (item aktif opacity 1, lainnya 0.35). Kolom kanan daftar media vertikal, tiap media `aspect 4/3`, `radius 24px`, di-pin bergantian via ScrollTrigger; indikator progres item (titik/nomor) di sisi kanan.
-- Mobile (`<lg`): **tetap sticky** sesuai permintaan. Implementasi: media di-pin `top: 64px` setinggi `38svh` di atas, teks berjalan di bawahnya dan crossfade. Tidak diubah jadi tumpukan statis. Pastikan `overflow` tidak pecah dan tinggi pin dihitung dari jumlah item (`pinSpacing: true`).
-- Media kosong: render `MediaSlot` empty-state (warna `mist`, garis dashed, label slot + rasio yang diminta). Jangan render `<Image>` tanpa `src` valid, jangan pakai `picsum/unsplash` dummy.
+- Desktop (`lg+`): grid 2 kolom (kiri `5/12`, kanan `7/12`, gap `64px`). Kolom teks kiri `position: sticky; top: 120px` dalam kolom `min-h-[calc(100svh-130px)]` (konten di-center vertikal), teks crossfade + blur per item aktif (animasi kata `opacity/blur/y`, bukan `1 / 0.35` per blok). Kolom kanan daftar media vertikal, tiap media `aspect 4/3`, `radius 24px`, kartu `top: 144px` dengan efek deck (`rotate ±2.5°`, `scale 0.98` saat non-aktif, `translateX ±10px`); spacer `8–10vh` di bawah deck. Pemilihan item aktif via `ScrollTrigger.create onToggle` per blok media (bukan `pin: true` / `pinSpacing`). Indikator progres titik/nomor **belum diimplementasi** (ditunda — lihat §12).
+- Mobile (`<lg`): **tetap sticky** sesuai permintaan. Implementasi aktual: satu panel `sticky top-[104px]` berisi deck media `h-[36svh] min-h-[240px]` di atas + teks berjalan di bawahnya (crossfade kata). Driver scroll: blok-blok kosong `min-h-[70svh]` per item di bawah grid (deteksi via `ScrollTrigger.create`, `start "top 70%" / end "bottom 30%"`). Tidak diubah jadi tumpukan statis. Pastikan `overflow` tidak pecah.
+- Fakta audit 13 Sep 2026: pendekatan ini **sengaja memakai CSS `sticky`, bukan `pin: true` / `pinSpacing: true`** seperti draf awal. TRD §5/§6 diselaraskan ke pendekatan ini. Konsekuensi: tinggi pin tidak dihitung GSAP; wajib uji `svh`/sticky di Chrome Android + Safari iOS.
+- Media kosong: render `MediaSlot` empty-state (warna `mist`, border solid `border-gray-300`, label slot + rasio yang diminta via `aspect-ratio`). Jangan render `<Image>` tanpa `src` valid, jangan pakai `picsum/unsplash` dummy. `sizes` aktual masih generik (`100vw`) — sempurnakan ke `sizes` responsif saat aset final masuk.
 - Aksesibilitas: tiap pergantian item update `aria-live="polite"` pada judul kiri; navigasi keyboard (panah atas/bawah) pindah item.
 
 #### 5.4 Panah scroll hero
 
-- Komponen `ScrollCue`: pil berborder berisi lingkaran + label (`Gulir untuk menjelajah`); lingkaran `8px` putih di kiri label, animasi naik-turun `y -4px ↔ 4px` loop; pil `rounded-full border-white/30 bg-black/20 backdrop-blur`, teks putih. Hilang (fade) setelah hero lewat.
+- Komponen `ScrollCue`: pil berborder berisi lingkaran + label (aktual: `Gulir` dari `HERO.scrollLabel`); lingkaran `8px` putih di kiri label, animasi naik-turun `y -4px ↔ 4px` loop; pil `rounded-full border-white/30 bg-black/20 backdrop-blur`, teks putih. Hilang (fade) setelah hero lewat.
 
 #### 5.5 `SplashScreen` (overlay + unmount)
 
-- Props: `onIntroDone?: () => void`. Path logo dari `SITE.splashLogo`.
-- Struktur: panel fixed fullscreen + satu baris flex logo dan teks (`gap-8px`), terpusat. Tanpa timeline intro.
-- Tampil statis → fade-out → unmount.
+- Props: `onIntroDone?: () => void`. Path logo dari `SITE.splashLogo` (aktual: `/logo/logo2.webp`).
+- Struktur: panel fixed fullscreen + satu baris flex logo dan teks (`gap-8px`), terpusat. Timeline tunggal mengikuti §4.0 (paragraf ini menggantikan kalimat lama "tanpa timeline intro" yang bertentangan dengan §4.0 — yang berlaku adalah §4.0).
+- Fallback `4s` (nilai aktual; TRD §11 diselaraskan ke `4s`). Tanpa scroll-lock — halaman bisa di-scroll sejak splash muncul. Tidak muncul lagi saat scroll ke atas.
+- Mount aktual: di dalam `Hero.tsx` (bukan `layout.tsx`) — canvas hero digate `ready && introDone`. `noscript` menyembunyikan splash agar konten tetap terbaca tanpa JS.
 
 ### 6. Motion (GSAP ScrollTrigger — ekspresif tapi hemat)
 
 - Satu instance: `gsap.registerPlugin(ScrollTrigger)` di client component (`useLayoutEffect` + `gsap.context` + `revert()` pada unmount; wajib `ScrollTrigger.refresh()` setelah font/video load).
 - Pola yang diizinkan: (a) splash timeline §4.0/§5.5 (satu timeline, exit selalu ada), (b) hero frame scrub §4.2, (c) `StickySplit` pin + crossfade §5.3, (d) reveal umum `fade-up 24px, 0.7s, ease power2.out` untuk H2/badge/paragraf, (e) stagger kata di `#transisi`, (f) navbar morph toggle, (g) `RevealText` blur-to-clear per kata (`lib/reveal-text.ts` + `components/RevealText.tsx`).
-- `RevealText` (default visual): status awal dipasang via `gsap.set` (`opacity 0, y 24px, blur 8px`), lalu dianimasikan dengan `gsap.to` (`immediateRender: false`) agar tidak ada snap-hide; default `duration 1.2s, stagger 0.5s, start "top 90%", once: true`, `clearProps` setelah selesai. Dipakai untuk heading/teks di section lain (contoh: H2 `#kemahasiswaan` dan `#aik`).
+- `RevealText` (default visual): status awal dipasang via `gsap.set` (`opacity 0, y 24px, blur 8px`), lalu dianimasikan dengan `gsap.to` (`immediateRender: false`) agar tidak ada snap-hide; default `duration 1.2s, stagger 0.04s, start "top 90%", once: true` (`toggleActions "play none none none"` karena `once`), `clearProps` setelah selesai. Dipakai untuk heading/teks di section lain (contoh: H2 `#kemahasiswaan` dan `#aik`). Nilai lama `stagger 0.5s` dikoreksi — `0.5s/kata` tidak realistis, yang benar `0.04s` sesuai implementasi `lib/reveal-text.ts`.
 - Yang dilarang: parallax multi-layer berat, smooth-scroll hijack (Lenis/Locomotive), cursor custom, animasi infinite selain `ScrollCue`, animasi di atas `#kredit`/footer selain reveal sekali.
 - `prefers-reduced-motion: reduce` → matikan scrub/pin/stagger, tampilkan konten final statis. Ini syarat lolos QA juri lintas perangkat.
 - Budget: total JS animasi tidak boleh bikin INP >200ms di HP mid-range; kill semua trigger yang off-screen (`toggleActions: "play none none reverse"` untuk reveal).
@@ -183,8 +185,8 @@ Props: `id`, `eyebrow`, `items: { title, body, meta?, mediaSlot }[]`.
 | Hero frames | N (`scene1.jpg`, `scene2.jpg`, ...) | `.jpg` ≤300 KB per frame | full-bleed, `object-cover` | Path: `public/hero/scene<nn>.jpg`. Daftar dibaca server via `lib/hero-frames.ts`, di-pass sebagai props ke `Hero` |
 | Sticky media Kemahasiswaan | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/kemahasiswaan/<blok>-<nn>.webp` |
 | Sticky media AIK | 4 blok × N item | `.jpg/.webp` ≤300 KB per file | 4/3 | Path: `public/media/aik/<blok>-<nn>.webp` |
-| Logo navbar (`logo1`) | 1 | `.png` | tinggi `36–40px`, `object-contain` | Path: `public/logo/logo1.png`. Satu file dipakai di navbar transparan maupun pill — pastikan tetap terbaca di kedua background |
-| Logo splash (`logo2`) | 1 | `.png` | `64–80px`, `object-contain` | Path: `public/logo/logo2.png`. Dipakai di splashscreen §4.0 dengan background putih |
+| Logo navbar (`logo1`) | 1 | `.png`/`.webp` | tinggi `36–40px`, `object-contain` | Aktual: `public/logo/logo1.webp` (113 KB). Satu file dipakai di navbar transparan maupun pill — pastikan tetap terbaca di kedua background |
+| Logo splash (`logo2`) | 1 | `.png`/`.webp` | `64–80px`, `object-contain` | Aktual: `public/logo/logo2.webp` (32 KB). Dipakai di splashscreen §4.0 dengan background putih |
 
 - Render foto final dengan `next/image` (`sizes`, `lazy` kecuali frame pertama hero yang `priority`). Frame hero di-swap via ref agar scrub 60fps tanpa re-render.
 - Ikon UI: inline SVG (Lucide, ISC) — bukan font ikon eksternal, bukan emoji.
@@ -212,9 +214,14 @@ Bukan wewenang dokumen ini. Seluruh implementasi (struktur berkas, token `@theme
 
 ### 11. Checklist penerimaan desain (mapping kriteria juri PRD §9; verifikasi build & ukur di `trd.md` §8–§9)
 
-- [ ] Kedua bidang lengkap (8 blok) + transisi naratif, anchor nav bekerja.
-- [ ] Splashscreen logo + `SIBERMU` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
-- [ ] Warna/tipe/spasi sesuai §2, tidak ada dummy visual.
-- [ ] Hero frame scrub + pil scroll sesuai §4.2, reduced-motion aman.
-- [ ] `StickySplit` sesuai §5.3 di desktop dan HP, keyboard + `aria-live` OK.
-- [ ] `#kredit` terisi jujur sesuai §9, tidak ada aset tanpa lisensi.
+- [x] Fondasi: warna/tipe/spasi sesuai §2, tidak ada dummy visual.
+- [x] Splashscreen logo + `SIBERMU` muncul sekali, exit sesuai kontrak §4.0, tidak mengunci scroll/keyboard, reduced-motion aman.
+- [x] Hero frame scrub (60 frame) + pil scroll sesuai §4.2, reduced-motion aman.
+- [x] 1× `StickySplit` (`kegiatan-mahasiswa`) berfungsi desktop + HP, keyboard + `aria-live` OK.
+- [ ] Kedua bidang lengkap (8 blok: `organisasi`, `ukm`, `prestasi`, `layanan`, `kegiatan`, `kajian`, `syiar`, `nilai`) + transisi naratif, anchor nav bekerja — **belum: baru 1 blok, `#aik`/`#kontak` placeholder, `#transisi`/`#kredit`/footer penuh hilang**.
+- [ ] `#kredit` terisi jujur sesuai §9, tidak ada aset tanpa lisensi — **belum: komponen hilang**.
+- [ ] Indikator progres StickySplit + active-link underline navbar ScrollTrigger — **belum diimplementasi**.
+
+### 12. Status audit implementasi (13 Sep 2026 — sumber: baca langsung kode)
+
+Halaman aktual (`app/page.tsx`): `Navbar` → `Hero` (`#beranda`) → 1× `StickySplit` (`#kegiatan-mahasiswa` di dalam `#kemahasiswaan`) → placeholder `#aik` ("Section AIK menyusul.") → placeholder `#kontak` (H2 "Gabung Bersama Kami."). Konten aktual (`lib/content.ts`): hanya `NAV_LINKS`, `HERO`, `KEMAHASISWAAN_INTRO` (tidak dipakai di page), `KEGIATAN_MAHASISWA` (4 item). `public/media/` belum ada (ditoleransi — `MediaSlot` kosong). Anchor `kegiatan-mahasiswa` adalah ID interim MVP, bukan ID kontrak §3 (`organisasi/ukm/prestasi/layanan/kegiatan/kajian/syiar/nilai`); ganti saat 8 blok dibangun. Navbar tanpa active-link underline ScrollTrigger; overlay mobile tanpa focus-trap penuh (hanya `Esc` + kembalikan fokus + `overflow hidden`); animasi buka/tutup `clip-path circle` adalah tambahan di luar spec (diizinkan, bukan larangan). `lucide-react@1.45.0` terverifikasi ada di registry — bukan risiko.

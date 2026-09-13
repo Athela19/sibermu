@@ -44,7 +44,7 @@ Satu file `docker-compose.yml` berisi dua service:
 
 | Service | File Docker | Kapan dipakai | Alamat |
 | --- | --- | --- | --- |
-| `sibermu` | `Dockerfile` | Produksi — kode di-*bake* ke image, **wajib `--build` tiap edit kode** | [http://localhost:3000](http://localhost:3000) |
+| `sibermu` | `Dockerfile` | Produksi — kode di-*bake* ke image, **wajib `--build` tiap edit kode** | [http://localhost:3322](http://localhost:3322) (`3322:3000`) |
 | `sibermu-dev` | `Dockerfile.dev` | Development — kode di-mount dari laptop, **edit langsung reload tanpa build ulang** | [http://localhost:3000](http://localhost:3000) |
 
 Produksi (image ringan Alpine multi-stage, non-root `nextjs`):
@@ -76,13 +76,13 @@ Detail setup: `Dockerfile`, `Dockerfile.dev`, `docker-compose.yml`, `.dockerigno
 
 ```text
 app/            # layout, page (server component), globals.css (@theme, tanpa tailwind.config.js)
-components/     # SplashScreen, Navbar, Hero, StickySplit, Transisi, MediaSlot, Kredit, Footer, ...
+components/     # SplashScreen, Navbar, Hero, StickySplit (aktual) + Transisi, Kredit, Footer (target, belum ada), MediaSlot, ...
 lib/            # content.ts (teks ID), site.ts (metadata/kontak), media.ts, hero-frames.ts
-public/         # hero/ + media/ — diisi pemilik proyek; kosong = MediaSlot empty-state
+public/         # hero/ (60 frame aktual) + media/ (belum ada — kosong = MediaSlot empty-state)
 docs/           # prd.md, design.md, trd.md
 Dockerfile              # produksi: multi-stage node:20-alpine
 Dockerfile.dev          # development: Alpine + npm run dev (untuk bind-mount)
-docker-compose.yml      # service: sibermu (prod, :3000) + sibermu-dev (dev, :3000, profile dev)
+docker-compose.yml      # service: sibermu (prod, 3322:3000) + sibermu-dev (dev, 3000:3000, profile dev)
 .dockerignore
 ```
 

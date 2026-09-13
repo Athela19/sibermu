@@ -11,8 +11,8 @@
 | Website yang Di-rebranding | [https://sibermu.ac.id/](https://sibermu.ac.id/) (identitas & konten institusi)                        |
 | Referensi Gaya & Desain    | [https://www.zero.university/](https://www.zero.university/) (bahasa visual, tipografi, dan interaksi) |
 | Referensi Ketentuan        | Panduan Lomba Landing Page SiberMu Tahun 2026 (Direktorat AIK dan Kemahasiswaan)                       |
-| Versi                      | 1.0                                                                                                    |
-| Tanggal                    | 12 September 2026                                                                                      |
+| Versi                      | 1.1 (13 September 2026 — tambah §13 status implementasi hasil audit kode; kebutuhan §1–§12 tidak berubah) |
+| Tanggal                    | 12 September 2026 (kebutuhan); 13 September 2026 (audit)                                                  |
 
 
 ---
@@ -225,4 +225,18 @@ Seluruh tautan dan berkas wajib tetap dapat diakses **minimal sampai tanggal pen
 - Referensi gaya & desain (rebranding visual): [https://www.zero.university/](https://www.zero.university/)
 - Narahubung lomba: +62 851-7994-6901 (WhatsApp)
 - Tautan pendaftaran: [https://forms.gle/b5UBLZyF2ftg4mJZA](https://forms.gle/b5UBLZyF2ftg4mJZA)
+
+---
+
+## 13. Status implementasi (hasil audit kode 13 September 2026 — informatif, kebutuhan di atas tidak berubah)
+
+| Cakupan PRD §5 | Status kode |
+| --- | --- |
+| Organisasi / UKM / Prestasi / Layanan (§5.1) | Sebagian: 1× `StickySplit` interim `kegiatan-mahasiswa` (4 item generik) di `#kemahasiswaan`; 4 sub-section terpisah belum dibangun |
+| Kegiatan / Kajian / Syiar / Nilai AIK (§5.2) | Belum: `#aik` placeholder ("Section AIK menyusul.") |
+| Integrasi naratif + anchor `#kemahasiswaan`/`#aik` (§5.3) | Belum: section transisi `#transisi` belum ada; anchor lengkap belum |
+| Sitemap §6 (Header, Hero, Kemahasiswaan, Transisi, AIK, Kredit, Footer) | Sebagian: Header + Hero (60 frame) + 1 blok ada; Transisi + Kredit + Footer penuh belum; `#kontak` baru H2; `#kredit` belum ada |
+| Non-functional §7 (responsif, hak cipta, performa, bebas error) | Fondasi OK: tanpa aset dummy, font OFL via `next/font`, responsif + reduced-motion + `aria-live`/keyboard pada blok yang ada; Lighthouse + QA lintas-perangkat menyusul setelah konten lengkap |
+
+Rincian teknis (komponen, kontrak, port Docker, logo `.webp`, angka sticky aktual): `design.md` §12 + `trd.md` §9/§11.
 
