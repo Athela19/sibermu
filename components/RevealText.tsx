@@ -15,6 +15,7 @@ type RevealTag = "p" | "h1" | "h2" | "h3" | "span" | "div";
 interface RevealTextProps {
   text: string;
   as?: RevealTag;
+  id?: string;
   mode?: RevealMode;
   split?: RevealSplit;
   blur?: number;
@@ -30,6 +31,7 @@ interface RevealTextProps {
 export default function RevealText({
   text,
   as = "p",
+  id,
   mode = "enter",
   split = "word",
   blur = 8,
@@ -68,7 +70,7 @@ export default function RevealText({
 
   if (split === "none") {
     return (
-      <Tag ref={ref as Ref<HTMLElement>} className={className}>
+      <Tag ref={ref as Ref<HTMLElement>} id={id} className={className}>
         {text}
       </Tag>
     );
@@ -77,7 +79,12 @@ export default function RevealText({
   const words = splitTextToWords(text);
 
   return (
-    <Tag ref={ref as Ref<HTMLElement>} aria-label={text} className={className}>
+    <Tag
+      ref={ref as Ref<HTMLElement>}
+      id={id}
+      aria-label={text}
+      className={className}
+    >
       {words.map((word, i) => (
         <span key={`${word}-${i}`} aria-hidden="true">
           <span data-reveal-word className={`inline-block ${wordClassName ?? ""}`}>
