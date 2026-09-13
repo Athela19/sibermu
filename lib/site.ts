@@ -8,6 +8,6 @@ export const SITE = {
   ogImage: "/logo/android-chrome-512x512.png",
   ogImageAlt: "Logo Universitas Siber Muhammadiyah",
   sameAs: ["https://www.instagram.com/sibermu"],
-  ctaLabel: "Daftar / Gabung",
+  ctaLabel: "Daftar",
   ctaHref: "#kontak",
 } as const;

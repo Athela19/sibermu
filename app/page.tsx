@@ -1,7 +1,8 @@
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import RevealText from "@/components/RevealText";
-import { HERO } from "@/lib/content";
+import StickySplit from "@/components/StickySplit";
+import { HERO, KEGIATAN_MAHASISWA } from "@/lib/content";
 import { getHeroFrames } from "@/lib/hero-frames";
 
 export default function Home() {
@@ -18,17 +19,13 @@ export default function Home() {
         <Hero frames={heroFrames} />
         <section
           id="kemahasiswaan"
-          aria-labelledby="kemahasiswaan-heading"
-          className="mx-auto w-full max-w-7xl px-6 py-24 sm:px-8"
+          aria-label="Kemahasiswaan"
+          className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-8 lg:py-24"
         >
-          <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-secondary">
-            Kemahasiswaan
-          </p>
-          <RevealText
-            as="h2"
-            id="kemahasiswaan-heading"
-            text="Section Kemahasiswaan menyusul."
-            className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+          <StickySplit
+            id="kegiatan-mahasiswa"
+            eyebrow="Kegiatan Mahasiswa"
+            items={KEGIATAN_MAHASISWA}
           />
         </section>
         <section

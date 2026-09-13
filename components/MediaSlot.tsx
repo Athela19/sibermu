@@ -17,12 +17,18 @@ export default function MediaSlot({
   priority = false,
   className = "",
 }: MediaSlotProps) {
-  if (src) {
-    return (
-      <div
-        className={`relative w-full overflow-hidden bg-mist ${className}`}
-        style={{ aspectRatio: ratio }}
-      >
+  return (
+    <div
+      role={src ? undefined : "status"}
+      aria-label={src ? undefined : label}
+      style={{ aspectRatio: ratio }}
+      className={
+        src
+          ? `relative w-full overflow-hidden bg-mist ${className}`
+          : `flex w-full flex-col items-center justify-center gap-2 border-2 border-gray-300 bg-mist px-6 text-center ${className}`
+      }
+    >
+      {src ? (
         <Image
           src={src}
           alt={alt}
@@ -31,21 +37,14 @@ export default function MediaSlot({
           priority={priority}
           className="object-cover"
         />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      role="status"
-      aria-label={label}
-      className={`flex w-full flex-col items-center justify-center gap-2 border-2 border-dashed border-line bg-mist px-6 text-center ${className}`}
-      style={{ aspectRatio: ratio }}
-    >
-      <span className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-ink-500">
-        Slot media kosong
-      </span>
-      <span className="font-sans text-sm text-ink-500">{label}</span>
+      ) : (
+        <>
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-ink-500">
+            Slot media kosong
+          </span>
+          <span className="font-sans text-sm text-ink-500">{label}</span>
+        </>
+      )}
     </div>
   );
 }

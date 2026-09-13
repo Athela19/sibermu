@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
+import Script from "next/script";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -145,8 +146,10 @@ export default function RootLayout({
           Lewati ke konten utama
         </a>
         {children}
-        <script
+        <Script
+          id="json-ld-organisasi"
           type="application/ld+json"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </body>

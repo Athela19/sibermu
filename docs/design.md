@@ -81,7 +81,7 @@ Urutan satu halaman (satu-satunya sumber kebenaran untuk nav):
 5. `#kredit` — kredit aset (tanpa nav, wajib tampil)
 6. `#kontak` — footer + CTA penutup
 
-Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan `Daftar / Gabung` (href ke `#kontak`). Nav mobile: logo + tombol hamburger → overlay fullscreen berisi 3 link + CTA, tanpa dropdown.
+Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan `Daftar` (href ke `#kontak`). Nav mobile: logo + tombol hamburger → overlay fullscreen berisi 3 link + CTA, tanpa dropdown.
 
 ### 4. Spesifikasi per section
 
