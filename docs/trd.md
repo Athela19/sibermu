@@ -36,7 +36,7 @@ Dilarang menambah: framework animasi lain, lib smooth-scroll, font-icon kit, CSS
 
 ```text
 app/
-  layout.tsx          # font, lang="id", metadata (SplashScreen TIDAK di sini — aktual di-mount di Hero.tsx, digate ready && introDone)
+  layout.tsx          # font, lang="id", metadata + preload 6 frame hero (SplashScreen TIDAK di sini — aktual di-mount di Hero.tsx, digate ready && introDone; serif hanya weight 600; JSON-LD via tag script biasa)
   page.tsx            # komposisi section (server component, tanpa logika animasi) — aktual MVP: Navbar + Hero + 1× StickySplit + placeholder AIK/kontak; target penuh: 8× StickySplit + Transisi + Kredit + Footer (belum)
   globals.css         # @import "tailwindcss" + @theme tokens (design.md §2)
   sitemap.ts, robots.ts, favicon.ico  # tambahan aktual di luar kontrak (pakai SITE.url, tidak melanggar)
@@ -76,7 +76,7 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 ### 4. Implementasi token & font
 
 - `app/globals.css`: definisikan `@theme` persis dari `design.md` §2 — `design.md` satu-satunya sumber angka, jangan salin nilai ke sini. Jangan buat `tailwind.config.js`.
-- `app/layout.tsx`: ganti `Geist` → `Source_Serif_4` + `Plus_Jakarta_Sans` via `next/font/google` (`subsets: ["latin"]`, `display: "swap"`), set `lang="id"`, metadata lomba (title, description ID, OG).
+- `app/layout.tsx`: ganti `Geist` → `Source_Serif_4` + `Plus_Jakarta_Sans` via `next/font/google` (`subsets: ["latin"]`, `display: "swap"`), set `lang="id"`, metadata lomba (title, description ID, OG). Aktual: serif hanya `weight: ["600"]` (satu-satunya yang dipakai); 6 frame hero awal di-`preload` via `<link>` di `<head>`; JSON-LD via tag `<script>` biasa (tanpa `next/script`).
 - `next.config.ts`: `output: "standalone"` — alasan tercatat: stage `runner` di `Dockerfile`
   (Alpine) hanya menyalin `.next/standalone` + `.next/static` + `public` agar image
   produksi ringan. Optimasi gambar default `next/image` tetap dipakai; jangan ubah
@@ -88,7 +88,7 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 | --- | --- | --- | --- |
 | `SplashScreen` | client | `onIntroDone?` | Timeline intro + unmount; kontrak: `design.md` §5.5; `aria-hidden`; reduced-motion → statis + fade; fallback `4s` |
 | `Navbar` | client | — | Solid toggle TANPA progress bar + overlay mobile; ambang & warna: `design.md` §4.1; overlay `Esc` + kembalikan fokus (focus-trap penuh BELUM — lihat §9); active-link underline ScrollTrigger BELUM |
-| `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; fetch `Blob` concurrency-terbatas, decode ber-window pada lebar tampil + evict (`close()`); gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
+| `Hero` | client | `frames: string[]` | Scrub via indeks frame + `drawImage` `ImageBitmap` ke `<canvas>`; frame pertama dulu untuk cat awal, sisa di latar (concurrency 6, skip saat reduced-motion); decode ber-window (5+2) ≤2048px + evict (`close()`); gagal → `MediaSlot`; dimensi & scrim: `design.md` §4.2 |
 | `StickySplit` | client | `id`, `eyebrow`, `items[]` | CSS-sticky + `ScrollTrigger.create onToggle` penentu item aktif + crossfade kata; `aria-live="polite"`; 1 item → statis; grid & dimensi: `design.md` §5.3 (sengaja BUKAN `pin/pinSpacing`) |
 | `Transisi` | client | `text` | Stagger kata; teks dari `lib/content.ts` — BELUM ADA |
 | `ScrollCue` | client | `target="#kemahasiswaan"` | Pil lingkaran + label (`HERO.scrollLabel` = `Gulir`); loop dot `y ±4px` + fade setelah hero lewat; detail: `design.md` §5.4 |
@@ -116,7 +116,7 @@ useLayoutEffect(() => {
 ### 7. Media & konten (slot, format, dan path: `design.md` §7 — jangan diduplikasi di sini)
 
 - `lib/hero-frames.ts` satu-satunya sumber daftar frame hero; komponen tidak hardcode URL. `lib/content.ts` satu-satunya sumber teks (target 8 blok + headline hero + statement transisi; aktual baru 1 blok — 7 blok + teks transisi menyusul); item `kajian` yang ilustratif wajib `ilustratif: true` + label tampil "Jadwal ilustratif" (belum ada karena blok kajian belum dibangun).
-- Render: foto final via `next/image` (`sizes` benar, `priority` untuk frame pertama hero). Daftar frame hero dari `lib/hero-frames.ts`. `MediaSlot` kosong tidak boleh error build maupun 404 runtime.
+- Render: foto final via `next/image` (`sizes` benar). Frame hero bukan `next/image`: 6 awal di-`preload` via `<link>`, daftar frame dari `lib/hero-frames.ts`. `MediaSlot` kosong tidak boleh error build maupun 404 runtime.
 
 ### 8. Budget & cara ukur (persyaratan yang diukur ada di `design.md` §8)
 
@@ -140,6 +140,7 @@ docker compose --profile dev config --services
 - [ ] `lint` bersih, `build` lolos **dengan slot media kosong**.
 - [ ] Status audit 13 Sep 2026 (wajib dilengkapi sebelum submit lomba): `Transisi`/`Kredit`/`Footer` belum ada; `page.tsx` baru 1× `StickySplit` (`kegiatan-mahasiswa`, ID interim — ganti ke 8 ID kontrak saat bangun penuh); `#aik`/`#kontak` masih placeholder; indikator progres + active-link ScrollTrigger + focus-trap penuh belum; `sizes` MediaSlot masih generik; `public/media/` belum ada.
 - [x] Temuan lint 13 Sep 2026 (sudah diperbaiki): `npm run lint` penuh sempat gagal pada 15 error di skrip helper `.opencode/skills/**` (di luar scope aplikasi). Perbaikan: `.opencode/**` ditambahkan ke `globalIgnores` di `eslint.config.mjs`; kini `npm run lint` bersih dan `npm run build` lolos.
+- [x] Audit memori Hero 14 Sep 2026 (sudah dilakukan): Chrome headless di build production — renderer ~261 MB (dari ~1,85 GB), heap stabil, 60/60 frame OK, scrub 8/8 berganti, nol error console. Detail: `design.md` §12 (catatan 14 Sep 2026).
 - [ ] `docker compose config --services` mencetak `sibermu` (produksi:
   `image: sibermu:latest`, `container_name: sibermu`). Catatan port aktual: prod `3322:3000`, dev `3000:3000` — QA manual prod via `http://localhost:3322`, dev via `http://localhost:3000`.
 - [ ] `docker compose --profile dev config --services` mencetak `sibermu` + `sibermu-dev`
@@ -168,7 +169,7 @@ docker compose --profile dev config --services
 | Risiko | Mitigasi |
 | --- | --- |
 | Pin `StickySplit` jank di HP | CSS-sticky aktual (bukan pin GSAP); driver `min-h-[70svh]` per item; uji Safari iOS; fallback statis jika 1 item |
-| Frame hero berat → LCP jebol | 60 frame terukur ≤300 KB/frame; frame pertama `priority` (follow-up: preload eksplisit frame-1, belum ada); scrub non-aktif saat reduced-motion |
+| Frame hero berat → LCP jebol | 60 frame WebP terukur ≤300 KB/frame; 6 awal di-`preload` via `<link>`; decode ber-window (5+2) ≤2048px; scrub non-aktif saat reduced-motion. Hasil audit 14 Sep 2026 (headless, produksi, 1920×1080 dpr2): renderer ~261 MB, heap 4 MB stabil, 8/8 scrub OK, nol error console |
 | Konten baru 1 dari 8 blok + Transisi/Kredit/Footer hilang | Bangun 7 blok + 3 komponen sebelum submit; ganti ID interim `kegiatan-mahasiswa` ke 8 ID kontrak; isi `public/media/` atau biarkan `MediaSlot` kosong |
 | Splash mengunci halaman jika JS error | Exit timer + `window load` fallback 4s; logika exit tanpa dependensi video |
 | Font/GSAP gagal load (offline) | System-serif/sans fallback di `@theme`; konten tetap terbaca tanpa animasi |

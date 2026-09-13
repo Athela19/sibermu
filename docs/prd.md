@@ -236,7 +236,7 @@ Seluruh tautan dan berkas wajib tetap dapat diakses **minimal sampai tanggal pen
 | Kegiatan / Kajian / Syiar / Nilai AIK (§5.2) | Belum: `#aik` placeholder ("Section AIK menyusul.") |
 | Integrasi naratif + anchor `#kemahasiswaan`/`#aik` (§5.3) | Belum: section transisi `#transisi` belum ada; anchor lengkap belum |
 | Sitemap §6 (Header, Hero, Kemahasiswaan, Transisi, AIK, Kredit, Footer) | Sebagian: Header + Hero (60 frame) + 1 blok ada; Transisi + Kredit + Footer penuh belum; `#kontak` baru H2; `#kredit` belum ada |
-| Non-functional §7 (responsif, hak cipta, performa, bebas error) | Fondasi OK: tanpa aset dummy, font OFL via `next/font`, responsif + reduced-motion + `aria-live`/keyboard pada blok yang ada; Lighthouse + QA lintas-perangkat menyusul setelah konten lengkap |
+| Non-functional §7 (responsif, hak cipta, performa, bebas error) | Fondasi OK: tanpa aset dummy, font OFL via `next/font`, responsif + reduced-motion + `aria-live`/keyboard pada blok yang ada; Hero 60 frame WebP teroptimasi (14 Sep 2026: renderer ~261 MB, scrub 8/8 OK — detail `design.md` §12); Lighthouse + QA lintas-perangkat menyusul setelah konten lengkap |
 
 Rincian teknis (komponen, kontrak, port Docker, logo `.webp`, angka sticky aktual): `design.md` §12 + `trd.md` §9/§11.
 

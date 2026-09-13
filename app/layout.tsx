@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Source_Serif_4 } from "next/font/google";
-import Script from "next/script";
+import { getHeroFrames } from "@/lib/hero-frames";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -8,7 +8,7 @@ const serif = Source_Serif_4({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["600"],
 });
 
 const sans = Plus_Jakarta_Sans({
@@ -133,11 +133,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const heroPreload = getHeroFrames().slice(0, 6);
   return (
     <html
       lang="id"
       className={`${serif.variable} ${sans.variable} h-full antialiased`}
     >
+      {heroPreload.map((src) => (
+        <link key={src} rel="preload" as="image" type="image/webp" href={src} />
+      ))}
       <body className="min-h-full flex flex-col bg-paper text-ink-900">
         <a
           href="#konten"
@@ -146,10 +150,8 @@ export default function RootLayout({
           Lewati ke konten utama
         </a>
         {children}
-        <Script
-          id="json-ld-organisasi"
+        <script
           type="application/ld+json"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </body>

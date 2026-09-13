@@ -17,7 +17,7 @@
 5. **Pola layout konten:** Split sticky — kiri teks (diam + crossfade per item), kanan media ganti per item. **Berlaku di desktop dan mobile** (sticky tetap jalan di HP).
 6. **Motion:** Ekspresif tapi terkontrol via GSAP ScrollTrigger (pin + scrub + reveal).
 7. **Aset:** Semua foto/video dari pemilik proyek. Komponen media hanya berisi slot + empty-state, bukan file dummy.
-8. **Splashscreen:** Layar pembuka fullscreen background putih: logo `logo2.png` fade-in, bergeser, teks `SIBERMU` muncul sejajar, lalu fade-out. Total maksimal `3.5s`.
+8. **Splashscreen:** Layar pembuka fullscreen background putih: logo `logo2.webp` fade-in, bergeser, teks `SIBERMU` muncul sejajar, lalu fade-out. Total maksimal `3.5s`.
 
 ### 2. Design tokens
 
@@ -44,7 +44,7 @@ Aturan pakai:
 
 - **Head (pengganti STK Bureau Serif):** `Source Serif 4` (Google Fonts, OFL). Alasan: workhorse serif, 6 weights + optical size, mirip karakter Bureau, mendukung Indonesia.
 - **Body/UI:** `Plus Jakarta Sans` (Google Fonts, OFL). Alasan: modern, tegas, cocok headline pendukung + body kecil.
-- Load via `next/font/google` (bukan `<link>` manual) agar `build` stabil dan subset `latin` otomatis.
+- Load via `next/font/google` (bukan `<link>` manual) agar `build` stabil dan subset `latin` otomatis. Aktual: serif hanya weight `600` (satu-satunya yang dipakai — seluruh `font-display` memakai `font-semibold`); sans tetap `400/500/600/700`.
 - Jangan load STK Bureau Serif tanpa bukti lisensi web.
 
 Skala (clamp agar statement-driven ala zero.university):
@@ -90,7 +90,7 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 - Komponen `SplashScreen`, `position: fixed; inset: 0; z: 100`, background putih, `aria-hidden="true"`. Lapisan di atas seluruh web, muncul sekali saat load.
 - Satu timeline GSAP: logo mulai besar-transparan di tengah → mengecil opaque (`0–1.0s`) → logo bergeser kiri + huruf keluar satu-satu dari kiri (dari balik logo ke kanan, U → S, jeda antar huruf `0.1s`), masing-masing meluncur smooth ke slotnya (`1.1–2.5s`), berakhir tepat `8px` di kanan logo dengan komposisi terkunci di tengah → logo+teks sebagai satu div membesar (`scale 1.4`) dan memudar bersama background (`2.6–3.5s`) → unmount.
 - Fallback `4s`. Tanpa scroll-lock — halaman bisa di-scroll sejak splash muncul. Tidak muncul lagi saat scroll ke atas.
-- Jika `logo2.png` belum ada, tampil teks `sibermu` sebagai fallback.
+- Jika `logo2.webp` belum ada, tampil teks `sibermu` sebagai fallback.
 
 #### 4.1 Header/Navbar
 
@@ -103,11 +103,11 @@ Nav (desktop): logo kiri, link tengah `Kemahasiswaan | AIK | Kontak`, CTA kanan 
 
 Struktur:
 - Section setinggi `100 × (1 + N/24)vh` (N = jumlah frame) berisi satu panel sticky `100svh` (pakai `svh` agar benar di mobile), `overflow: clip`. Footage diasumsikan `24fps`: tiap `100vh` scroll ≈ 1 detik animasi (24 frame), sehingga kerapatan scrub konstan berapa pun jumlah frame.
-- Layer 1: frame-sequence WebP dari pemilik proyek (`public/hero/scene1.webp`, `scene2.webp`, ... — lihat kontrak media §7). Aktual: 60 frame `scene1–60.webp`, tiap frame ≤300 KB (maks terukur `scene1.webp` ≈281 KB). Frame di-fetch sebagai `Blob` (concurrency 6) lalu di-decode menjadi `ImageBitmap` ber-window (cache 8 ke arah scroll + 3 ke belakang, pemanas latar, evict via `close()`) pada lebar tampil dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah frame pertama siap (`ready && introDone`); jika decode gagal, tampilkan empty-state `mist` + teks "Slot frame hero" — **bukan gambar dummy**.
+- Layer 1: frame-sequence WebP dari pemilik proyek (`public/hero/scene1.webp`, `scene2.webp`, ... — lihat kontrak media §7). Aktual: 60 frame `scene1–60.webp`, tiap frame ≤300 KB (maks terukur `scene1.webp` ≈281 KB). Frame pertama diutamakan (6 awal juga di-`preload` di `<head>`) agar awal scroll langsung mulus; sisanya menyusul di latar (concurrency 6, dilewati saat reduced-motion), tiap unduhan membangunkan pemanas decode. Frame di-decode menjadi `ImageBitmap` ber-window (cache 5 ke arah scroll + 2 ke belakang, pemanas latar, evict via `close()`) pada lebar tampil (maks 2048px) dan digambar ke `<canvas>` full-bleed (cover via `drawImage`) mengikuti indeks scrub — tanpa ganti `src` sehingga tidak ada blank saat scroll cepat. Hero baru ditampilkan setelah frame pertama siap (`ready && introDone`); jika decode gagal, tampilkan empty-state `mist` + teks "Slot frame hero" — **bukan gambar dummy**.
 - Layer 2: scrim tipis bawah §2.1, hanya agar instruksi scroll terbaca.
 - Layer 3 (tengah bawah): satu-satunya CTA adalah pil indikator scroll: lingkaran + label `Gulir` (teks dari `HERO.scrollLabel`) + lingkaran animasi naik-turun halus. Klik pil → `scrollTo(#kemahasiswaan)`. Cue fade-out mengikuti progres scrub.
 - Perilaku scroll (GSAP): indeks frame = `round(progress × (N-1))`; swap `src` langsung via ref (tanpa re-render React). Hormati `prefers-reduced-motion`: tampil frame pertama statis, tidak ada scrub.
-- Kinerja: tiap frame `.webp` ≤300 KB; frame pertama `priority` preload (LCP).
+- Kinerja: tiap frame `.webp` ≤300 KB; 6 frame awal di-`preload` via `<link>` di `<head>` (LCP).
 
 #### 4.3 Section Kemahasiswaan `#kemahasiswaan`
 
@@ -118,7 +118,7 @@ Struktur:
   - UKM: 4–6 item.
   - Prestasi: 3–5 item (nama, bidang, tahun).
   - Layanan: 3–4 item (konseling, beasiswa, aspirasi).
-- Jika item hanya 1, `StickySplit` otomatis non-sticky (fallback jadi kartu statis) agar tidak ada pin boş.
+- Jika item hanya 1, `StickySplit` otomatis non-sticky (fallback jadi kartu statis) agar tidak ada pin kosong.
 
 #### 4.4 Transisi `#transisi`
 
@@ -225,3 +225,5 @@ Bukan wewenang dokumen ini. Seluruh implementasi (struktur berkas, token `@theme
 ### 12. Status audit implementasi (13 Sep 2026 — sumber: baca langsung kode)
 
 Halaman aktual (`app/page.tsx`): `Navbar` → `Hero` (`#beranda`) → 1× `StickySplit` (`#kegiatan-mahasiswa` di dalam `#kemahasiswaan`) → placeholder `#aik` ("Section AIK menyusul.") → placeholder `#kontak` (H2 "Gabung Bersama Kami."). Konten aktual (`lib/content.ts`): hanya `NAV_LINKS`, `HERO`, `KEMAHASISWAAN_INTRO` (tidak dipakai di page), `KEGIATAN_MAHASISWA` (4 item). `public/media/` belum ada (ditoleransi — `MediaSlot` kosong). Anchor `kegiatan-mahasiswa` adalah ID interim MVP, bukan ID kontrak §3 (`organisasi/ukm/prestasi/layanan/kegiatan/kajian/syiar/nilai`); ganti saat 8 blok dibangun. Navbar tanpa active-link underline ScrollTrigger; overlay mobile tanpa focus-trap penuh (hanya `Esc` + kembalikan fokus + `overflow hidden`); animasi buka/tutup `clip-path circle` adalah tambahan di luar spec (diizinkan, bukan larangan). `lucide-react@1.45.0` terverifikasi ada di registry — bukan risiko.
+
+Catatan 14 Sep 2026 (optimasi Hero, terukur via Chrome headless di build production, viewport 1920×1080 dpr2): 60 frame WebP (total 13,4 MB) di-fetch berurutan (frame 0 dulu, 6 awal di-`preload`, concurrency 6, skip saat reduced-motion) dan di-decode ber-window (5 ke arah scroll + 2 ke belakang, cap 2048px, evict via `close()`). Hasil: renderer ~261 MB (dari ~1,85 GB sebelum optimasi), JS heap 4 MB stabil sebelum/sesudah scroll, 60/60 frame OK, 8/8 titik scrub berganti, nol error console. Serif dipangkas ke weight `600` saja; JSON-LD ditulis sebagai tag `<script>` biasa (tanpa runtime `next/script`). Cakupan konten §11 tidak berubah — 7 blok + Transisi/Kredit/Footer tetap menunggu dibangun.

@@ -9,6 +9,11 @@ import MediaSlot from "./MediaSlot";
 import ScrollCue from "./ScrollCue";
 import SplashScreen from "./SplashScreen";
 
+const FETCH_CONCURRENCY = 6;
+const CACHE_BEHIND = 2;
+const CACHE_AHEAD = 5;
+const MAX_DECODE_WIDTH = 2048;
+
 function paint(canvas: HTMLCanvasElement, bmp: ImageBitmap) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -30,8 +35,16 @@ export default function Hero({ frames }: { frames: string[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
-  const bitmapsRef = useRef<ImageBitmap[]>([]);
+  const cacheRef = useRef(new Map<number, ImageBitmap>());
+  const inflightRef = useRef(new Set<number>());
   const indexRef = useRef(0);
+  const naturalWRef = useRef(0);
+  const apiRef = useRef<{
+    show: (i: number) => void;
+    repaint: () => void;
+    wake: () => void;
+    compact: () => void;
+  } | null>(null);
   const endedSent = useRef(false);
   const [ready, setReady] = useState(frames.length === 0);
   const [failed, setFailed] = useState(false);
@@ -41,37 +54,228 @@ export default function Hero({ frames }: { frames: string[] }) {
   useEffect(() => {
     if (frames.length === 0) return;
     let cancelled = false;
-    (async () => {
+    let lastDir = 1;
+    let warmerActive = false;
+    const total = frames.length;
+    const blobs: (Blob | null)[] = new Array(total).fill(null);
+    const dead = new Set<number>();
+    const cache = cacheRef.current;
+    const inflight = inflightRef.current;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const decodeWidth = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const cssW = canvasRef.current?.clientWidth || window.innerWidth || 1280;
+      const w = Math.max(320, Math.round(cssW * dpr));
+      const naturalW = naturalWRef.current;
+      const capped = Math.min(w, MAX_DECODE_WIDTH);
+      return naturalW > 0 ? Math.min(capped, naturalW) : capped;
+    };
+
+    const decode = async (i: number): Promise<ImageBitmap | null> => {
+      const blob = blobs[i];
+      if (!blob) return null;
       try {
-        const blobs = await Promise.all(
-          frames.map(async (src) => {
-            const res = await fetch(src);
-            if (!res.ok) throw new Error(src);
-            return res.blob();
-          }),
-        );
-        if (cancelled) return;
-        const list: ImageBitmap[] = [];
-        for (let i = 0; i < blobs.length; i++) {
-          if (cancelled) break;
-          list.push(await createImageBitmap(blobs[i]));
-          if (i % 2 === 1) await new Promise((r) => setTimeout(r, 0));
+        return await createImageBitmap(blob, {
+          resizeWidth: decodeWidth(),
+          resizeQuality: "high",
+        });
+      } catch {
+        try {
+          return await createImageBitmap(blob);
+        } catch {
+          return null;
         }
+      }
+    };
+
+    const evictFar = (behind = CACHE_BEHIND, ahead = CACHE_AHEAD) => {
+      const cur = indexRef.current;
+      cache.forEach((bmp, key) => {
+        if (key < cur - behind || key > cur + ahead) {
+          bmp.close();
+          cache.delete(key);
+        }
+      });
+    };
+
+    const paintIndex = (i: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      let bmp = cache.get(i);
+      if (!bmp) {
+        for (let d = 1; d <= CACHE_AHEAD; d++) {
+          bmp = cache.get(i - d) ?? cache.get(i + d);
+          if (bmp) break;
+        }
+      }
+      if (bmp) paint(canvas, bmp);
+    };
+
+    const store = (i: number, bmp: ImageBitmap) => {
+      const old = cache.get(i);
+      if (old) old.close();
+      cache.set(i, bmp);
+      evictFar();
+      if (i === indexRef.current) paintIndex(i);
+    };
+
+    const keep = (i: number, bmp: ImageBitmap | null) => {
+      if (!bmp) {
+        dead.add(i);
+        return;
+      }
+      if (
+        i < indexRef.current - CACHE_BEHIND ||
+        i > indexRef.current + CACHE_AHEAD
+      ) {
+        bmp.close();
+        return;
+      }
+      store(i, bmp);
+    };
+
+    const ensure = (i: number) => {
+      if (cancelled || i < 0 || i >= total) return;
+      if (dead.has(i) || cache.has(i) || inflight.has(i) || !blobs[i]) return;
+      inflight.add(i);
+      void decode(i).then((bmp) => {
+        inflight.delete(i);
         if (cancelled) {
-          list.forEach((b) => b.close());
+          bmp?.close();
           return;
         }
-        bitmapsRef.current = list;
-        if (canvasRef.current && list[0]) paint(canvasRef.current, list[0]);
+        keep(i, bmp);
+      });
+    };
+
+    const warmWindow = () => {
+      if (warmerActive || reduced) return;
+      warmerActive = true;
+      void (async () => {
+        try {
+          while (!cancelled) {
+            const cur = indexRef.current;
+            const list: number[] = [];
+            for (let d = 0; d <= CACHE_AHEAD; d++) list.push(cur + lastDir * d);
+            for (let d = 1; d <= CACHE_BEHIND; d++) list.push(cur - lastDir * d);
+            const next = list.find(
+              (i) =>
+                i >= 0 &&
+                i < total &&
+                !dead.has(i) &&
+                !cache.has(i) &&
+                !inflight.has(i) &&
+                blobs[i],
+            );
+            if (next === undefined) break;
+            inflight.add(next);
+            const bmp = await decode(next);
+            inflight.delete(next);
+            if (cancelled) {
+              bmp?.close();
+              break;
+            }
+            keep(next, bmp);
+            await new Promise((r) => setTimeout(r, 0));
+          }
+        } finally {
+          warmerActive = false;
+        }
+      })();
+    };
+
+    const show = (i: number) => {
+      const clamped = Math.max(0, Math.min(i, total - 1));
+      if (clamped !== indexRef.current) {
+        lastDir = clamped > indexRef.current ? 1 : -1;
+        indexRef.current = clamped;
+      }
+      paintIndex(clamped);
+      ensure(clamped);
+      ensure(clamped + lastDir);
+      ensure(clamped - lastDir);
+      evictFar();
+      warmWindow();
+    };
+    apiRef.current = {
+      show,
+      repaint: () => paintIndex(indexRef.current),
+      wake: () => {
+        const cur = indexRef.current;
+        ensure(cur);
+        ensure(cur + 1);
+        ensure(cur - 1);
+        warmWindow();
+      },
+      compact: () => evictFar(1, 1),
+    };
+
+    const fetchBlob = async (i: number) => {
+      try {
+        const res = await fetch(frames[i]);
+        if (!res.ok) throw new Error(frames[i]);
+        blobs[i] = await res.blob();
+      } catch {
+        dead.add(i);
+      }
+    };
+
+    (async () => {
+      try {
+        await fetchBlob(0);
+        if (cancelled) return;
+        if (!blobs[0]) {
+          setFailed(true);
+          return;
+        }
+        try {
+          const probe = await createImageBitmap(blobs[0]);
+          naturalWRef.current = probe.width;
+          probe.close();
+        } catch {
+        }
+        if (cancelled) return;
+        const first = await decode(0);
+        if (cancelled) {
+          first?.close();
+          return;
+        }
+        if (!first) {
+          setFailed(true);
+          return;
+        }
+        cache.set(0, first);
+        if (canvasRef.current) paint(canvasRef.current, first);
         setReady(true);
+        show(indexRef.current);
+        warmWindow();
+        if (reduced) return;
+        let cursor = 1;
+        await Promise.all(
+          Array.from(
+            { length: Math.min(FETCH_CONCURRENCY, Math.max(total - 1, 0)) },
+            async () => {
+              while (!cancelled && cursor < total) {
+                const i = cursor++;
+                await fetchBlob(i);
+                warmWindow();
+              }
+            },
+          ),
+        );
+        warmWindow();
       } catch {
         if (!cancelled) setFailed(true);
       }
     })();
     return () => {
       cancelled = true;
-      bitmapsRef.current.forEach((b) => b.close());
-      bitmapsRef.current = [];
+      apiRef.current = null;
+      cache.forEach((b) => b.close());
+      cache.clear();
+      inflight.clear();
+      naturalWRef.current = 0;
     };
   }, [frames]);
 
@@ -81,10 +285,11 @@ export default function Hero({ frames }: { frames: string[] }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const show = (i: number) => {
-      if (i === indexRef.current) return;
-      indexRef.current = i;
-      const bmp = bitmapsRef.current[i];
-      if (canvasRef.current && bmp) paint(canvasRef.current, bmp);
+      if (apiRef.current) {
+        apiRef.current.show(i);
+      } else {
+        indexRef.current = Math.max(0, Math.min(i, frames.length - 1));
+      }
     };
 
     const trigger = ScrollTrigger.create({
@@ -92,8 +297,13 @@ export default function Hero({ frames }: { frames: string[] }) {
       start: "top top",
       end: "bottom bottom",
       scrub: 1,
+      onEnter: () => apiRef.current?.wake(),
+      onEnterBack: () => apiRef.current?.wake(),
+      onLeave: () => apiRef.current?.compact(),
+      onLeaveBack: () => apiRef.current?.compact(),
       onUpdate: (self) => {
-        show(Math.round(self.progress * (frames.length - 1)));
+        const i = Math.round(self.progress * (frames.length - 1));
+        show(i);
         if (cueRef.current) {
           cueRef.current.style.opacity = String(
             Math.max(0, 1 - self.progress * 4),
@@ -111,8 +321,7 @@ export default function Hero({ frames }: { frames: string[] }) {
     ScrollTrigger.refresh();
 
     const onResize = () => {
-      const bmp = bitmapsRef.current[indexRef.current];
-      if (canvasRef.current && bmp) paint(canvasRef.current, bmp);
+      apiRef.current?.repaint();
     };
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("resize", onResize);
