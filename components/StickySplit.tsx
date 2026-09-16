@@ -102,38 +102,47 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
     gsap.set(wordsOf(slots), { opacity: 0, y: 24, filter: "blur(8px)" });
   }, [isStatic, items.length]);
 
+  const prevActiveRef = useRef(0);
+
   useLayoutEffect(() => {
     if (isStatic) return;
     const n = items.length;
-    items.forEach((_item, i) => {
-      const words = wordsOf([i, i + n]);
-      if (words.length === 0) return;
-      if (i === active) {
-        gsap.fromTo(
-          words,
-          { opacity: 0, y: 24, filter: "blur(8px)" },
-          {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 0.9,
-            stagger: 0.035,
-            ease: "power2.out",
-            overwrite: "auto",
-          },
-        );
-      } else {
-        gsap.to(words, {
-          opacity: 0,
-          y: -24,
-          filter: "blur(8px)",
-          duration: 0.4,
-          stagger: 0.02,
-          ease: "power2.in",
-          overwrite: "auto",
-        });
-      }
-    });
+    const prev = prevActiveRef.current;
+    prevActiveRef.current = active;
+    const allWords = wordsOf(items.flatMap((_, i) => [i, i + n]));
+    const activeWords = wordsOf([active, active + n]);
+    const prevWords = prev === active ? [] : wordsOf([prev, prev + n]);
+    const keep = new Set([...activeWords, ...prevWords]);
+    gsap.killTweensOf(allWords);
+    gsap.set(
+      allWords.filter((w) => !keep.has(w)),
+      { opacity: 0, y: -24, filter: "blur(8px)" },
+    );
+    if (prevWords.length > 0) {
+      gsap.to(prevWords, {
+        opacity: 0,
+        y: -24,
+        filter: "blur(8px)",
+        duration: 0.4,
+        stagger: 0.02,
+        ease: "power2.in",
+        overwrite: "auto",
+      });
+    }
+    if (activeWords.length === 0) return;
+    gsap.fromTo(
+      activeWords,
+      { opacity: 0, y: 24, filter: "blur(8px)" },
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.9,
+        stagger: 0.035,
+        ease: "power2.out",
+        overwrite: "auto",
+      },
+    );
   }, [active, isStatic, items]);
 
   const goTo = (index: number) => {

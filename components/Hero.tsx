@@ -35,6 +35,7 @@ export default function Hero({ frames }: { frames: string[] }) {
   const rootRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const cacheRef = useRef(new Map<number, ImageBitmap>());
   const inflightRef = useRef(new Set<number>());
   const indexRef = useRef(0);
@@ -318,6 +319,20 @@ export default function Hero({ frames }: { frames: string[] }) {
         }
       },
     });
+    const exit = ScrollTrigger.create({
+      trigger: rootRef.current,
+      start: "bottom bottom",
+      end: () => `+=${window.innerHeight}`,
+      scrub: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const el = stageRef.current;
+        if (!el) return;
+        const p = self.progress;
+        el.style.transform = p === 0 ? "" : `scale(${1 - 0.3 * p})`;
+        el.style.borderRadius = p === 0 ? "" : `${Math.round(p * 24)}px`;
+      },
+    });
     ScrollTrigger.refresh();
 
     const onResize = () => {
@@ -330,6 +345,7 @@ export default function Hero({ frames }: { frames: string[] }) {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("load", onLoad);
       trigger.kill();
+      exit.kill();
     };
   }, [frames]);
 
@@ -342,7 +358,7 @@ export default function Hero({ frames }: { frames: string[] }) {
       style={{ height: `${heightVh}vh` }}
     >
       <SplashScreen onIntroDone={() => setIntroDone(true)} />
-      <div className="sticky top-0 z-10 h-[100svh] w-full overflow-clip">
+      <div ref={stageRef} className="sticky top-0 z-10 h-[100svh] w-full origin-center overflow-clip will-change-transform">
         {frames.length > 0 && !failed ? (
           <canvas
             ref={canvasRef}
