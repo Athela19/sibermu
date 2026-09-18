@@ -1,3 +1,4 @@
+import BidangKemahasiswaan from "@/components/BidangKemahasiswaan";
 import Ekosistem from "@/components/Ekosistem";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
@@ -18,7 +19,10 @@ export default function Home() {
           <p>{HERO.subtitle}</p>
         </div>
         <Hero frames={heroFrames} />
-        <Ekosistem />
+        <div className="relative">
+          <Ekosistem />
+          <BidangKemahasiswaan />
+        </div>
         <section
           id="kemahasiswaan"
           aria-label="Kemahasiswaan"
