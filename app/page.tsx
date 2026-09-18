@@ -1,3 +1,4 @@
+import Ekosistem from "@/components/Ekosistem";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import RevealText from "@/components/RevealText";
@@ -17,6 +18,7 @@ export default function Home() {
           <p>{HERO.subtitle}</p>
         </div>
         <Hero frames={heroFrames} />
+        <Ekosistem />
         <section
           id="kemahasiswaan"
           aria-label="Kemahasiswaan"
