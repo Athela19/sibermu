@@ -90,8 +90,8 @@ export default function Ekosistem() {
       className="sticky top-0 z-10 mx-auto w-full max-w-7xl origin-center bg-paper px-6 py-16 will-change-transform sm:px-8 lg:py-24"
     >
       <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Kiri: teks */}
-        <div className="order-1">
+        {/* Teks: bawah di mobile, kiri di desktop */}
+        <div className="order-2 lg:order-1">
           <RevealText
             as="h1"
             id="ekosistem-heading"
@@ -105,8 +105,8 @@ export default function Ekosistem() {
           />
         </div>
 
-        {/* Kanan: gambar gedung */}
-        <div className="order-2">
+        {/* Gambar: atas di mobile (+24px), kanan di desktop */}
+        <div className="order-1 pt-6 lg:order-2 lg:pt-0">
           <div
             ref={mediaRef}
             className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] bg-mist will-change-transform"
