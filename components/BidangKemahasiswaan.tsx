@@ -53,7 +53,7 @@ export default function BidangKemahasiswaan() {
       {/* Dome utama + teks mengikuti alur dome */}
       <div
         ref={domeRef}
-        className="relative mx-auto flex min-h-[62svh] w-[calc(100%-16px)] flex-col items-center justify-end overflow-hidden will-change-transform sm:min-h-[68svh] sm:w-[calc(100%-20px)] lg:min-h-[calc(85svh-10px)] lg:w-[calc(100%-20px)]"
+        className="relative mx-auto flex min-h-[62svh] w-full flex-col items-center justify-end overflow-hidden will-change-transform sm:min-h-[68svh] lg:min-h-[calc(85svh-10px)]"
       >
         {/* Desktop dome — frozen, hidden di mobile */}
         <svg
@@ -141,9 +141,9 @@ export default function BidangKemahasiswaan() {
             </textPath>
           </text>
         </svg>
-        {/* Teks tengah dome — 20px lebih bawah */}
-        <div className="absolute inset-0 z-10 flex items-center justify-center px-6 pt-[20px]">
-          <p className="max-w-[420px] text-center font-sans text-[15px] font-medium leading-6 text-white">
+        {/* Teks tengah dome — mobile: tengah setengah lingkaran, desktop: center + 20px */}
+        <div className="absolute inset-0 z-10 flex items-end justify-center px-6 pb-[calc(100vw*0.25-70px)] lg:items-center lg:pb-0 lg:pt-[20px]">
+          <p className="max-w-[280px] text-center font-sans text-[14px] font-medium leading-[1.6] text-white sm:max-w-[360px] sm:text-[15px] sm:leading-6 lg:max-w-[420px]">
             Ruang tumbuh mahasiswa untuk
             <br />
             berkembang, berkarya, dan memberikan dampak.
