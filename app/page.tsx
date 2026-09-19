@@ -2,6 +2,7 @@ import BidangKemahasiswaan from "@/components/BidangKemahasiswaan";
 import Ekosistem from "@/components/Ekosistem";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
+import Prestasi from "@/components/Prestasi";
 import RevealText from "@/components/RevealText";
 import StickySplit from "@/components/StickySplit";
 import { HERO, KEGIATAN_MAHASISWA } from "@/lib/content";
@@ -22,6 +23,7 @@ export default function Home() {
         <div className="relative isolate">
           <Ekosistem />
           <BidangKemahasiswaan />
+          <Prestasi />
         </div>
         <section
           id="kemahasiswaan"

@@ -53,25 +53,38 @@ export default function Ekosistem() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const inner = innerRef.current;
-    const triggerEl = document.getElementById("bidang-kemahasiswaan");
-    if (!inner || !triggerEl) return;
+    const bidangEl = document.getElementById("bidang-kemahasiswaan");
+    const prestasiEl = document.getElementById("prestasi");
+    if (!inner || !bidangEl) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        inner,
-        { scale: 1, filter: "blur(0px)" },
-        {
-          scale: 1.15,
-          filter: "blur(8px)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: triggerEl,
-            start: "top 50%",
-            end: "top 15%",
-            scrub: 1,
-          },
+      // Zoom tanpa batas: scale nambah terus seiring jarak scroll (min 1)
+      let scale = 1;
+      let lastY = window.scrollY;
+      const applyZoom = () => {
+        const y = window.scrollY;
+        const dy = y - lastY;
+        lastY = y;
+        if (dy === 0) return;
+        scale = Math.max(1, scale + dy * 0.0008);
+        const blur = Math.min(20, (scale - 1) * 24);
+        gsap.set(inner, { scale, filter: `blur(${blur}px)` });
+      };
+      ScrollTrigger.create({
+        trigger: bidangEl,
+        start: "top 50%",
+        endTrigger: prestasiEl ?? bidangEl,
+        end: prestasiEl ? "bottom bottom" : "top 15%",
+        onUpdate: applyZoom,
+        onToggle: () => {
+          lastY = window.scrollY;
         },
-      );
+        onLeaveBack: () => {
+          scale = 1;
+          lastY = window.scrollY;
+          gsap.set(inner, { scale: 1, filter: "blur(0px)" });
+        },
+      });
     }, inner);
 
     const onLoad = () => ScrollTrigger.refresh();
