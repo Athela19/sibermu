@@ -7,6 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export default function BidangKemahasiswaan() {
   const sectionRef = useRef<HTMLElement>(null);
   const domeRef = useRef<HTMLDivElement>(null);
+  const desktopTextRef = useRef<SVGTextElement>(null);
+  const mobileTextRef = useRef<SVGTextElement>(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -19,20 +21,44 @@ export default function BidangKemahasiswaan() {
     const yFrom = isDesktop ? 80 : 32;
 
     const ctx = gsap.context(() => {
+      const scrollPos = {
+        trigger: sectionRef.current,
+        start: "top 92%",
+        end: "top 42%",
+        scrub: 1,
+      };
       gsap.fromTo(
         domeRef.current,
         { y: yFrom },
         {
           y: 0,
           ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 92%",
-            end: "top 42%",
-            scrub: 1,
-          },
+          scrollTrigger: scrollPos,
         },
       );
+      // Gap huruf 0 -> final mengikuti scroll (desktop 0.06em, mobile 0.04em)
+      if (desktopTextRef.current) {
+        gsap.fromTo(
+          desktopTextRef.current,
+          { letterSpacing: "-0.5em" },
+          {
+            letterSpacing: "0.06em",
+            ease: "none",
+            scrollTrigger: scrollPos,
+          },
+        );
+      }
+      if (mobileTextRef.current) {
+        gsap.fromTo(
+          mobileTextRef.current,
+          { letterSpacing: "-0.5em" },
+          {
+            letterSpacing: "0.04em",
+            ease: "none",
+            scrollTrigger: scrollPos,
+          },
+        );
+      }
     }, domeRef);
 
     const onLoad = () => ScrollTrigger.refresh();
@@ -80,13 +106,12 @@ export default function BidangKemahasiswaan() {
             fill="#1A2A5B"
           />
           <text
+            ref={desktopTextRef}
             fill="white"
             fontSize="105"
             fontWeight="800"
             letterSpacing="0.06em"
             style={{ fontFamily: "var(--font-sans)" }}
-            textLength="1615"
-            lengthAdjust="spacing"
           >
             <textPath
               href="#bidang-arc-second"
@@ -123,13 +148,12 @@ export default function BidangKemahasiswaan() {
             fill="#1A2A5B"
           />
           <text
+            ref={mobileTextRef}
             fill="white"
             fontSize="64"
             fontWeight="800"
             letterSpacing="0.04em"
             style={{ fontFamily: "var(--font-sans)" }}
-            textLength="980"
-            lengthAdjust="spacing"
           >
             <textPath
               href="#bidang-arc-second-mobile"
