@@ -19,7 +19,7 @@ export default function Home() {
           <p>{HERO.subtitle}</p>
         </div>
         <Hero frames={heroFrames} />
-        <div className="relative">
+        <div className="relative isolate">
           <Ekosistem />
           <BidangKemahasiswaan />
         </div>

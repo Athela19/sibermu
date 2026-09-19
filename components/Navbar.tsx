@@ -60,18 +60,34 @@ export default function Navbar() {
 
   useEffect(() => {
     let videoDone = false;
-    const heroEl = document.getElementById("beranda");
+    let ticking = false;
+    let lastSolid = false;
 
     const pastHero = () => {
       const y = window.scrollY;
-      if (!heroEl) return y > window.innerHeight * 0.85;
+      // Mobile & desktop konsisten: solid setelah 80px agar animasi kotak→rounded langsung terlihat di HP
+      // (threshold lama 250vh di hero 350vh terlalu jauh, bikin animasi mobile tidak pernah ke-trigger saat tes pendek)
+      if (y > 80) return true;
+      const heroEl = document.getElementById("beranda");
+      if (!heroEl) return false;
       return (
         y >= heroEl.offsetTop + heroEl.offsetHeight - window.innerHeight - 1
       );
     };
 
+    const sync = () => {
+      ticking = false;
+      const next = videoDone || pastHero();
+      if (next !== lastSolid) {
+        lastSolid = next;
+        setSolid(next);
+      }
+    };
+
     const onScroll = () => {
-      setSolid(videoDone || pastHero());
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(sync);
     };
 
     const onVideoEnded = () => {
@@ -85,7 +101,7 @@ export default function Navbar() {
     window.addEventListener(HERO_VIDEO_ENDED_EVENT, onVideoEnded);
     window.addEventListener(HERO_VIDEO_RESET_EVENT, onVideoReset);
 
-    onScroll();
+    sync();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener(HERO_VIDEO_ENDED_EVENT, onVideoEnded);
@@ -149,16 +165,17 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 px-4 pt-4 sm:px-6 ${mounted ? "z-[70]" : "z-50"}`}
+        className={`fixed inset-x-0 top-0 isolate bg-transparent px-[6px] pt-4 sm:px-[14px] ${mounted ? "z-[70]" : "z-50"}`}
+        style={{ contain: "layout paint", transform: "translateZ(0)", backgroundColor: "transparent" }}
       >
         <nav
           aria-label="Navigasi utama"
-          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 px-5 sm:h-[72px] sm:px-7 ${
+          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 px-[10px] sm:h-[72px] sm:px-[18px] will-change-transform ${
             mounted
-              ? "max-w-full rounded-none bg-transparent shadow-none transition-none"
-              : `transition-[max-width,border-radius,background-color,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              ? "max-w-full rounded-none bg-transparent shadow-none transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              : `transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   solid
-                    ? "max-w-5xl rounded-full bg-white/95 shadow-[0_12px_32px_rgba(16,24,40,0.12)] backdrop-blur"
+                    ? "max-w-[92%] sm:max-w-5xl rounded-full bg-white shadow-none"
                     : "max-w-full rounded-none bg-transparent shadow-none"
                 }`
           }`}

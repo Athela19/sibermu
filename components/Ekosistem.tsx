@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import RevealText from "./RevealText";
 
 export default function Ekosistem() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -52,13 +52,13 @@ export default function Ekosistem() {
     gsap.registerPlugin(ScrollTrigger);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const section = sectionRef.current;
+    const inner = innerRef.current;
     const triggerEl = document.getElementById("bidang-kemahasiswaan");
-    if (!section || !triggerEl) return;
+    if (!inner || !triggerEl) return;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        section,
+        inner,
         { scale: 1, filter: "blur(0px)" },
         {
           scale: 1.15,
@@ -72,7 +72,7 @@ export default function Ekosistem() {
           },
         },
       );
-    }, section);
+    }, inner);
 
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);
@@ -84,12 +84,16 @@ export default function Ekosistem() {
 
   return (
     <section
-      ref={sectionRef}
       id="ekosistem"
       aria-labelledby="ekosistem-heading"
-      className="sticky top-0 z-10 mx-auto w-full max-w-7xl origin-center bg-paper px-6 py-16 will-change-transform sm:px-8 lg:py-24"
+      className="sticky top-0 z-10 mx-auto w-full max-w-7xl overflow-clip bg-paper px-6 py-16 sm:px-8 lg:py-24"
+      style={{ contain: "paint" }}
     >
-      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div
+        ref={innerRef}
+        className="grid origin-center grid-cols-1 items-center gap-10 will-change-transform lg:grid-cols-2 lg:gap-16"
+        style={{ contain: "paint" }}
+      >
         {/* Teks: bawah di mobile, kiri di desktop */}
         <div className="order-2 lg:order-1">
           <RevealText
