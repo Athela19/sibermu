@@ -15,10 +15,13 @@ export default function BidangKemahasiswaan() {
     ).matches;
     if (prefersReduced || !domeRef.current || !sectionRef.current) return;
 
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+    const yFrom = isDesktop ? 80 : 32;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         domeRef.current,
-        { y: 80 },
+        { y: yFrom },
         {
           y: 0,
           ease: "none",
@@ -50,35 +53,32 @@ export default function BidangKemahasiswaan() {
       {/* Dome utama + teks mengikuti alur dome */}
       <div
         ref={domeRef}
-        className="relative mx-auto flex min-h-[calc(85svh-10px)] w-[calc(100%-20px)] flex-col items-center justify-end overflow-hidden will-change-transform"
+        className="relative mx-auto flex min-h-[62svh] w-[calc(100%-16px)] flex-col items-center justify-end overflow-hidden will-change-transform sm:min-h-[68svh] sm:w-[calc(100%-20px)] lg:min-h-[calc(85svh-10px)] lg:w-[calc(100%-20px)]"
       >
+        {/* Desktop dome — frozen, hidden di mobile */}
         <svg
           viewBox="0 0 1200 620"
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 hidden h-full w-full lg:block"
           preserveAspectRatio="none"
           role="img"
           aria-label="bidang kemahasiswaan"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            {/* Path teks — 62px inset dari tepi dome */}
             <path
               id="bidang-arc-second"
               d="M 72 610 A 528 528 0 0 1 1128 610"
               fill="none"
             />
           </defs>
-          {/* Dome utama — 10px inset dari viewport (w calc 100%-20px), fill primary */}
           <path
             d="M 0 620 L 0 610 A 600 600 0 0 1 1200 610 L 1200 620 Z"
             fill="#1A2A5B"
           />
-          {/* Dome atas melengkung */}
           <path
             d="M 0 610 A 600 600 0 0 1 1200 610"
             fill="#1A2A5B"
           />
-          {/* Teks mengikuti alur dome — gap radial 62px */}
           <text
             fill="white"
             fontSize="105"
@@ -90,6 +90,49 @@ export default function BidangKemahasiswaan() {
           >
             <textPath
               href="#bidang-arc-second"
+              startOffset="50%"
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              bidang kemahasiswaan
+            </textPath>
+          </text>
+        </svg>
+        {/* Mobile dome — bulat proporsional di 360-768px */}
+        <svg
+          viewBox="0 0 720 620"
+          className="absolute inset-0 h-full w-full lg:hidden"
+          preserveAspectRatio="xMidYMax meet"
+          role="img"
+          aria-label="bidang kemahasiswaan"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <path
+              id="bidang-arc-second-mobile"
+              d="M 52 610 A 308 308 0 0 1 668 610"
+              fill="none"
+            />
+          </defs>
+          <path
+            d="M 0 620 L 0 610 A 360 360 0 0 1 720 610 L 720 620 Z"
+            fill="#1A2A5B"
+          />
+          <path
+            d="M 0 610 A 360 360 0 0 1 720 610"
+            fill="#1A2A5B"
+          />
+          <text
+            fill="white"
+            fontSize="64"
+            fontWeight="800"
+            letterSpacing="0.04em"
+            style={{ fontFamily: "var(--font-sans)" }}
+            textLength="980"
+            lengthAdjust="spacing"
+          >
+            <textPath
+              href="#bidang-arc-second-mobile"
               startOffset="50%"
               textAnchor="middle"
               dominantBaseline="middle"

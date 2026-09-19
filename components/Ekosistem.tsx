@@ -86,13 +86,12 @@ export default function Ekosistem() {
     <section
       id="ekosistem"
       aria-labelledby="ekosistem-heading"
-      className="sticky top-0 z-10 mx-auto w-full max-w-7xl overflow-clip bg-paper px-6 py-16 sm:px-8 lg:py-24"
-      style={{ contain: "paint" }}
+      className="sticky top-0 z-10 w-full overflow-visible bg-paper"
+      style={{ contain: "layout" }}
     >
       <div
         ref={innerRef}
-        className="grid origin-center grid-cols-1 items-center gap-10 will-change-transform lg:grid-cols-2 lg:gap-16"
-        style={{ contain: "paint" }}
+        className="mx-auto grid w-full max-w-7xl origin-center grid-cols-1 items-center gap-10 overflow-visible px-6 py-16 will-change-transform sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-24"
       >
         {/* Teks: bawah di mobile, kiri di desktop */}
         <div className="order-2 lg:order-1">

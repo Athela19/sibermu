@@ -165,12 +165,12 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 isolate bg-transparent px-[6px] pt-4 sm:px-[14px] ${mounted ? "z-[70]" : "z-50"}`}
+        className={`fixed inset-x-0 top-0 isolate bg-transparent px-[6px] pt-4 sm:px-[14px] lg:px-[24px] lg:pt-[26px] ${mounted ? "z-[70]" : "z-50"}`}
         style={{ contain: "layout paint", transform: "translateZ(0)", backgroundColor: "transparent" }}
       >
         <nav
           aria-label="Navigasi utama"
-          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 px-[10px] sm:h-[72px] sm:px-[18px] will-change-transform ${
+          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 px-[10px] sm:h-[72px] sm:px-[18px] lg:px-[28px] will-change-transform ${
             mounted
               ? "max-w-full rounded-none bg-transparent shadow-none transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               : `transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
