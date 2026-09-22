@@ -87,6 +87,20 @@ export const KOMPETISI: KompetisiItem[] = [
   },
 ];
 
+export type KegiatanInternasionalItem = {
+  mediaLabel: string;
+  src?: string;
+  alt?: string;
+};
+
+// Slot foto kegiatan internasional — foto final dari pemilik proyek (belum ada).
+export const KEGIATAN_INTERNASIONAL: KegiatanInternasionalItem[] = [
+  { mediaLabel: "Slot foto kegiatan internasional 01 — dari pemilik proyek", alt: "Kegiatan internasional 01" },
+  { mediaLabel: "Slot foto kegiatan internasional 02 — dari pemilik proyek", alt: "Kegiatan internasional 02" },
+  { mediaLabel: "Slot foto kegiatan internasional 03 — dari pemilik proyek", alt: "Kegiatan internasional 03" },
+  { mediaLabel: "Slot foto kegiatan internasional 04 — dari pemilik proyek", alt: "Kegiatan internasional 04" },
+];
+
 export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
   {
     title: "Orientasi & Pembinaan Karakter",

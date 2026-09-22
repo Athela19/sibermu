@@ -137,10 +137,16 @@ Struktur:
 - Kiri: judul kompetisi aktif sebagai H2 + deskripsi reaktif mengikuti logo yang menjadi center (state aktif, bukan route). Tanpa eyebrow. Wadah teks memakai `aria-live="polite"` agar perubahan terbaca screen reader.
 - Kanan: bola 3D Fibonacci ala IconCloud — 20 slot tersebar merata di permukaan (`offset = 2/20`, `increment = π(3−√5)`), bentuk lingkaran. Pool logo diambil dari `src` tiap item `KOMPETISI`; slot `i` memakai pool[`i % pool.length`] (1 gambar → semua slot logo itu; 2 gambar → selang-seling; dst.; kosong → `MediaSlot` empty-state). Tiap slot membawa kompetisi pemilik gambarnya.
 - Rotasi `y = progres × 360°` (CCW: sisi kanan bergerak ke atas = ke kanan atas) + tilt statis `x ≈ −15°`, di-scrub ke progres pin — tanpa animasi infinite, tanpa file/dependensi baru. Ukuran/opacity/`grayscale`/`zIndex` dari depth (depan besar + berwarna, belakang kecil + abu). Aktif = slot terdepan (`argmax z`) → teks kiri = kompetisi pemiliknya. Overlap diizinkan. Semua angka dibulatkan deterministik (anti hydration-mismatch). Tanpa tombol pagination; pilih manual via klik/keyboard pada logo (hanya ubah teks + highlight, rotasi tetap milik scroll). Logo final dari pemilik proyek; selama belum ada, render `MediaSlot` empty-state (tanpa aset dummy, tanpa fetch eksternal).
-- Section di-pin (`pin: true`, `anticipatePin: 1`) sejauh `(N-1) × 100vh` — tiap item kebagian 1 viewport scroll. Item aktif mengikuti progres pin (`onUpdate`, tanpa timer). `prefers-reduced-motion` → tanpa pin, statis + pilih manual.
+- Section di-pin (`pin: true`, `pinSpacing: false`, `anticipatePin: 1`) sejauh `0.2 × 100vh` — section menempel di atas sementara `#internasional` (`z-20` di atas pin `z-10`) menggeser masuk menutupinya dari bawah; pin dilepas setelah tertutup 20% lalu section ikut scroll ke atas apa adanya (tanpa tween balik, tanpa bouncing). Item aktif mengikuti progres pin (`onUpdate`, tanpa timer). `prefers-reduced-motion` → tanpa pin, statis + pilih manual.
 - Tanpa animasi background/reveal section — section tampil statis; satu-satunya gerak adalah transisi state aktif logo (CSS `transition`) + pergantian teks mengikuti scroll pin. Pilih manual via klik/keyboard pada logo.
 
-#### 4.7 Kredit `#kredit` + Footer `#kontak`
+#### 4.7 Section Kegiatan Internasional `#internasional` (tanpa nav, setelah `#kompetisi`)
+
+- Background paper `#FFFFFF`. Panel judul: H2 `Kegiatan Internasional` di tengah via `RevealText` (heading biasa, scroll normal). Tanpa teks lain — hanya gambar.
+- Di bawah judul, N panel `min-h-[100svh]` (N = panjang `KEGIATAN_INTERNASIONAL`, render via `.map` — tambah/kurang item tanpa sentuh komponen). Tiap panel 1 gambar: sisi selang-seling kiri/kanan (`index % 2`), lebar bervariasi deterministik (siklus 62% / 48% / 70% / 55% viewport), offset vertikal bervariasi, gambar menempel tepi layar (edge-bleed, tanpa radius) ala referensi editorial. Tanpa `Math.random` (SSR-aman).
+- Foto final dari pemilik proyek; selama belum ada, render `MediaSlot` empty-state (tanpa aset dummy). `alt` bermakna dari const. Tiap gambar reveal sekali saat masuk viewport (fade-up + scale via GSAP, mati saat reduced-motion).
+
+#### 4.8 Kredit `#kredit` + Footer `#kontak`
 
 - Kredit wajib (ketentuan D.1.5): list font (`Source Serif 4 OFL`, `Plus Jakarta Sans OFL`), GSAP (lisensi), setiap foto/video (sumber + lisensi + kreator) setelah file final masuk. Selama aset belum ada, tulis `Menunggu aset final dari pemilik proyek — tidak ada aset dummy yang di-bundle`.
 - Footer navy, tiga kolom: identitas + alamat kampus, kontak (email humas + WA narahubung lomba bila diizinkan), sosmed (`@sibermu`). Baris bawah: disclaimer karya lomba + copyright + link `#kredit`.

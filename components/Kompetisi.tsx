@@ -90,8 +90,9 @@ export default function Kompetisi() {
       ScrollTrigger.create({
         trigger: el,
         start: "top top",
-        end: () => `+=${window.innerHeight * (count - 1)}`,
+        end: () => `+=${window.innerHeight * 0.2}`,
         pin: true,
+        pinSpacing: false,
         anticipatePin: 1,
         onUpdate: (self) => {
           const rotation = self.progress * 360;

@@ -1,6 +1,7 @@
 import BidangKemahasiswaan from "@/components/BidangKemahasiswaan";
 import Ekosistem from "@/components/Ekosistem";
 import Hero from "@/components/Hero";
+import Internasional from "@/components/Internasional";
 import Kompetisi from "@/components/Kompetisi";
 import Navbar from "@/components/Navbar";
 import Prestasi from "@/components/Prestasi";
@@ -26,6 +27,7 @@ export default function Home() {
           <BidangKemahasiswaan />
           <Prestasi />
           <Kompetisi />
+          <Internasional />
         </div>
         <section
           id="kemahasiswaan"
