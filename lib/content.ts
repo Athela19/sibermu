@@ -49,6 +49,44 @@ export const PRESTASI: PrestasiItem[] = [
   { title: "Prestasi 08", mediaLabel: "Slot foto prestasi 08 — dari pemilik proyek (4/3)" },
 ];
 
+export type KompetisiItem = {
+  title: string;
+  body: string;
+  mediaLabel: string;
+  src?: string;
+  alt?: string;
+};
+
+// 5 slot logo + deskripsi kompetisi — logo final dari pemilik proyek (belum ada).
+// Judul "Kompetisi 01..05" dan body lorem ipsum adalah placeholder jujur, bukan data final.
+export const KOMPETISI: KompetisiItem[] = [
+  {
+    title: "Kompetisi 01",
+    body: "Deskripsi kompetisi 1 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    mediaLabel: "Slot logo kompetisi 01 — dari pemilik proyek (1/1)",
+  },
+  {
+    title: "Kompetisi 02",
+    body: "Deskripsi kompetisi 2 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    mediaLabel: "Slot logo kompetisi 02 — dari pemilik proyek (1/1)",
+  },
+  {
+    title: "Kompetisi 03",
+    body: "Deskripsi kompetisi 3 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    mediaLabel: "Slot logo kompetisi 03 — dari pemilik proyek (1/1)",
+  },
+  {
+    title: "Kompetisi 04",
+    body: "Deskripsi kompetisi 4 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    mediaLabel: "Slot logo kompetisi 04 — dari pemilik proyek (1/1)",
+  },
+  {
+    title: "Kompetisi 05",
+    body: "Deskripsi kompetisi 5 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    mediaLabel: "Slot logo kompetisi 05 — dari pemilik proyek (1/1)",
+  },
+];
+
 export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
   {
     title: "Orientasi & Pembinaan Karakter",

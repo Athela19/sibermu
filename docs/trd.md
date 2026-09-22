@@ -51,8 +51,9 @@ components/
   Footer.tsx          # server — CTA penutup + kontak + disclaimer — BELUM ADA (aktual hanya H2 di page.tsx)
   ScrollCue.tsx       # "use client" — pil indikator scroll (lingkaran + label), loop y dot
   MediaSlot.tsx       # server — empty-state / next/image jika src valid
+  Kompetisi.tsx       # "use client" — section #kompetisi: teks kiri reaktif + bola 3D Fibonacci 20 slot scrubbed dari progres pin (aktif = slot terdepan); slot logo via MediaSlot, tanpa dep baru — kontrak design.md §4.6
 lib/
-  content.ts          # teks ID semua section + anchor (sumber kebenaran konten) — aktual baru NAV/HERO/KEGIATAN_MAHASISWA; 7 blok + teks transisi + flag ilustratif kajian BELUM
+  content.ts          # teks ID semua section + anchor (sumber kebenaran konten) — aktual NAV/HERO/KEGIATAN_MAHASISWA/PRESTASI/KOMPETISI (placeholder jujur); 7 blok sticky + teks transisi + flag ilustratif kajian BELUM
   media.ts            # event scrub hero + konstanta HERO_FPS
   hero-frames.ts      # server-only: daftar public/hero/scene*.webp terurut (aktual 60 frame; tanpa import server-only — tambahkan saat sentuh file ini)
   reveal-text.ts      # util reveal teks: split kata + createTextReveal (set + to, anti snap-hide; stagger 0.04, toggleActions play none none none karena once:true)
@@ -94,7 +95,8 @@ Aturan: `page.tsx` tetap server component; semua GSAP hanya di komponen `"use cl
 | `ScrollCue` | client | `target="#kemahasiswaan"` | Pil lingkaran + label (`HERO.scrollLabel` = `Gulir`); loop dot `y ±4px` + fade setelah hero lewat; detail: `design.md` §5.4 |
 | `RevealText` | client | `text`, `as`, `mode`, `split` | Blur→jelas per kata via `set` + `to` (tanpa snap-hide); default visual: `design.md` §6 (`stagger 0.04`, `toggleActions "play none none none"` karena `once: true`); reduced-motion → statis |
 | `MediaSlot` | server | `label`, `ratio`, `src?`, `alt` | `src` valid → `next/image` (`sizes` aktual generik `100vw` — sempurnakan saat aset final); kosong → empty-state `mist` solid tanpa error |
-| `Kredit`/`Footer` | server | — | Render dari `lib/`; isi: `design.md` §4.6 — BELUM ADA |
+| `Kompetisi` | client | — (baca `KOMPETISI` dari `lib/content.ts`) | Teks reaktif `aria-live` + bola 3D Fibonacci (20 slot, pool logo dari src item, slot i pakai pool[i % pool.length]) (`rotation = -progres×360°` CCW dari progres pin); section di-pin `(N-1)×100vh`, aktif = slot terdepan (teks = kompetisi pemiliknya); pin via (`ScrollTrigger.create onUpdate`); reduced-motion → tanpa pin, bola statis; gerak via CSS transition (bukan lib animasi); tanpa reveal GSAP; detail visual: `design.md` §4.6 |
+| `Kredit`/`Footer` | server | — | Render dari `lib/`; isi: `design.md` §4.7 — BELUM ADA |
 
 ### 6. Pola GSAP baku (wajib diikuti semua komponen client)
 
