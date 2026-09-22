@@ -175,6 +175,11 @@ export default function BidangKemahasiswaan() {
         </div>
         <h2 className="sr-only">bidang kemahasiswaan</h2>
       </div>
+      {/* Penutup sambungan navy — menutup celah saat dome terangkat (scrub y: 32 mobile / 80 desktop) agar tak ada garis pemisah ke Prestasi */}
+      <div
+        aria-hidden="true"
+        className="-mt-px h-9 w-full shrink-0 bg-primary lg:h-[84px]"
+      />
     </section>
   );
 }

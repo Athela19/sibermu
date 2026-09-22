@@ -29,6 +29,26 @@ export const KEMAHASISWAAN_INTRO = {
     "Dari organisasi hingga pengabdian — setiap kegiatan membentuk karakter mahasiswa SiberMu.",
 } as const;
 
+export type PrestasiItem = {
+  title: string;
+  mediaLabel: string;
+  src?: string;
+  alt?: string;
+};
+
+// 8 slot foto prestasi — foto final dari pemilik proyek (belum ada).
+// Judul "Prestasi 01..08" adalah placeholder jujur, bukan data ilustratif.
+export const PRESTASI: PrestasiItem[] = [
+  { title: "Prestasi 01", mediaLabel: "Slot foto prestasi 01 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 02", mediaLabel: "Slot foto prestasi 02 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 03", mediaLabel: "Slot foto prestasi 03 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 04", mediaLabel: "Slot foto prestasi 04 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 05", mediaLabel: "Slot foto prestasi 05 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 06", mediaLabel: "Slot foto prestasi 06 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 07", mediaLabel: "Slot foto prestasi 07 — dari pemilik proyek (4/3)" },
+  { title: "Prestasi 08", mediaLabel: "Slot foto prestasi 08 — dari pemilik proyek (4/3)" },
+];
+
 export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
   {
     title: "Orientasi & Pembinaan Karakter",
