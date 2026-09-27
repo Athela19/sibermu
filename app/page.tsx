@@ -1,9 +1,11 @@
 import BidangKemahasiswaan from "@/components/BidangKemahasiswaan";
 import Ekosistem from "@/components/Ekosistem";
 import Hero from "@/components/Hero";
+import HeroAIK from "@/components/HeroAIK";
 import Internasional from "@/components/Internasional";
 import Kompetisi from "@/components/Kompetisi";
 import Navbar from "@/components/Navbar";
+import PillarAIK from "@/components/PillarAIK";
 import Prestasi from "@/components/Prestasi";
 import RevealText from "@/components/RevealText";
 import StickySplit from "@/components/StickySplit";
@@ -53,21 +55,10 @@ export default function Home() {
             items={FASILITAS_MAHASISWA}
           />
         </section>
-        <section
-          id="aik"
-          aria-labelledby="aik-heading"
-          className="mx-auto w-full max-w-7xl px-6 py-24 sm:px-8"
-        >
-          <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-tertiary">
-            Al-Islam &amp; Kemuhammadiyahan
-          </p>
-          <RevealText
-            as="h2"
-            id="aik-heading"
-            text="Section AIK menyusul."
-            className="mt-4 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
-          />
-        </section>
+        <div id="aik" className="relative isolate">
+          <HeroAIK />
+          <PillarAIK />
+        </div>
         <section
           id="kontak"
           aria-labelledby="kontak-heading"

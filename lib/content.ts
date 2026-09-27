@@ -209,3 +209,60 @@ export const UKM_LIST: UkmItem[] = [
   },
 ];
 
+// ─── Section AIK (Al-Islam & Kemuhammadiyahan) ──────────────────────────────
+
+export const AIK_HERO = {
+  badge: "Al-Islam & Kemuhammadiyahan",
+  heading: "AIK",
+  intro:
+    "Membentuk pribadi mahasiswa yang berkarakter islami, berintegritas, dan berkemajuan melalui pembinaan spiritual, intelektual, dan sosial di era digital.",
+  imageSrc: "/assets/HeroAIK.png",
+  imageAlt: "Kampus SiberMu — suasana Islami dan asri",
+} as const;
+
+export type SubAikItem = {
+  title: string;
+  body: string;
+};
+
+export const SUB_AIK_ITEMS: SubAikItem[] = [
+  {
+    title: "Pembinaan Karakter & Ibadah Praktis",
+    body: "Bimbingan spiritual yang membentuk kebiasaan ibadah konsisten, akhlak mulia, dan ketaqwaan sebagai fondasi kehidupan kampus mahasiswa SiberMu.",
+  },
+  {
+    title: "Syiar & Gerakan Pencerahan Digital",
+    body: "Dakwah berkemajuan di era siber — konten Islami kreatif, kajian daring interaktif, dan gerakan pencerahan yang menjangkau masyarakat luas melalui platform digital.",
+  },
+];
+
+export type PillarAikItem = {
+  title: string;
+  body: string;
+  mediaLabel: string;
+  src?: string;
+  alt?: string;
+};
+
+// 3 Pilar AIK — foto final dari pemilik proyek (belum ada — menggunakan MediaSlot).
+export const PILLAR_AIK_ITEMS: PillarAikItem[] = [
+  {
+    title: "Kajian & Kuliah AIK",
+    body: "Landasan keilmuan Islam dan Kemuhammadiyahan yang dipelajari secara sistematis — dari akidah, syariah, hingga pemikiran berkemajuan dalam konteks pendidikan tinggi.",
+    mediaLabel: "Slot foto pilar AIK — Kajian & Kuliah AIK (9/16)",
+    alt: "Suasana kajian dan kuliah AIK mahasiswa",
+  },
+  {
+    title: "Baitul Arqam Mahasiswa",
+    body: "Kaderisasi ideologis dan kepemimpinan profetik — membangun jiwa Muhammadiyah yang tangguh, visioner, dan siap mengabdi untuk umat dan bangsa.",
+    mediaLabel: "Slot foto pilar AIK — Baitul Arqam Mahasiswa (9/16)",
+    alt: "Kegiatan Baitul Arqam Mahasiswa",
+  },
+  {
+    title: "Pengabdian Masyarakat & Dakwah Siber",
+    body: "Implementasi nyata nilai-nilai Islam — pengabdian langsung kepada masyarakat dan dakwah digital yang menyebarkan pencerahan di era informasi global.",
+    mediaLabel: "Slot foto pilar AIK — Pengabdian & Dakwah Siber (9/16)",
+    alt: "Program pengabdian masyarakat dan dakwah digital",
+  },
+];
+
