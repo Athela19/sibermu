@@ -101,6 +101,33 @@ export const KEGIATAN_INTERNASIONAL: KegiatanInternasionalItem[] = [
   { mediaLabel: "Slot foto kegiatan internasional 04 — dari pemilik proyek", alt: "Kegiatan internasional 04" },
 ];
 
+export const FASILITAS_MAHASISWA: StickySplitItem[] = [
+  {
+    title: "LMS Cerdas & Kampus Digital",
+    body: "Platform perkuliahan daring terpadu 24/7 dengan materi interaktif, video pembelajaran, ruang diskusi, dan sistem evaluasi terstruktur.",
+    meta: "Akses 24/7 • Multi-platform",
+    mediaLabel: "Slot foto fasilitas — LMS & platform digital (4/3)",
+  },
+  {
+    title: "Perpustakaan Digital (E-Library)",
+    body: "Koleksi ribuan e-book, jurnal ilmiah internasional terindeks, dan repositori riset civitas akademika yang dapat diakses dari mana saja.",
+    meta: "Jurnal Internasional • Ribuan E-Book",
+    mediaLabel: "Slot foto fasilitas — perpustakaan digital (4/3)",
+  },
+  {
+    title: "Layanan Konseling & Karir Virtual",
+    body: "Pendampingan konseling psikologi daring, bimbingan akademik intensif, serta pembekalan karir dan sertifikasi bersama mitra industri.",
+    meta: "Konseling Daring • Career Center",
+    mediaLabel: "Slot foto fasilitas — layanan konseling & karir (4/3)",
+  },
+  {
+    title: "Laboratorium Siber & Virtual Lab",
+    body: "Infrastruktur cloud computing dan simulasi praktikum virtual untuk pengujian kode, simulasi jaringan, dan analisis data modern.",
+    meta: "Cloud Sandbox • Simulasi Interaktif",
+    mediaLabel: "Slot foto fasilitas — virtual lab praktikum (4/3)",
+  },
+];
+
 export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
   {
     title: "Orientasi & Pembinaan Karakter",
