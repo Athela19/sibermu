@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Prestasi from "@/components/Prestasi";
 import RevealText from "@/components/RevealText";
 import StickySplit from "@/components/StickySplit";
+import UKM from "@/components/UKM";
 import { HERO, KEGIATAN_MAHASISWA } from "@/lib/content";
 import { getHeroFrames } from "@/lib/hero-frames";
 
@@ -28,6 +29,7 @@ export default function Home() {
           <Prestasi />
           <Kompetisi />
           <Internasional />
+          <UKM />
         </div>
         <section
           id="kemahasiswaan"

@@ -127,3 +127,58 @@ export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
     mediaLabel: "Slot media kegiatan — prestasi & pengabdian (4/3)",
   },
 ];
+
+export type UkmItem = {
+  name: string;
+  description: string;
+  pembina: string;
+  mediaLabel: string;
+  src?: string;
+  alt?: string;
+};
+
+// Daftar Unit Kegiatan Mahasiswa (UKM)
+// Foto final dari pemilik proyek (belum ada — menggunakan MediaSlot).
+export const UKM_LIST: UkmItem[] = [
+  {
+    name: "English Club",
+    description:
+      "Wadah pengembangan kecakapan komunikasi bahasa Inggris, public speaking, debat, dan jejaring internasional bagi mahasiswa Universitas Siber Muhammadiyah.",
+    pembina: "Bapak Anas Polri S. I",
+    mediaLabel: "Slot foto UKM English Club — dari pemilik proyek (16/10)",
+    alt: "Kegiatan diskusi UKM English Club",
+  },
+  {
+    name: "SiberMu Tech Club",
+    description:
+      "Komunitas eksplorasi teknologi informasi, pemrograman, kecerdasan buatan, keamanan siber, dan rekayasa perangkat lunak untuk inovasi digital kampus.",
+    pembina: "Bapak Dr. Ir. Wahyudi, M.T.",
+    mediaLabel: "Slot foto UKM SiberMu Tech Club — dari pemilik proyek (16/10)",
+    alt: "Kegiatan coding dan workshop SiberMu Tech Club",
+  },
+  {
+    name: "Kewirausahaan Mahasiswa",
+    description:
+      "Inkubator bisnis dan wirausaha muda mahasiswa berbasis digital, melatih keterampilan pitching, model bisnis modern, permodalan, hingga validasi pasar riil.",
+    pembina: "Ibu Nurul Aini, S.E., M.M.",
+    mediaLabel: "Slot foto UKM Kewirausahaan Mahasiswa — dari pemilik proyek (16/10)",
+    alt: "Program inkubasi dan pitching UKM Kewirausahaan Mahasiswa",
+  },
+  {
+    name: "Seni & Media Kreatif",
+    description:
+      "Wadah ekspresi kreativitas visual, produksi konten multimedia, sinematografi, fotografi, desain grafis, dan syiar karya kreatif digital mahasiswa SiberMu.",
+    pembina: "Bapak Fajar Nugroho, M.Sn.",
+    mediaLabel: "Slot foto UKM Seni & Media Kreatif — dari pemilik proyek (16/10)",
+    alt: "Pameran karya dan produksi UKM Seni & Media Kreatif",
+  },
+  {
+    name: "Olahraga & E-Sport",
+    description:
+      "Pengembangan kebugaran jasmani, strategi, dan sportivitas mahasiswa melalui cabang olahraga fisik serta divisi kompetisi taktis digital tingkat nasional.",
+    pembina: "Bapak Rahmat Hidayat, M.Or.",
+    mediaLabel: "Slot foto UKM Olahraga & E-Sport — dari pemilik proyek (16/10)",
+    alt: "Latihan dan turnamen UKM Olahraga & E-Sport",
+  },
+];
+
