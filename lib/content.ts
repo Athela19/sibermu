@@ -5,10 +5,10 @@ export const NAV_LINKS = [
 ] as const;
 
 export const HERO = {
-  eyebrow: "Lomba Landing Page SiberMu 2026",
-  title: "Aktif Berorganisasi. Tumbuh dalam Nilai Islam.",
+  eyebrow: "Biro Kemahasiswaan & AIK SiberMu",
+  title: "Menjadi Perguruan Tinggi Siber Terpercaya, Terdepan, dan Terkemuka.",
   subtitle:
-    "Satu halaman untuk mengenal organisasi, UKM, prestasi, layanan, dan kehidupan AIK di Universitas Siber Muhammadiyah.",
+    "Menyediakan akses pendidikan berkualitas secara luas berdasarkan nilai-nilai Islam berkemajuan serta membina potensi mahasiswa melalui kegiatan ilmiah, minat bakat, dan UKM.",
   scrollLabel: "Gulir",
   scrollTarget: "#kemahasiswaan",
 } as const;
@@ -23,10 +23,10 @@ export type StickySplitItem = {
 };
 
 export const KEMAHASISWAAN_INTRO = {
-  eyebrow: "Kemahasiswaan",
-  heading: "Hidup kampus yang aktif, terarah, dan bermakna.",
+  eyebrow: "Kemahasiswaan & AIK",
+  heading: "Wadah Kreasi, Prestasi, dan Karakter Mahasiswa Berkemajuan.",
   intro:
-    "Dari organisasi hingga pengabdian — setiap kegiatan membentuk karakter mahasiswa SiberMu.",
+    "Membentuk akhlak mulia dan keunggulan mahasiswa dalam IPTEK berlandaskan nilai-nilai Islam melalui Catur Dharma Perguruan Tinggi.",
 } as const;
 
 export type PrestasiItem = {
@@ -36,17 +36,20 @@ export type PrestasiItem = {
   alt?: string;
 };
 
-// 8 slot foto prestasi — foto final dari pemilik proyek (belum ada).
-// Judul "Prestasi 01..08" adalah placeholder jujur, bukan data ilustratif.
+// Capaian prestasi riil mahasiswa yang tercatat dalam dokumen laporan
 export const PRESTASI: PrestasiItem[] = [
-  { title: "Prestasi 01", mediaLabel: "Slot foto prestasi 01 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 02", mediaLabel: "Slot foto prestasi 02 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 03", mediaLabel: "Slot foto prestasi 03 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 04", mediaLabel: "Slot foto prestasi 04 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 05", mediaLabel: "Slot foto prestasi 05 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 06", mediaLabel: "Slot foto prestasi 06 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 07", mediaLabel: "Slot foto prestasi 07 — dari pemilik proyek (4/3)" },
-  { title: "Prestasi 08", mediaLabel: "Slot foto prestasi 08 — dari pemilik proyek (4/3)" },
+  {
+    title: "Juara 1 Essay Writing Competition Adrenaline 2023 (Regional Jawa-Bali) - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto piagam Juara 1 Essay Adrenaline 2023 FK UKWMS (4/3)",
+  },
+  {
+    title: "Juara 3 UI Science Olympiad Bidang Essay Ilmiah Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto sertifikat Juara 3 UI Science Olympiad BEM FMIPA UI (4/3)",
+  },
+  {
+    title: "18 Prestasi Mahasiswa (1 Regional, 16 Nasional, 1 Internasional) Periode 2021-2024",
+    mediaLabel: "Slot grafis rekapitulasi prestasi mahasiswa SiberMu 2021-2024 (4/3)",
+  },
 ];
 
 export type KompetisiItem = {
@@ -57,33 +60,32 @@ export type KompetisiItem = {
   alt?: string;
 };
 
-// 5 slot logo + deskripsi kompetisi — logo final dari pemilik proyek (belum ada).
-// Judul "Kompetisi 01..05" dan body lorem ipsum adalah placeholder jujur, bukan data final.
+// Ajang kompetisi resmi yang diikuti mahasiswa SiberMu (Puspresnas / PTMA)
 export const KOMPETISI: KompetisiItem[] = [
   {
-    title: "Kompetisi 01",
-    body: "Deskripsi kompetisi 1 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    mediaLabel: "Slot logo kompetisi 01 — dari pemilik proyek (1/1)",
+    title: "PIMNAS & PKM",
+    body: "Pekan Ilmiah Mahasiswa Nasional dan Program Kreativitas Mahasiswa sebagai wadah penalaran ilmiah nasional.",
+    mediaLabel: "Slot logo PIMNAS & PKM (1/1)",
   },
   {
-    title: "Kompetisi 02",
-    body: "Deskripsi kompetisi 2 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    mediaLabel: "Slot logo kompetisi 02 — dari pemilik proyek (1/1)",
+    title: "GEMASTIK",
+    body: "Pagelaran Mahasiswa Nasional Bidang Teknologi Informasi dan Komunikasi bagi talenta digital mahasiswa SiberMu.",
+    mediaLabel: "Slot logo GEMASTIK (1/1)",
   },
   {
-    title: "Kompetisi 03",
-    body: "Deskripsi kompetisi 3 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    mediaLabel: "Slot logo kompetisi 03 — dari pemilik proyek (1/1)",
+    title: "LIDM",
+    body: "Lomba Inovasi Digital Mahasiswa untuk mendorong inovasi pendidikan berbasis teknologi.",
+    mediaLabel: "Slot logo LIDM (1/1)",
   },
   {
-    title: "Kompetisi 04",
-    body: "Deskripsi kompetisi 4 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    mediaLabel: "Slot logo kompetisi 04 — dari pemilik proyek (1/1)",
+    title: "KDMI & NUDC",
+    body: "Kompetisi Debat Mahasiswa Indonesia dan National University Debating Championship untuk mengasah kemampuan komunikasi dan daya kritis.",
+    mediaLabel: "Slot logo KDMI & NUDC (1/1)",
   },
   {
-    title: "Kompetisi 05",
-    body: "Deskripsi kompetisi 5 adalah lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    mediaLabel: "Slot logo kompetisi 05 — dari pemilik proyek (1/1)",
+    title: "Kompetisi PUSPRESMA PTMA",
+    body: "Berbagai ajang kejuaraan dan kompetisi yang diselenggarakan oleh Pusat Prestasi Perguruan Tinggi Muhammadiyah dan 'Aisyiyah.",
+    mediaLabel: "Slot logo PUSPRESMA PTMA (1/1)",
   },
 ];
 
@@ -93,65 +95,61 @@ export type KegiatanInternasionalItem = {
   alt?: string;
 };
 
-// Slot foto kegiatan internasional — foto final dari pemilik proyek (belum ada).
+// Program internasional resmi mahasiswa SiberMu
 export const KEGIATAN_INTERNASIONAL: KegiatanInternasionalItem[] = [
-  { mediaLabel: "Slot foto kegiatan internasional 01 — dari pemilik proyek", alt: "Kegiatan internasional 01" },
-  { mediaLabel: "Slot foto kegiatan internasional 02 — dari pemilik proyek", alt: "Kegiatan internasional 02" },
-  { mediaLabel: "Slot foto kegiatan internasional 03 — dari pemilik proyek", alt: "Kegiatan internasional 03" },
-  { mediaLabel: "Slot foto kegiatan internasional 04 — dari pemilik proyek", alt: "Kegiatan internasional 04" },
+  {
+    mediaLabel: "Slot dokumentasi program Global Youth Action",
+    alt: "Global Youth Action SiberMu",
+  },
+  {
+    mediaLabel: "Slot dokumentasi kegiatan Youth Innovation Forum",
+    alt: "Youth Innovation Forum SiberMu",
+  },
+  {
+    mediaLabel: "Slot dokumentasi Student Exchange & Student Mobility",
+    alt: "Student Exchange dan Mobility SiberMu",
+  },
 ];
 
 export const FASILITAS_MAHASISWA: StickySplitItem[] = [
   {
-    title: "LMS Cerdas & Kampus Digital",
-    body: "Platform perkuliahan daring terpadu 24/7 dengan materi interaktif, video pembelajaran, ruang diskusi, dan sistem evaluasi terstruktur.",
-    meta: "Akses 24/7 • Multi-platform",
-    mediaLabel: "Slot foto fasilitas — LMS & platform digital (4/3)",
+    title: "Learning Management System (LMS) Handal",
+    body: "Platform e-learning terpadu (solusi.sibermu.ac.id) untuk pembelajaran asinkronus, forum diskusi, modul modular, serta materi pembelajaran mandiri.",
+    meta: "Akses 24/7 • solusi.sibermu.ac.id",
+    mediaLabel: "Slot foto layar antarmuka e-learning solusi.sibermu.ac.id (4/3)",
   },
   {
-    title: "Perpustakaan Digital (E-Library)",
-    body: "Koleksi ribuan e-book, jurnal ilmiah internasional terindeks, dan repositori riset civitas akademika yang dapat diakses dari mana saja.",
-    meta: "Jurnal Internasional • Ribuan E-Book",
-    mediaLabel: "Slot foto fasilitas — perpustakaan digital (4/3)",
+    title: "Sinkronus & Metaverse Learning SiberMu",
+    body: "Perkuliahan interaktif berbasis Video Conference dan pembelajaran imersif AR/VR melalui akses kampus virtual (sibermu.ac.id/versimu).",
+    meta: "Immersive Learning • sibermu.ac.id/versimu",
+    mediaLabel: "Slot visual mahasiswa menggunakan headset VR dan Metaverse SiberMu (4/3)",
   },
   {
-    title: "Layanan Konseling & Karir Virtual",
-    body: "Pendampingan konseling psikologi daring, bimbingan akademik intensif, serta pembekalan karir dan sertifikasi bersama mitra industri.",
-    meta: "Konseling Daring • Career Center",
-    mediaLabel: "Slot foto fasilitas — layanan konseling & karir (4/3)",
-  },
-  {
-    title: "Laboratorium Siber & Virtual Lab",
-    body: "Infrastruktur cloud computing dan simulasi praktikum virtual untuk pengujian kode, simulasi jaringan, dan analisis data modern.",
-    meta: "Cloud Sandbox • Simulasi Interaktif",
-    mediaLabel: "Slot foto fasilitas — virtual lab praktikum (4/3)",
+    title: "Portal Akademik & Monitoring Orang Tua",
+    body: "Sistem informasi student.sibermu.ac.id untuk administrasi KRS mahasiswa serta akses pemantauan perkembangan studi bagi orang tua.",
+    meta: "Portal Mahasiswa & Orang Tua • student.sibermu.ac.id",
+    mediaLabel: "Slot antarmuka portal student.sibermu.ac.id (4/3)",
   },
 ];
 
 export const KEGIATAN_MAHASISWA: StickySplitItem[] = [
   {
-    title: "Orientasi & Pembinaan Karakter",
-    body: "Masa pengenalan kampus yang membangun kedisiplinan, ukhuwah, dan kesiapan belajar daring sejak hari pertama.",
-    meta: "Wajib • Mahasiswa baru",
-    mediaLabel: "Slot media kegiatan — orientasi & pembinaan (4/3)",
+    title: "Pengenalan Kehidupan Kampus Mahasiswa Baru (PKKMB)",
+    body: "Orientasi sistem PJJ, pendalaman LMS, pengenalan kurikulum prodi, serta pembinaan karakter berbasis nilai-nilai religius dan etika kampus.",
+    meta: "Wajib • Mahasiswa Baru SiberMu",
+    mediaLabel: "Slot media pelaksanaan orientasi PKKMB daring SiberMu (4/3)",
   },
   {
-    title: "Organisasi & Kepemimpinan",
-    body: "BEM dan ormawa melatih mahasiswa memimpin rapat, mengelola program, dan mengambil keputusan bersama.",
-    meta: "BEM • Ormawa",
-    mediaLabel: "Slot media kegiatan — organisasi mahasiswa (4/3)",
+    title: "Program Merdeka Belajar Kampus Merdeka (MBKM)",
+    body: "Fasilitasi pertukaran mahasiswa, magang bersertifikat, studi independen, program kewirausahaan, hingga proyek kemanusiaan di luar kampus.",
+    meta: "Program MBKM SiberMu",
+    mediaLabel: "Slot dokumentasi kegiatan MBKM mahasiswa SiberMu (4/3)",
   },
   {
-    title: "UKM & Komunitas Minat Bakat",
-    body: "Wadah minat, bakat, dan keilmuan — dari teknologi dan seni hingga olahraga dan kewirausahaan kampus.",
-    meta: "4–6 UKM • Terbuka semua prodi",
-    mediaLabel: "Slot media kegiatan — UKM & komunitas (4/3)",
-  },
-  {
-    title: "Prestasi & Pengabdian",
-    body: "Prestasi akademik dan non-akademik yang didampingi, lalu disalurkan kembali lewat pengabdian masyarakat.",
-    meta: "Akademik • Non-akademik",
-    mediaLabel: "Slot media kegiatan — prestasi & pengabdian (4/3)",
+    title: "Kegiatan Minat Bakat & MTQMN",
+    body: "Penyaluran minat dan bakat religius melalui Musabaqah Tilawatil Qur’an Mahasiswa Nasional serta Pekan Seni Mahasiswa PTMA.",
+    meta: "Minat Bakat • Nasional & PTMA",
+    mediaLabel: "Slot dokumentasi kegiatan minat bakat mahasiswa (4/3)",
   },
 ];
 
@@ -164,48 +162,31 @@ export type UkmItem = {
   alt?: string;
 };
 
-// Daftar Unit Kegiatan Mahasiswa (UKM)
-// Foto final dari pemilik proyek (belum ada — menggunakan MediaSlot).
+// Daftar resmi Unit Kegiatan Mahasiswa (UKM) beserta nama pembina resmi berdasarkan SK Pengesahan SiberMu
 export const UKM_LIST: UkmItem[] = [
   {
-    name: "English Club",
+    name: "UKM English Club",
     description:
-      "Wadah pengembangan kecakapan komunikasi bahasa Inggris, public speaking, debat, dan jejaring internasional bagi mahasiswa Universitas Siber Muhammadiyah.",
-    pembina: "Bapak Anas Polri S. I",
-    mediaLabel: "Slot foto UKM English Club — dari pemilik proyek (16/10)",
-    alt: "Kegiatan diskusi UKM English Club",
+      "Wadah bagi mahasiswa dalam menyalurkan minat, bakat, serta pengetahuan di bidang Bahasa Inggris, terutama untuk meningkatkan keterampilan berbicara di depan umum (public speaking).",
+    pembina: "Afriansyah Tanjung, S.H., M.Kn. & Muhammad Fauzan Gustafi, M.Kom.",
+    mediaLabel: "Slot logo dan dokumentasi kegiatan UKM English Club SiberMu (16/10)",
+    alt: "Kegiatan UKM English Club SiberMu",
   },
   {
-    name: "SiberMu Tech Club",
+    name: "UKM Bisnis Digital",
     description:
-      "Komunitas eksplorasi teknologi informasi, pemrograman, kecerdasan buatan, keamanan siber, dan rekayasa perangkat lunak untuk inovasi digital kampus.",
-    pembina: "Bapak Dr. Ir. Wahyudi, M.T.",
-    mediaLabel: "Slot foto UKM SiberMu Tech Club — dari pemilik proyek (16/10)",
-    alt: "Kegiatan coding dan workshop SiberMu Tech Club",
+      "Wadah pengembangan potensi kewirausahaan digital melalui program kerja pelatihan bisnis digital, workshop e-commerce, kompetisi bisnis, dan pelatihan keuangan bisnis.",
+    pembina: "Rakhmat Prasetyo Agung Nugroho, M.Kom. & Amalina Nur Arifah, S.E., M.Sc.",
+    mediaLabel: "Slot dokumentasi kegiatan UKM Bisnis Digital SiberMu (16/10)",
+    alt: "Kegiatan UKM Bisnis Digital SiberMu",
   },
   {
-    name: "Kewirausahaan Mahasiswa",
+    name: "UKM Digital Creator",
     description:
-      "Inkubator bisnis dan wirausaha muda mahasiswa berbasis digital, melatih keterampilan pitching, model bisnis modern, permodalan, hingga validasi pasar riil.",
-    pembina: "Ibu Nurul Aini, S.E., M.M.",
-    mediaLabel: "Slot foto UKM Kewirausahaan Mahasiswa — dari pemilik proyek (16/10)",
-    alt: "Program inkubasi dan pitching UKM Kewirausahaan Mahasiswa",
-  },
-  {
-    name: "Seni & Media Kreatif",
-    description:
-      "Wadah ekspresi kreativitas visual, produksi konten multimedia, sinematografi, fotografi, desain grafis, dan syiar karya kreatif digital mahasiswa SiberMu.",
-    pembina: "Bapak Fajar Nugroho, M.Sn.",
-    mediaLabel: "Slot foto UKM Seni & Media Kreatif — dari pemilik proyek (16/10)",
-    alt: "Pameran karya dan produksi UKM Seni & Media Kreatif",
-  },
-  {
-    name: "Olahraga & E-Sport",
-    description:
-      "Pengembangan kebugaran jasmani, strategi, dan sportivitas mahasiswa melalui cabang olahraga fisik serta divisi kompetisi taktis digital tingkat nasional.",
-    pembina: "Bapak Rahmat Hidayat, M.Or.",
-    mediaLabel: "Slot foto UKM Olahraga & E-Sport — dari pemilik proyek (16/10)",
-    alt: "Latihan dan turnamen UKM Olahraga & E-Sport",
+      "Wadah kreativitas mahasiswa dalam bidang desain grafis, teknologi imersif, dan pembuatan konten kreatif digital.",
+    pembina: "Khairina Eka Setyaputri, S.T., M.Kom. & Desy Eliana, S.KM., M.PH.",
+    mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Digital Creator SiberMu (16/10)",
+    alt: "Kegiatan UKM Digital Creator SiberMu",
   },
 ];
 
@@ -213,11 +194,11 @@ export const UKM_LIST: UkmItem[] = [
 
 export const AIK_HERO = {
   badge: "Al-Islam & Kemuhammadiyahan",
-  heading: "AIK",
+  heading: "AIK SiberMu",
   intro:
-    "Membentuk pribadi mahasiswa yang berkarakter islami, berintegritas, dan berkemajuan melalui pembinaan spiritual, intelektual, dan sosial di era digital.",
+    "AIK adalah ajaran Islam sebagaimana dipahami oleh Muhammadiyah yang menjadi sumber nilai dan kerangka rujukan perilaku bagi sivitas akademika dalam seluruh aktivitas Catur Dharma perguruan tinggi.",
   imageSrc: "/assets/HeroAIK.png",
-  imageAlt: "Kampus SiberMu — suasana Islami dan asri",
+  imageAlt: "Gedung Universitas Siber Muhammadiyah",
 } as const;
 
 export type SubAikItem = {
@@ -227,12 +208,12 @@ export type SubAikItem = {
 
 export const SUB_AIK_ITEMS: SubAikItem[] = [
   {
-    title: "Pembinaan Karakter & Ibadah Praktis",
-    body: "Bimbingan spiritual yang membentuk kebiasaan ibadah konsisten, akhlak mulia, dan ketaqwaan sebagai fondasi kehidupan kampus mahasiswa SiberMu.",
+    title: "Kerangka Rujukan & Ibadah Praktis",
+    body: "AIK menjadi rujukan perilaku sehari-hari dan akademik bagi warga kampus dalam menjalankan ibadah praktis sesuai tuntunan Muhammadiyah.",
   },
   {
-    title: "Syiar & Gerakan Pencerahan Digital",
-    body: "Dakwah berkemajuan di era siber — konten Islami kreatif, kajian daring interaktif, dan gerakan pencerahan yang menjangkau masyarakat luas melalui platform digital.",
+    title: "Internalisasi Nilai Islam Berkemajuan",
+    body: "Menjadikan AIK sebagai basis nilai spiritual dan moral yang terintegrasi pada kegiatan pendidikan, penelitian, dan pengabdian kepada masyarakat.",
   },
 ];
 
@@ -244,25 +225,23 @@ export type PillarAikItem = {
   alt?: string;
 };
 
-// 3 Pilar AIK — foto final dari pemilik proyek (belum ada — menggunakan MediaSlot).
 export const PILLAR_AIK_ITEMS: PillarAikItem[] = [
   {
-    title: "Kajian & Kuliah AIK",
-    body: "Landasan keilmuan Islam dan Kemuhammadiyahan yang dipelajari secara sistematis — dari akidah, syariah, hingga pemikiran berkemajuan dalam konteks pendidikan tinggi.",
-    mediaLabel: "Slot foto pilar AIK — Kajian & Kuliah AIK (9/16)",
-    alt: "Suasana kajian dan kuliah AIK mahasiswa",
+    title: "Pembelajaran Terprogram AIK",
+    body: "Bahan pembelajaran yang diajarkan dan dididikkan kepada mahasiswa secara terprogram dalam kurikulum perkuliahan semester.",
+    mediaLabel: "Slot foto perkuliahan daring Al-Islam dan Kemuhammadiyahan (9/16)",
+    alt: "Pembelajaran AIK SiberMu",
   },
   {
-    title: "Baitul Arqam Mahasiswa",
-    body: "Kaderisasi ideologis dan kepemimpinan profetik — membangun jiwa Muhammadiyah yang tangguh, visioner, dan siap mengabdi untuk umat dan bangsa.",
-    mediaLabel: "Slot foto pilar AIK — Baitul Arqam Mahasiswa (9/16)",
-    alt: "Kegiatan Baitul Arqam Mahasiswa",
+    title: "Pengkajian AIK & Pengembangan Dakwah",
+    body: "Kontribusi aktif sivitas akademika dalam kajian keislaman dan pengembangan dakwah berkemajuan di era siber.",
+    mediaLabel: "Slot foto kegiatan kajian dakwah digital (9/16)",
+    alt: "Kajian AIK dan Dakwah SiberMu",
   },
   {
-    title: "Pengabdian Masyarakat & Dakwah Siber",
-    body: "Implementasi nyata nilai-nilai Islam — pengabdian langsung kepada masyarakat dan dakwah digital yang menyebarkan pencerahan di era informasi global.",
-    mediaLabel: "Slot foto pilar AIK — Pengabdian & Dakwah Siber (9/16)",
-    alt: "Program pengabdian masyarakat dan dakwah digital",
+    title: "Keterlibatan dalam Persyarikatan Muhammadiyah",
+    body: "Mendorong partisipasi aktif sivitas akademika dalam gerakan persyarikatan untuk mewujudkan Islam sebagai rahmat bagi semesta alam.",
+    mediaLabel: "Slot foto aktivitas civitas akademika dalam persyarikatan (9/16)",
+    alt: "Aktivitas Persyarikatan Muhammadiyah",
   },
 ];
-
