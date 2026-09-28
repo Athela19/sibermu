@@ -54,6 +54,12 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           pin: true,
           anticipatePin: 1,
           scrub: 0.5,
+          snap: {
+            snapTo: 1 / items.length,
+            duration: { min: 0.2, max: 0.6 },
+            delay: 0.1,
+            ease: "power1.inOut",
+          },
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const idx = Math.min(
@@ -70,7 +76,6 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
       items.forEach((_, i) => {
         const pillar = pillarsRef.current[i];
         const overlay = overlaysRef.current[i];
-        const intro = introRef.current;
         const segStart = i * segDuration;
 
         if (!pillar) return;
@@ -99,19 +104,7 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           );
         }
 
-        // Hide intro text on first pillar expand
-        if (i === 0 && intro) {
-          tl.to(
-            intro,
-            {
-              autoAlpha: 0,
-              x: 30,
-              duration: segDuration * 0.4,
-              ease: "power2.in",
-            },
-            segStart,
-          );
-        }
+
 
         // Collapse previous pillar & hide its overlay
         if (i > 0) {
