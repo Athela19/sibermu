@@ -1,5 +1,6 @@
 import BidangKemahasiswaan from "@/components/BidangKemahasiswaan";
 import Ekosistem from "@/components/Ekosistem";
+import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import HeroAIK from "@/components/HeroAIK";
 import Internasional from "@/components/Internasional";
@@ -59,18 +60,7 @@ export default function Home() {
           <HeroAIK />
           <PillarAIK />
         </div>
-        <section
-          id="kontak"
-          aria-labelledby="kontak-heading"
-          className="bg-primary px-6 py-24 text-center sm:px-8"
-        >
-          <h2
-            id="kontak-heading"
-            className="mx-auto max-w-3xl font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-white"
-          >
-            Gabung Bersama Kami.
-          </h2>
-        </section>
+        <Footer />
       </main>
     </>
   );
