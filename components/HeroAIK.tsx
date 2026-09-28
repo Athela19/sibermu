@@ -48,6 +48,12 @@ export default function HeroAIK() {
           pin: true,
           anticipatePin: 1,
           scrub: 0.6,
+          snap: {
+            snapTo: [0, 0.50, 0.82, 1],
+            duration: { min: 0.15, max: 0.3 },
+            delay: 0.2,
+            ease: "power2.out",
+          },
           invalidateOnRefresh: true,
         },
       });

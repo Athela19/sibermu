@@ -53,12 +53,12 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           end: () => `+=${items.length * window.innerHeight * 1.2}`,
           pin: true,
           anticipatePin: 1,
-          scrub: 0.5,
+          scrub: 0.6,
           snap: {
             snapTo: 1 / items.length,
-            duration: { min: 0.2, max: 0.6 },
-            delay: 0.1,
-            ease: "power1.inOut",
+            duration: { min: 0.15, max: 0.3 },
+            delay: 0.2,
+            ease: "power2.out",
           },
           invalidateOnRefresh: true,
           onUpdate: (self) => {
