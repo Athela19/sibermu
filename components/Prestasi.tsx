@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
@@ -47,10 +47,11 @@ function PrestasiCard({
     >
       <MediaSlot
         label={item.mediaLabel}
-        ratio="4 / 3"
+        ratio="1 / 1"
         src={item.src}
         alt={item.alt ?? ""}
-        className="rounded-[20px]"
+        objectFit="contain"
+        className="rounded-[20px] bg-white shadow-md"
       />
       <figcaption
         className={`pointer-events-none absolute inset-x-0 bottom-0 rounded-b-[20px] bg-gradient-to-t from-black/80 via-black/30 to-transparent p-4 pt-10 transition duration-300 ${
@@ -151,8 +152,8 @@ export default function Prestasi() {
           >
             Prestasi mahasiswa.
           </h2>
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {renderCards("w-full")}
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {renderCards("w-full max-w-[420px] mx-auto")}
           </div>
         </div>
       </section>
@@ -182,7 +183,7 @@ export default function Prestasi() {
               Prestasi mahasiswa.
             </h2>
           </div>
-          {renderCards("w-[74vw] sm:w-[46vw] lg:w-[30vw]")}
+          {renderCards("w-[76vw] max-w-[360px] sm:w-[44vw] sm:max-w-[400px] lg:w-[26vw] lg:max-w-[420px]")}
         </div>
       </div>
     </section>

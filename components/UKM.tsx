@@ -122,7 +122,9 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
                   ratio="16 / 10"
                   src={items[active].src}
                   alt={items[active].alt ?? items[active].name}
-                  className="h-full w-full rounded-[20px]"
+                  objectFit="cover"
+                  objectPosition="top"
+                  className="h-full w-full rounded-[20px] bg-navy-950/40"
                 />
               </div>
             </div>
@@ -222,7 +224,9 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
                       ratio="16 / 10"
                       src={item.src}
                       alt={item.alt ?? item.name}
-                      className="h-full w-full rounded-[20px]"
+                      objectFit="cover"
+                      objectPosition="top"
+                      className="h-full w-full rounded-[20px] bg-navy-950/40"
                     />
                   </div>
                 );
