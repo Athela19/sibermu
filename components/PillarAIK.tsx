@@ -205,7 +205,7 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
                 <h3 className="font-display text-lg font-semibold text-primary">
                   {item.title}
                 </h3>
-                <p className="font-sans text-sm leading-relaxed text-ink-500">
+                <p className="whitespace-pre-line font-sans text-sm leading-relaxed text-ink-500">
                   {item.body}
                 </p>
               </div>
@@ -265,7 +265,7 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
                   <h3 className="font-display text-lg font-semibold text-white sm:text-xl lg:text-2xl">
                     {item.title}
                   </h3>
-                  <p className="mt-2 line-clamp-3 font-sans text-sm leading-relaxed text-white/85 sm:text-base">
+                  <p className="mt-2 whitespace-pre-line font-sans text-sm leading-relaxed text-white/85 sm:text-base">
                     {item.body}
                   </p>
                 </div>

@@ -157,9 +157,14 @@ export default function HeroAIK() {
                 <h3 className="font-display text-xl font-semibold text-primary">
                   {item.title}
                 </h3>
-                <p className="mt-3 font-sans text-base leading-relaxed text-ink-500">
-                  {item.body}
-                </p>
+                <ul className="mt-4 space-y-2 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
+                  {item.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2.5">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-tertiary" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -197,7 +202,7 @@ export default function HeroAIK() {
         {/* Intro text — positioned in the white sky area */}
         <div
           ref={textRef}
-          className="absolute inset-x-0 top-0 z-10 flex flex-col items-center gap-3 px-6 pt-10 text-center will-change-transform sm:gap-4 sm:pt-14 lg:pt-16"
+          className="absolute inset-x-0 top-0 z-10 flex flex-col items-center gap-3 px-6 pt-24 text-center will-change-transform sm:gap-4 sm:pt-28 lg:pt-32"
         >
           <span className="rounded-full bg-tertiary/90 px-4 py-1.5 font-sans text-xs font-bold uppercase tracking-[0.08em] text-white shadow-sm">
             {AIK_HERO.badge}
@@ -221,9 +226,14 @@ export default function HeroAIK() {
           <h3 className="font-display text-xl font-semibold leading-tight text-primary sm:text-2xl">
             {SUB_AIK_ITEMS[0].title}
           </h3>
-          <p className="mt-3 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
-            {SUB_AIK_ITEMS[0].body}
-          </p>
+          <ul className="mt-4 space-y-2 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
+            {SUB_AIK_ITEMS[0].points.map((point) => (
+              <li key={point} className="flex items-start gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-tertiary" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Frosted card 2 (right side) */}
@@ -234,9 +244,14 @@ export default function HeroAIK() {
           <h3 className="font-display text-xl font-semibold leading-tight text-primary sm:text-2xl">
             {SUB_AIK_ITEMS[1].title}
           </h3>
-          <p className="mt-3 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
-            {SUB_AIK_ITEMS[1].body}
-          </p>
+          <ul className="mt-4 space-y-2 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
+            {SUB_AIK_ITEMS[1].points.map((point) => (
+              <li key={point} className="flex items-start gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-tertiary" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

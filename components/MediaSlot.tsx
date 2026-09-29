@@ -7,7 +7,17 @@ type MediaSlotProps = {
   alt?: string;
   priority?: boolean;
   className?: string;
+  objectFit?: "cover" | "contain";
+  objectPosition?: "top" | "center" | "bottom" | "left" | "right";
 };
+
+const POSITION_CLASSES = {
+  top: "object-top",
+  center: "object-center",
+  bottom: "object-bottom",
+  left: "object-left",
+  right: "object-right",
+} as const;
 
 export default function MediaSlot({
   label,
@@ -16,6 +26,8 @@ export default function MediaSlot({
   alt = "",
   priority = false,
   className = "",
+  objectFit = "cover",
+  objectPosition = "center",
 }: MediaSlotProps) {
   return (
     <div
@@ -35,7 +47,9 @@ export default function MediaSlot({
           fill
           sizes="100vw"
           priority={priority}
-          className="object-cover"
+          className={`${
+            objectFit === "contain" ? "object-contain" : "object-cover"
+          } ${POSITION_CLASSES[objectPosition] ?? "object-center"}`}
         />
       ) : (
         <>

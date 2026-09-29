@@ -40,15 +40,33 @@ export type PrestasiItem = {
 export const PRESTASI: PrestasiItem[] = [
   {
     title: "Juara 1 Essay Writing Competition Adrenaline 2023 (Regional Jawa-Bali) - Rahmat Simbolon (Administrasi Kesehatan)",
-    mediaLabel: "Slot foto piagam Juara 1 Essay Adrenaline 2023 FK UKWMS (4/3)",
+    mediaLabel: "Slot foto sertifikat Juara 1 Essay Adrenaline 2023 FK UKWMS (1/1)",
+    src: "/assets/prestasi01.jpg",
+    alt: "Sertifikat Juara 1 Essay Adrenaline 2023",
   },
   {
-    title: "Juara 3 UI Science Olympiad Bidang Essay Ilmiah Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
-    mediaLabel: "Slot foto sertifikat Juara 3 UI Science Olympiad BEM FMIPA UI (4/3)",
+    title: "Juara 2 MEDJONSON (Medical Djogja Scientific Competition) Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto sertifikat Juara 2 MEDJONSON 2023 FKK UMY (1/1)",
+    src: "/assets/prestasi02.jpg",
+    alt: "Sertifikat Juara 2 MEDJONSON 2023",
   },
   {
-    title: "18 Prestasi Mahasiswa (1 Regional, 16 Nasional, 1 Internasional) Periode 2021-2024",
-    mediaLabel: "Slot grafis rekapitulasi prestasi mahasiswa SiberMu 2021-2024 (4/3)",
+    title: "Juara 3 MAJESTYNAS (Muhammadiyah Jakarta Scientific Competition Nasional) 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto sertifikat Juara 3 MAJESTYNAS 2023 FKK UMJ (1/1)",
+    src: "/assets/prestasi03.jpg",
+    alt: "Sertifikat Juara 3 MAJESTYNAS 2023",
+  },
+  {
+    title: "Juara 1 Essay Competition Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto sertifikat Juara 1 Essay Competition 2023 FEB UWKS (1/1)",
+    src: "/assets/prestasi04.jpg",
+    alt: "Sertifikat Juara 1 Essay Competition 2023",
+  },
+  {
+    title: "Juara 2 GEBYAR EKONOMI BEM FEB Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
+    mediaLabel: "Slot foto sertifikat Juara 2 GEBYAR EKONOMI BEM FEB UNISNU (1/1)",
+    src: "/assets/prestasi05.jpg",
+    alt: "Sertifikat Juara 2 GEBYAR EKONOMI BEM FEB UNISNU 2023",
   },
 ];
 
@@ -116,19 +134,23 @@ export const FASILITAS_MAHASISWA: StickySplitItem[] = [
     title: "Learning Management System (LMS) Handal",
     body: "Platform e-learning terpadu (solusi.sibermu.ac.id) untuk pembelajaran asinkronus, forum diskusi, modul modular, serta materi pembelajaran mandiri.",
     meta: "Akses 24/7 • solusi.sibermu.ac.id",
+    src: "/assets/LMS.png",
     mediaLabel: "Slot foto layar antarmuka e-learning solusi.sibermu.ac.id (4/3)",
   },
   {
     title: "Sinkronus & Metaverse Learning SiberMu",
     body: "Perkuliahan interaktif berbasis Video Conference dan pembelajaran imersif AR/VR melalui akses kampus virtual (sibermu.ac.id/versimu).",
     meta: "Immersive Learning • sibermu.ac.id/versimu",
+    src: "/assets/VR.jpg",
     mediaLabel: "Slot visual mahasiswa menggunakan headset VR dan Metaverse SiberMu (4/3)",
   },
   {
-    title: "Portal Akademik & Monitoring Orang Tua",
-    body: "Sistem informasi student.sibermu.ac.id untuk administrasi KRS mahasiswa serta akses pemantauan perkembangan studi bagi orang tua.",
-    meta: "Portal Mahasiswa & Orang Tua • student.sibermu.ac.id",
-    mediaLabel: "Slot antarmuka portal student.sibermu.ac.id (4/3)",
+    title: "Helpdesk & Layanan Bantuan Terpadu",
+    body: "Sistem Layanan Bantuan Terpadu Universitas Siber Muhammadiyah untuk penanganan tiket transparan, pengajuan surat online, tanda tangan digital, Turnitin, hingga legalisir dengan notifikasi cepat via Email dan Telegram.",
+    meta: "Siap MembantuMu • helpdesk.sibermu.ac.id",
+    mediaLabel: "Slot antarmuka portal layanan Helpdesk SiberMu (4/3)",
+    src: "/assets/Helpdesk.png",
+    alt: "Portal Layanan Helpdesk SiberMu",
   },
 ];
 
@@ -169,7 +191,8 @@ export const UKM_LIST: UkmItem[] = [
     description:
       "Wadah bagi mahasiswa dalam menyalurkan minat, bakat, serta pengetahuan di bidang Bahasa Inggris, terutama untuk meningkatkan keterampilan berbicara di depan umum (public speaking).",
     pembina: "Afriansyah Tanjung, S.H., M.Kn. & Muhammad Fauzan Gustafi, M.Kom.",
-    mediaLabel: "Slot logo dan dokumentasi kegiatan UKM English Club SiberMu (16/10)",
+    mediaLabel: "Slot logo dan dokumentasi kegiatan UKM English Club SiberMu",
+    src: "/assets/ukm01.jpg",
     alt: "Kegiatan UKM English Club SiberMu",
   },
   {
@@ -177,7 +200,8 @@ export const UKM_LIST: UkmItem[] = [
     description:
       "Wadah pengembangan potensi kewirausahaan digital melalui program kerja pelatihan bisnis digital, workshop e-commerce, kompetisi bisnis, dan pelatihan keuangan bisnis.",
     pembina: "Rakhmat Prasetyo Agung Nugroho, M.Kom. & Amalina Nur Arifah, S.E., M.Sc.",
-    mediaLabel: "Slot dokumentasi kegiatan UKM Bisnis Digital SiberMu (16/10)",
+    mediaLabel: "Slot dokumentasi kegiatan UKM Bisnis Digital SiberMu",
+    src: "/assets/ukm02.jpg",
     alt: "Kegiatan UKM Bisnis Digital SiberMu",
   },
   {
@@ -185,8 +209,18 @@ export const UKM_LIST: UkmItem[] = [
     description:
       "Wadah kreativitas mahasiswa dalam bidang desain grafis, teknologi imersif, dan pembuatan konten kreatif digital.",
     pembina: "Khairina Eka Setyaputri, S.T., M.Kom. & Desy Eliana, S.KM., M.PH.",
-    mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Digital Creator SiberMu (16/10)",
+    mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Digital Creator SiberMu",
+    src: "/assets/ukm03.jpg",
     alt: "Kegiatan UKM Digital Creator SiberMu",
+  },
+  {
+    name: "UKM Coding",
+    description:
+      "Wadah pengembangan minat dan bakat mahasiswa dalam bidang pemrograman, pengembangan perangkat lunak, dan eksplorasi teknologi komputasi.",
+    pembina: "",
+    mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Coding SiberMu",
+    src: "/assets/ukm04.jpg",
+    alt: "Kegiatan UKM Coding SiberMu",
   },
 ];
 
@@ -203,17 +237,27 @@ export const AIK_HERO = {
 
 export type SubAikItem = {
   title: string;
-  body: string;
+  points: string[];
 };
 
 export const SUB_AIK_ITEMS: SubAikItem[] = [
   {
-    title: "Kerangka Rujukan & Ibadah Praktis",
-    body: "AIK menjadi rujukan perilaku sehari-hari dan akademik bagi warga kampus dalam menjalankan ibadah praktis sesuai tuntunan Muhammadiyah.",
+    title: "Al-Islam",
+    points: [
+      "Aqidah (keimanan dan tauhid)",
+      "Ibadah",
+      "Akhlak",
+      "Muamalah (hubungan sosial dan kehidupan bermasyarakat)",
+    ],
   },
   {
-    title: "Internalisasi Nilai Islam Berkemajuan",
-    body: "Menjadikan AIK sebagai basis nilai spiritual dan moral yang terintegrasi pada kegiatan pendidikan, penelitian, dan pengabdian kepada masyarakat.",
+    title: "Kemuhammadiyahan",
+    points: [
+      "Sejarah berdirinya Muhammadiyah",
+      "Ideologi dan cita-cita Muhammadiyah",
+      "Gerakan dakwah dan tajdid (pembaruan)",
+      "Peran Muhammadiyah dalam pendidikan, kesehatan, sosial, dan kemanusiaan",
+    ],
   },
 ];
 
@@ -227,21 +271,24 @@ export type PillarAikItem = {
 
 export const PILLAR_AIK_ITEMS: PillarAikItem[] = [
   {
-    title: "Pembelajaran Terprogram AIK",
-    body: "Bahan pembelajaran yang diajarkan dan dididikkan kepada mahasiswa secara terprogram dalam kurikulum perkuliahan semester.",
-    mediaLabel: "Slot foto perkuliahan daring Al-Islam dan Kemuhammadiyahan (9/16)",
-    alt: "Pembelajaran AIK SiberMu",
+    title: "Muhammadiyah sebagai Gerakan Islam",
+    body: "Muhammadiyah berlandaskan ajaran Islam, dengan seluruh aktivitasnya merujuk pada Al-Qur’an dan As-Sunah. Tujuannya adalah mewujudkan kehidupan Islam yang sebenar-benarnya melalui berbagai bidang kehidupan.",
+    mediaLabel: "Slot foto Muhammadiyah sebagai Gerakan Islam (9/16)",
+    src: "/assets/Pilar1.webp",
+    alt: "Muhammadiyah sebagai Gerakan Islam",
   },
   {
-    title: "Pengkajian AIK & Pengembangan Dakwah",
-    body: "Kontribusi aktif sivitas akademika dalam kajian keislaman dan pengembangan dakwah berkemajuan di era siber.",
-    mediaLabel: "Slot foto kegiatan kajian dakwah digital (9/16)",
-    alt: "Kajian AIK dan Dakwah SiberMu",
+    title: "Muhammadiyah sebagai Gerakan Dakwah Amar Ma’ruf Nahi Munkar",
+    body: "Pilar ini menegaskan peran Muhammadiyah dalam mengajak kepada kebaikan dan mencegah kemungkaran.",
+    mediaLabel: "Slot foto Gerakan Dakwah Amar Ma’ruf Nahi Munkar (9/16)",
+    src: "/assets/Pilar2.jpeg",
+    alt: "Gerakan Dakwah Amar Ma’ruf Nahi Munkar",
   },
   {
-    title: "Keterlibatan dalam Persyarikatan Muhammadiyah",
-    body: "Mendorong partisipasi aktif sivitas akademika dalam gerakan persyarikatan untuk mewujudkan Islam sebagai rahmat bagi semesta alam.",
-    mediaLabel: "Slot foto aktivitas civitas akademika dalam persyarikatan (9/16)",
-    alt: "Aktivitas Persyarikatan Muhammadiyah",
+    title: "Muhammadiyah sebagai Gerakan Tajdid (Pembaruan)",
+    body: "Tajdid berarti pembaruan. Menurut Abdul Mu’ti, pembaruan Muhammadiyah mencakup:\nPembaruan pemikiran → mengembangkan gagasan Islam yang responsif terhadap zaman\nPembaruan dalam beragama → memahami dan mengamalkan ajaran Islam secara kontekstual\nPembaruan dalam bergerak → membuat inovasi organisasi dan pelayanan masyarakat",
+    mediaLabel: "Slot foto Gerakan Tajdid Pembaruan Muhammadiyah (9/16)",
+    src: "/assets/Pilar3.jpg",
+    alt: "Muhammadiyah sebagai Gerakan Tajdid",
   },
 ];
