@@ -6,43 +6,6 @@ import gsap from "gsap";
 import { SITE } from "@/lib/site";
 
 const LETTERS = ["S", "I", "B", "E", "R", "M", "U"];
-/** Hard cap so splash never blocks indefinitely on broken images. */
-const IMAGE_WAIT_TIMEOUT_MS = 10_000;
-
-/**
- * Resolves when every `<img>` currently in the document has finished loading
- * (or errored), or when the timeout expires — whichever comes first.
- */
-function waitForAllImages(timeoutMs: number): Promise<void> {
-  return new Promise((resolve) => {
-    const imgs = Array.from(document.querySelectorAll<HTMLImageElement>("img"));
-    const pending = imgs.filter((img) => !img.complete);
-    if (pending.length === 0) {
-      resolve();
-      return;
-    }
-
-    let settled = false;
-    const settle = () => {
-      if (settled) return;
-      settled = true;
-      resolve();
-    };
-
-    let remaining = pending.length;
-    const onDone = () => {
-      remaining -= 1;
-      if (remaining <= 0) settle();
-    };
-
-    for (const img of pending) {
-      img.addEventListener("load", onDone, { once: true });
-      img.addEventListener("error", onDone, { once: true });
-    }
-
-    setTimeout(settle, timeoutMs);
-  });
-}
 
 export default function SplashScreen({
   onIntroDone,
@@ -51,6 +14,7 @@ export default function SplashScreen({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const doneRef = useRef(onIntroDone);
+  const notifiedRef = useRef(false);
   const finishedRef = useRef(false);
   const [done, setDone] = useState(false);
   const [logoOk, setLogoOk] = useState(true);
@@ -63,28 +27,24 @@ export default function SplashScreen({
     const root = rootRef.current;
     if (!root) return;
 
-    /* ── dual gate: animation done + images loaded ─────────────── */
-    let animDone = false;
-    let imgsDone = false;
-
-    const tryFinish = () => {
-      if (!animDone || !imgsDone) return;
-      if (finishedRef.current) return;
-      finishedRef.current = true;
-      setDone(true);
+    /* Notify parent at exit start so Hero fades in underneath;
+       unmount only after exit fade completes (crossfade, no white gap). */
+    const notifyParent = () => {
+      if (notifiedRef.current) return;
+      notifiedRef.current = true;
       doneRef.current?.();
     };
 
-    const onAnimDone = () => {
-      animDone = true;
-      tryFinish();
+    const finish = () => {
+      notifyParent();
+      if (finishedRef.current) return;
+      finishedRef.current = true;
+      setDone(true);
     };
 
-    // Start waiting for images immediately (runs in parallel with anim).
-    waitForAllImages(IMAGE_WAIT_TIMEOUT_MS).then(() => {
-      imgsDone = true;
-      tryFinish();
-    });
+    const onAnimDone = () => {
+      finish();
+    };
 
     const textEl = root.querySelector<HTMLElement>("[data-splash-text]");
     const letterEls = Array.from(
@@ -103,6 +63,7 @@ export default function SplashScreen({
           opacity: 0,
           duration: 0.3,
           delay: 0.5,
+          onStart: notifyParent,
           onComplete: onAnimDone,
         });
         return;
@@ -163,15 +124,22 @@ export default function SplashScreen({
         },
         2.6,
       );
-      tl.to(root, { opacity: 0, duration: 0.9, ease: "power1.in" }, 2.6);
+      tl.to(
+        root,
+        {
+          opacity: 0,
+          duration: 0.9,
+          ease: "power1.in",
+          onStart: notifyParent,
+        },
+        2.6,
+      );
     }, root);
 
     const fallback = window.setTimeout(() => {
-      // Hard fallback: force both gates open after 4s + timeout margin.
-      animDone = true;
-      imgsDone = true;
-      tryFinish();
-    }, Math.max(4000, IMAGE_WAIT_TIMEOUT_MS + 1000));
+      // Hard fallback per design.md §5.5: exit maksimal 4s.
+      finish();
+    }, 4000);
 
     return () => {
       window.clearTimeout(fallback);
@@ -186,7 +154,7 @@ export default function SplashScreen({
       ref={rootRef}
       data-splash-root
       aria-hidden="true"
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-white"
+      className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-white"
     >
       <noscript>
         <style>{`[data-splash-root]{display:none}`}</style>
