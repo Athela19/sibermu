@@ -226,143 +226,151 @@ export default function FasilitasMahasiswa() {
       aria-labelledby="fasilitas-heading"
       className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-8 lg:py-24"
     >
-      <div className="sticky top-16 z-20 -mx-6 bg-paper/95 px-6 py-3 text-center backdrop-blur-sm sm:-mx-8 sm:px-8 lg:top-[82px]">
-        <RevealText
-          as="h2"
-          id="fasilitas-heading"
-          text="Fasilitas Mahasiswa"
-          className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
-        />
-      </div>
-
       <div
         ref={rootRef}
         id={ID}
         aria-label="Fasilitas Mahasiswa"
-        className="mt-10 w-full sm:mt-14 lg:mt-16"
+        className="relative w-full"
       >
-        {isStatic ? (
-          <div className="flex flex-col gap-12">
-            {ITEMS.map((item) => (
-              <div
-                key={item.title}
-                className="grid items-center gap-6 lg:grid-cols-12 lg:gap-16"
-              >
-                <div className="lg:col-span-5">
-                  <h3 className="font-display text-[1.5rem] font-semibold leading-[1.15] text-primary lg:text-[2rem]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 font-sans text-base leading-[1.7] text-ink-900">
-                    {item.body}
-                  </p>
-                  {item.meta ? (
-                    <p className="mt-2 font-sans text-sm font-medium text-ink-500">
-                      {item.meta}
-                    </p>
-                  ) : null}
-                </div>
-                <div className="flex justify-center lg:col-span-7">
-                  <MediaSlot
-                    label={item.mediaLabel}
-                    ratio="4 / 3"
-                    src={item.src}
-                    alt={item.alt ?? item.title}
-                    className="mx-auto w-full max-w-[560px] rounded-3xl"
-                  />
-                </div>
-              </div>
-            ))}
+        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[calc(196px+36svh+14rem)] lg:bottom-[640px]">
+          <div className="pointer-events-auto sticky top-16 z-20 -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8 lg:top-[82px]">
+            <RevealText
+              as="h2"
+              id="fasilitas-heading"
+              text="Fasilitas Mahasiswa"
+              className="mt-12 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+            />
           </div>
-        ) : (
-          <>
-            {/* MOBILE: deck gambar + teks sticky */}
-            <div className="sticky top-[196px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
-              <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
-                {ITEMS.map((item, i) => (
-                  <div
-                    key={item.title}
-                    aria-hidden={i !== active}
-                    style={{ transform: deckTransform(i, i === active, true) }}
-                    className={`absolute inset-x-4 inset-y-3 transition-all duration-500 ease-out ${
-                      i <= active
-                        ? "translate-x-0"
-                        : "pointer-events-none translate-x-[calc(100%+2rem)]"
-                    }`}
-                  >
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="invisible -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8"
+        >
+          <p className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08]">
+            Fasilitas Mahasiswa
+          </p>
+        </div>
+
+        {/* Jarak header ke konten (dulu ada di root) */}
+        <div className="mt-10 sm:mt-14 lg:mt-16">
+          {isStatic ? (
+            <div className="flex flex-col gap-12">
+              {ITEMS.map((item) => (
+                <div
+                  key={item.title}
+                  className="grid items-center gap-6 lg:grid-cols-12 lg:gap-16"
+                >
+                  <div className="lg:col-span-5">
+                    <h3 className="font-display text-[1.5rem] font-semibold leading-[1.15] text-primary lg:text-[2rem]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 font-sans text-base leading-[1.7] text-ink-900">
+                      {item.body}
+                    </p>
+                    {item.meta ? (
+                      <p className="mt-2 font-sans text-sm font-medium text-ink-500">
+                        {item.meta}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex justify-center lg:col-span-7">
                     <MediaSlot
                       label={item.mediaLabel}
-                      ratio="auto"
+                      ratio="4 / 3"
                       src={item.src}
                       alt={item.alt ?? item.title}
-                      className="h-full rounded-3xl"
+                      className="mx-auto w-full max-w-[560px] rounded-3xl"
                     />
                   </div>
-                ))}
-              </div>
-              <div className="mt-4">
-                {renderTextStack(`${ID}-teks-mobile`, 0)}
-              </div>
+                </div>
+              ))}
             </div>
-
-            <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-              {/* DESKTOP: kolom teks (sticky, sejajar dengan card) */}
-              <div className="hidden lg:col-span-5 lg:block">
-                {/*
-                  Tinggi = tinggi card (560px x 3/4 = 420px) dan top sama
-                  dengan card (220px), sehingga pusat teks = pusat card.
-                */}
-                <div className="flex h-[420px] items-center justify-center lg:sticky lg:top-[220px] lg:self-start">
-                  {renderTextStack(`${ID}-teks-desktop`, ITEMS.length)}
+          ) : (
+            <>
+              {/* MOBILE: deck gambar + teks sticky */}
+              <div className="sticky top-[196px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
+                <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
+                  {ITEMS.map((item, i) => (
+                    <div
+                      key={item.title}
+                      aria-hidden={i !== active}
+                      style={{ transform: deckTransform(i, i === active, true) }}
+                      className={`absolute inset-x-4 inset-y-3 transition-all duration-500 ease-out ${
+                        i <= active
+                          ? "translate-x-0"
+                          : "pointer-events-none translate-x-[calc(100%+2rem)]"
+                      }`}
+                    >
+                      <MediaSlot
+                        label={item.mediaLabel}
+                        ratio="auto"
+                        src={item.src}
+                        alt={item.alt ?? item.title}
+                        className="h-full rounded-3xl"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-[10%]">
+                  {renderTextStack(`${ID}-teks-mobile`, 0)}
                 </div>
               </div>
 
-              {/* DESKTOP: kolom card menumpuk */}
-              <div className="hidden lg:col-span-7 lg:block">
-                <div className="relative flex flex-col gap-[8vh]">
+              <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+                <div className="hidden lg:col-span-5 lg:block">
+                  <div className="flex h-[420px] items-center justify-center lg:sticky lg:top-[220px] lg:self-start">
+                    {renderTextStack(`${ID}-teks-desktop`, ITEMS.length)}
+                  </div>
+                </div>
+
+                <div className="hidden lg:col-span-7 lg:block">
+                  <div className="relative flex flex-col gap-[8vh]">
+                    {ITEMS.map((item, i) => (
+                      <div
+                        key={item.title}
+                        ref={(el) => {
+                          desktopMediaRefs.current[i] = el;
+                        }}
+                        className="flex justify-center lg:sticky lg:top-[220px]"
+                        style={{ zIndex: i + 1 }}
+                      >
+                        <div
+                          className="mx-auto w-full max-w-[560px] overflow-hidden rounded-3xl bg-paper shadow-[0_12px_32px_rgba(16,24,40,0.12)] transition-transform duration-500 ease-out"
+                          style={{
+                            transform: deckTransform(i, i === active, true),
+                          }}
+                        >
+                          <MediaSlot
+                            label={item.mediaLabel}
+                            ratio="4 / 3"
+                            src={item.src}
+                            alt={item.alt ?? item.title}
+                            className="rounded-3xl"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    <div aria-hidden="true" className="h-[10vh]" />
+                  </div>
+                </div>
+
+                {/* MOBILE: elemen pemicu scroll */}
+                <div className="flex flex-col gap-6 lg:hidden">
                   {ITEMS.map((item, i) => (
                     <div
                       key={item.title}
                       ref={(el) => {
-                        desktopMediaRefs.current[i] = el;
+                        mobileDriverRefs.current[i] = el;
                       }}
-                      className="flex justify-center lg:sticky lg:top-[220px]"
-                      style={{ zIndex: i + 1 }}
-                    >
-                      <div
-                        className="mx-auto w-full max-w-[560px] overflow-hidden rounded-3xl bg-paper shadow-[0_12px_32px_rgba(16,24,40,0.12)] transition-transform duration-500 ease-out"
-                        style={{
-                          transform: deckTransform(i, i === active, true),
-                        }}
-                      >
-                        <MediaSlot
-                          label={item.mediaLabel}
-                          ratio="4 / 3"
-                          src={item.src}
-                          alt={item.alt ?? item.title}
-                          className="rounded-3xl"
-                        />
-                      </div>
-                    </div>
+                      className="min-h-[70svh]"
+                    />
                   ))}
-                  <div aria-hidden="true" className="h-[10vh]" />
                 </div>
               </div>
-
-              {/* MOBILE: elemen pemicu scroll */}
-              <div className="flex flex-col gap-6 lg:hidden">
-                {ITEMS.map((item, i) => (
-                  <div
-                    key={item.title}
-                    ref={(el) => {
-                      mobileDriverRefs.current[i] = el;
-                    }}
-                    className="min-h-[70svh]"
-                  />
-                ))}
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

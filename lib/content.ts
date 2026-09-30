@@ -2,7 +2,6 @@ export const NAV_LINKS = [
   { label: "Ekosistem", href: "#ekosistem" },
   { label: "Prestasi", href: "#prestasi" },
   { label: "Kompetisi", href: "#kompetisi" },
-  { label: "Internasional", href: "#internasional" },
   { label: "UKM", href: "#ukm" },
   { label: "Fasilitas", href: "#kemahasiswaan" },
   { label: "AIK", href: "#aik" },

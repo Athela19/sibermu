@@ -175,7 +175,7 @@ export default function Navbar() {
               ? "max-w-full rounded-none bg-transparent shadow-none transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               : `transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   solid
-                    ? "max-w-[92%] lg:max-w-6xl rounded-full border border-primary/30 bg-white/20 shadow-none backdrop-blur-sm"
+                    ? "max-w-[92%] lg:max-w-6xl rounded-full border border-primary/30 bg-white/50 shadow-none backdrop-blur-sm"
                     : "max-w-full rounded-none bg-transparent shadow-none"
                 }`
           }`}
