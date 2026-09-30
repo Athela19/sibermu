@@ -369,7 +369,7 @@ export default function Hero({ frames }: { frames: string[] }) {
           />
         ) : (
           <MediaSlot
-            label="Slot frame hero — public/hero/scene1.webp dan seterusnya"
+            label="Slot frame hero — public/hero/frame_0001.webp dan seterusnya"
             ratio="16 / 9"
             className="absolute inset-0 aspect-auto h-full"
           />
