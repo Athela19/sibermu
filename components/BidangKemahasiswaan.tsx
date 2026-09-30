@@ -36,11 +36,11 @@ export default function BidangKemahasiswaan() {
           scrollTrigger: scrollPos,
         },
       );
-      // Gap huruf 0 -> final mengikuti scroll (desktop 0.06em, mobile 0.04em)
+      // Gap huruf sudah ada sejak muncul (0em, tidak menimpa) -> final mengikuti scroll (desktop 0.06em, mobile 0.04em)
       if (desktopTextRef.current) {
         gsap.fromTo(
           desktopTextRef.current,
-          { letterSpacing: "-0.5em" },
+          { letterSpacing: "0em" },
           {
             letterSpacing: "0.06em",
             ease: "none",
@@ -51,7 +51,7 @@ export default function BidangKemahasiswaan() {
       if (mobileTextRef.current) {
         gsap.fromTo(
           mobileTextRef.current,
-          { letterSpacing: "-0.5em" },
+          { letterSpacing: "0em" },
           {
             letterSpacing: "0.04em",
             ease: "none",
@@ -108,7 +108,7 @@ export default function BidangKemahasiswaan() {
           <text
             ref={desktopTextRef}
             fill="white"
-            fontSize="105"
+            fontSize="52"
             fontWeight="800"
             letterSpacing="0.06em"
             style={{ fontFamily: "var(--font-sans)" }}
@@ -150,7 +150,7 @@ export default function BidangKemahasiswaan() {
           <text
             ref={mobileTextRef}
             fill="white"
-            fontSize="64"
+            fontSize="32"
             fontWeight="800"
             letterSpacing="0.04em"
             style={{ fontFamily: "var(--font-sans)" }}

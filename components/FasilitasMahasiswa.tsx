@@ -3,15 +3,13 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { StickySplitItem } from "@/lib/content";
+import { FASILITAS_MAHASISWA } from "@/lib/content";
 import { splitTextToWords } from "@/lib/reveal-text";
 import MediaSlot from "./MediaSlot";
+import RevealText from "./RevealText";
 
-type StickySplitProps = {
-  id: string;
-  eyebrow: string;
-  items: StickySplitItem[];
-};
+const ID = "fasilitas-mahasiswa";
+const ITEMS = FASILITAS_MAHASISWA;
 
 const DECK_TILTS = [0, -2.5, 2, -1.5, 2.5, -2];
 
@@ -21,8 +19,8 @@ const deckTransform = (index: number, isActive: boolean, centered = false) => {
   return `rotate(${tilt}deg) scale(${isActive ? 1 : 0.98}) translateX(${shift}px)`;
 };
 
-export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
-  const rootRef = useRef<HTMLElement>(null);
+export default function FasilitasMahasiswa() {
+  const rootRef = useRef<HTMLDivElement>(null);
   const desktopMediaRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mobileDriverRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textItemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -33,7 +31,7 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
 
-  const isStatic = items.length <= 1 || reduced;
+  const isStatic = ITEMS.length <= 1 || reduced;
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -80,7 +78,7 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
       window.removeEventListener("load", onLoad);
       mm.revert();
     };
-  }, [isStatic, items.length]);
+  }, [isStatic]);
 
   const wordsOf = (slots: number[]): HTMLElement[] => {
     const words: HTMLElement[] = [];
@@ -100,16 +98,16 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
       .map((_el, slot) => slot)
       .filter((slot) => textItemRefs.current[slot]);
     gsap.set(wordsOf(slots), { opacity: 0, y: 24, filter: "blur(8px)" });
-  }, [isStatic, items.length]);
+  }, [isStatic]);
 
   const prevActiveRef = useRef(0);
 
   useLayoutEffect(() => {
     if (isStatic) return;
-    const n = items.length;
+    const n = ITEMS.length;
     const prev = prevActiveRef.current;
     prevActiveRef.current = active;
-    const allWords = wordsOf(items.flatMap((_, i) => [i, i + n]));
+    const allWords = wordsOf(ITEMS.flatMap((_, i) => [i, i + n]));
     const activeWords = wordsOf([active, active + n]);
     const prevWords = prev === active ? [] : wordsOf([prev, prev + n]);
     const keep = new Set([...activeWords, ...prevWords]);
@@ -143,10 +141,10 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
         overwrite: "auto",
       },
     );
-  }, [active, isStatic, items]);
+  }, [active, isStatic]);
 
   const goTo = (index: number) => {
-    const clamped = Math.max(0, Math.min(index, items.length - 1));
+    const clamped = Math.max(0, Math.min(index, ITEMS.length - 1));
     setActive(clamped);
     const target =
       window.innerWidth >= 1024
@@ -178,19 +176,14 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
         <span data-sticky-word className="inline-block">
           {word}
         </span>
-        {i < words.length - 1 ? " " : ""}
+        {i < words.length - 1 ? " " : ""}
       </span>
     ));
   };
 
   const renderTextStack = (stackId: string, offset: number) => (
-    <div
-      id={stackId}
-      aria-live="polite"
-      aria-atomic="true"
-      className="grid"
-    >
-      {items.map((item, i) => {
+    <div id={stackId} aria-live="polite" aria-atomic="true" className="grid">
+      {ITEMS.map((item, i) => {
         const isActive = i === active;
         return (
           <div
@@ -202,7 +195,7 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
             role="button"
             aria-current={isActive}
             aria-hidden={!isActive}
-            aria-label={`${item.title} — item ${i + 1} dari ${items.length}`}
+            aria-label={`${item.title} — item ${i + 1} dari ${ITEMS.length}`}
             onClick={() => goTo(i)}
             onKeyDown={(e) => handleItemKeyDown(e, i)}
             className={`col-start-1 row-start-1 mx-auto w-full max-w-md cursor-pointer px-2 py-5 text-center outline-none focus-visible:outline-[2px] focus-visible:outline-secondary focus-visible:outline-offset-4 lg:py-6 ${
@@ -227,117 +220,149 @@ export default function StickySplit({ id, eyebrow, items }: StickySplitProps) {
     </div>
   );
 
-  if (isStatic) {
-    return (
-      <section ref={rootRef} id={id} aria-label={eyebrow} className="w-full">
-        <div className="flex flex-col gap-12">
-          {items.map((item) => (
-            <div
-              key={item.title}
-              className="grid gap-6 lg:grid-cols-12 lg:gap-16"
-            >
-              <div className="lg:col-span-5">
-                <h3 className="font-display text-[1.5rem] font-semibold leading-[1.15] text-primary lg:text-[2rem]">
-                  {item.title}
-                </h3>
-                <p className="mt-2 font-sans text-base leading-[1.7] text-ink-900">
-                  {item.body}
-                </p>
-                {item.meta ? (
-                  <p className="mt-2 font-sans text-sm font-medium text-ink-500">
-                    {item.meta}
-                  </p>
-                ) : null}
-              </div>
-              <div className="lg:col-span-7">
-                <MediaSlot
-                  label={item.mediaLabel}
-                  ratio="4 / 3"
-                  src={item.src}
-                  alt={item.alt ?? item.title}
-                  className="mx-auto w-[90%] rounded-3xl"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section ref={rootRef} id={id} aria-label={eyebrow} className="w-full">
-      <div className="sticky top-[104px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
-        <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
-          {items.map((item, i) => (
-            <div
-              key={item.title}
-              aria-hidden={i !== active}
-              style={{ transform: deckTransform(i, i === active, true) }}
-              className={`absolute inset-x-4 inset-y-3 transition-all duration-500 ease-out ${
-                i <= active ? "translate-x-0" : "pointer-events-none translate-x-[calc(100%+2rem)]"
-              }`}
-            >
-              <MediaSlot
-                label={item.mediaLabel}
-                ratio="auto"
-                src={item.src}
-                alt={item.alt ?? item.title}
-                className="h-full rounded-3xl"
-              />
-            </div>
-          ))}
-        </div>
-        <div className="mt-4">{renderTextStack(`${id}-teks-mobile`, 0)}</div>
+    <section
+      id="kemahasiswaan"
+      aria-labelledby="fasilitas-heading"
+      className="mx-auto w-full max-w-7xl px-6 py-16 sm:px-8 lg:py-24"
+    >
+      <div className="sticky top-16 z-20 -mx-6 bg-paper/95 px-6 py-3 text-center backdrop-blur-sm sm:-mx-8 sm:px-8 lg:top-[82px]">
+        <RevealText
+          as="h2"
+          id="fasilitas-heading"
+          text="Fasilitas Mahasiswa"
+          className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+        />
       </div>
 
-      <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-        <div className="hidden lg:col-span-5 lg:block">
-          <div className="flex min-h-[calc(100svh-130px)] flex-col justify-center lg:sticky lg:top-[120px] lg:self-start">
-            {renderTextStack(`${id}-teks-desktop`, items.length)}
-          </div>
-        </div>
-
-        <div className="hidden lg:col-span-7 lg:block">
-          <div className="relative flex flex-col gap-[8vh]">
-            {items.map((item, i) => (
+      <div
+        ref={rootRef}
+        id={ID}
+        aria-label="Fasilitas Mahasiswa"
+        className="mt-10 w-full sm:mt-14 lg:mt-16"
+      >
+        {isStatic ? (
+          <div className="flex flex-col gap-12">
+            {ITEMS.map((item) => (
               <div
                 key={item.title}
-                ref={(el) => {
-                  desktopMediaRefs.current[i] = el;
-                }}
-                className="lg:sticky lg:top-[144px]"
-                style={{ zIndex: i + 1 }}
+                className="grid items-center gap-6 lg:grid-cols-12 lg:gap-16"
               >
-                <div
-                  className="mx-auto w-[90%] overflow-hidden rounded-3xl bg-paper shadow-[0_12px_32px_rgba(16,24,40,0.12)] transition-transform duration-500 ease-out"
-                  style={{ transform: deckTransform(i, i === active) }}
-                >
+                <div className="lg:col-span-5">
+                  <h3 className="font-display text-[1.5rem] font-semibold leading-[1.15] text-primary lg:text-[2rem]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 font-sans text-base leading-[1.7] text-ink-900">
+                    {item.body}
+                  </p>
+                  {item.meta ? (
+                    <p className="mt-2 font-sans text-sm font-medium text-ink-500">
+                      {item.meta}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="flex justify-center lg:col-span-7">
                   <MediaSlot
                     label={item.mediaLabel}
                     ratio="4 / 3"
                     src={item.src}
                     alt={item.alt ?? item.title}
-                    className="rounded-3xl"
+                    className="mx-auto w-full max-w-[560px] rounded-3xl"
                   />
                 </div>
               </div>
             ))}
-            <div aria-hidden="true" className="h-[10vh]" />
           </div>
-        </div>
+        ) : (
+          <>
+            {/* MOBILE: deck gambar + teks sticky */}
+            <div className="sticky top-[196px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
+              <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
+                {ITEMS.map((item, i) => (
+                  <div
+                    key={item.title}
+                    aria-hidden={i !== active}
+                    style={{ transform: deckTransform(i, i === active, true) }}
+                    className={`absolute inset-x-4 inset-y-3 transition-all duration-500 ease-out ${
+                      i <= active
+                        ? "translate-x-0"
+                        : "pointer-events-none translate-x-[calc(100%+2rem)]"
+                    }`}
+                  >
+                    <MediaSlot
+                      label={item.mediaLabel}
+                      ratio="auto"
+                      src={item.src}
+                      alt={item.alt ?? item.title}
+                      className="h-full rounded-3xl"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4">
+                {renderTextStack(`${ID}-teks-mobile`, 0)}
+              </div>
+            </div>
 
-        <div className="flex flex-col gap-6 lg:hidden">
-          {items.map((item, i) => (
-            <div
-              key={item.title}
-              ref={(el) => {
-                mobileDriverRefs.current[i] = el;
-              }}
-              className="min-h-[70svh]"
-            />
-          ))}
-        </div>
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+              {/* DESKTOP: kolom teks (sticky, sejajar dengan card) */}
+              <div className="hidden lg:col-span-5 lg:block">
+                {/*
+                  Tinggi = tinggi card (560px x 3/4 = 420px) dan top sama
+                  dengan card (220px), sehingga pusat teks = pusat card.
+                */}
+                <div className="flex h-[420px] items-center justify-center lg:sticky lg:top-[220px] lg:self-start">
+                  {renderTextStack(`${ID}-teks-desktop`, ITEMS.length)}
+                </div>
+              </div>
+
+              {/* DESKTOP: kolom card menumpuk */}
+              <div className="hidden lg:col-span-7 lg:block">
+                <div className="relative flex flex-col gap-[8vh]">
+                  {ITEMS.map((item, i) => (
+                    <div
+                      key={item.title}
+                      ref={(el) => {
+                        desktopMediaRefs.current[i] = el;
+                      }}
+                      className="flex justify-center lg:sticky lg:top-[220px]"
+                      style={{ zIndex: i + 1 }}
+                    >
+                      <div
+                        className="mx-auto w-full max-w-[560px] overflow-hidden rounded-3xl bg-paper shadow-[0_12px_32px_rgba(16,24,40,0.12)] transition-transform duration-500 ease-out"
+                        style={{
+                          transform: deckTransform(i, i === active, true),
+                        }}
+                      >
+                        <MediaSlot
+                          label={item.mediaLabel}
+                          ratio="4 / 3"
+                          src={item.src}
+                          alt={item.alt ?? item.title}
+                          className="rounded-3xl"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <div aria-hidden="true" className="h-[10vh]" />
+                </div>
+              </div>
+
+              {/* MOBILE: elemen pemicu scroll */}
+              <div className="flex flex-col gap-6 lg:hidden">
+                {ITEMS.map((item, i) => (
+                  <div
+                    key={item.title}
+                    ref={(el) => {
+                      mobileDriverRefs.current[i] = el;
+                    }}
+                    className="min-h-[70svh]"
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

@@ -95,24 +95,24 @@ export default function Ekosistem() {
     >
       <div
         ref={innerRef}
-        className="mx-auto grid w-full max-w-7xl origin-center grid-cols-1 items-center gap-10 overflow-visible px-6 py-16 will-change-transform sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-24"
+        className="mx-auto grid min-h-[100svh] w-full max-w-7xl origin-center grid-cols-1 content-center items-center gap-10 overflow-visible px-6 py-16 will-change-transform sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-24"
       >
-        {/* Teks: bawah di mobile, kiri di desktop */}
-        <div className="order-2 lg:order-1">
+        {/* Teks: kiri di desktop, bawah di mobile */}
+        <div className="order-2 text-left lg:order-1">
           <RevealText
             as="h1"
             id="ekosistem-heading"
             text="Ekosistem"
-            className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+            className="text-left font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
           />
           <RevealText
             as="p"
             text="Di bawah naungan Biro Al-Islam dan Kemuhammadiyahan serta Kemahasiswaan, Bidang Kemahasiswaan Universitas Siber Muhammadiyah hadir sebagai pusat pengembangan potensi mahasiswa melalui organisasi, kompetisi, kreativitas, kewirausahaan, dan berbagai program pengembangan diri."
-            className="mt-6 max-w-xl font-sans text-[1.05rem] leading-7 text-ink-500"
+            className="mt-6 max-w-xl text-left font-sans text-[1.05rem] leading-7 text-ink-500"
           />
         </div>
 
-        {/* Gambar: atas di mobile (+24px), kanan di desktop */}
+        {/* Gambar: kanan di desktop, atas di mobile */}
         <div className="order-1 pt-6 lg:order-2 lg:pt-0">
           <div
             ref={mediaRef}

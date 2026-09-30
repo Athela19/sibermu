@@ -160,7 +160,7 @@ export default function Navbar() {
     };
   }, [mounted]);
 
-  const textColor = solid ? "text-primary" : "text-white";
+  const textColor = "text-primary";
 
   return (
     <>
@@ -175,7 +175,7 @@ export default function Navbar() {
               ? "max-w-full rounded-none bg-transparent shadow-none transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               : `transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   solid
-                    ? "max-w-[92%] sm:max-w-5xl rounded-full bg-white shadow-none"
+                    ? "max-w-[92%] lg:max-w-6xl rounded-full border border-primary/30 bg-white/20 shadow-none backdrop-blur-sm"
                     : "max-w-full rounded-none bg-transparent shadow-none"
                 }`
           }`}
@@ -197,12 +197,12 @@ export default function Navbar() {
             />
           </a>
 
-          <ul className="hidden items-center gap-8 md:flex">
+          <ul className="hidden items-center gap-5 lg:flex xl:gap-7">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className={`font-sans text-[0.9375rem] font-semibold transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-brand-500 ${textColor}`}
+                  className={`whitespace-nowrap font-sans text-sm font-semibold transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-brand-500 ${textColor}`}
                 >
                   {link.label}
                 </a>
@@ -213,7 +213,7 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <a
               href={SITE.ctaHref}
-              className={`hidden rounded-full px-6 py-2.5 font-sans text-[0.9375rem] font-semibold transition-[background-color,border-color,color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:inline-flex ${
+              className={`hidden rounded-full px-6 py-2.5 font-sans text-[0.9375rem] font-semibold transition-[background-color,border-color,color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] lg:inline-flex ${
                 solid
                   ? "bg-primary text-white hover:bg-secondary"
                   : "border border-white/50 text-white hover:border-white hover:bg-white/10"
@@ -227,7 +227,7 @@ export default function Navbar() {
               onClick={mounted ? closeMenu : openMenu}
               aria-label={mounted ? "Tutup menu navigasi" : "Buka menu navigasi"}
               aria-expanded={mounted}
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${mounted ? "text-white" : textColor}`}
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${mounted ? "text-white" : textColor}`}
             >
               {mounted ? (
                 <X className="h-6 w-6" aria-hidden="true" />
@@ -248,13 +248,13 @@ export default function Navbar() {
           aria-label="Menu navigasi"
           className="fixed inset-0 z-[60] flex flex-col bg-primary px-6 py-5"
         >
-          <ul className="flex flex-1 flex-col justify-center gap-6">
+          <ul className="flex flex-1 flex-col justify-center gap-4 overflow-y-auto py-16">
             {NAV_LINKS.map((link) => (
               <li key={link.href} data-menu-item>
                 <a
                   href={link.href}
                   onClick={closeMenu}
-                  className="font-display text-4xl font-semibold text-white"
+                  className="font-display text-3xl font-semibold text-white sm:text-4xl"
                 >
                   {link.label}
                 </a>

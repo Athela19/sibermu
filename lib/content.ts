@@ -1,6 +1,12 @@
 export const NAV_LINKS = [
-  { label: "Kemahasiswaan", href: "#kemahasiswaan" },
+  { label: "Ekosistem", href: "#ekosistem" },
+  { label: "Prestasi", href: "#prestasi" },
+  { label: "Kompetisi", href: "#kompetisi" },
+  { label: "Internasional", href: "#internasional" },
+  { label: "UKM", href: "#ukm" },
+  { label: "Fasilitas", href: "#kemahasiswaan" },
   { label: "AIK", href: "#aik" },
+  { label: "Pilar AIK", href: "#pilar-aik" },
   { label: "Kontak", href: "#kontak" },
 ] as const;
 
@@ -10,7 +16,7 @@ export const HERO = {
   subtitle:
     "Menyediakan akses pendidikan berkualitas secara luas berdasarkan nilai-nilai Islam berkemajuan serta membina potensi mahasiswa melalui kegiatan ilmiah, minat bakat, dan UKM.",
   scrollLabel: "Gulir",
-  scrollTarget: "#kemahasiswaan",
+  scrollTarget: "#ekosistem",
 } as const;
 
 export type StickySplitItem = {
