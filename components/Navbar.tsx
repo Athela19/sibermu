@@ -166,18 +166,15 @@ export default function Navbar() {
     <>
       <header
         className={`fixed inset-x-0 top-0 isolate bg-transparent px-[6px] pt-4 sm:px-[14px] lg:px-[24px] lg:pt-[26px] ${mounted ? "z-[70]" : "z-50"}`}
-        style={{ contain: "layout paint", transform: "translateZ(0)", backgroundColor: "transparent" }}
       >
         <nav
           aria-label="Navigasi utama"
-          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 px-[10px] sm:h-[72px] sm:px-[18px] lg:px-[28px] will-change-transform ${
+          className={`relative mx-auto flex h-16 w-full items-center justify-between gap-4 border px-[10px] sm:h-[72px] sm:px-[18px] lg:px-[28px] will-change-transform transition-[max-width,border-radius,background-color,border-color,backdrop-filter,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             mounted
-              ? "max-w-full rounded-none bg-transparent shadow-none transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              : `transition-[max-width,border-radius,background-color] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  solid
-                    ? "max-w-[92%] sm:max-w-5xl rounded-full bg-white shadow-none"
-                    : "max-w-full rounded-none bg-transparent shadow-none"
-                }`
+              ? "max-w-full rounded-none border-transparent bg-transparent shadow-none backdrop-blur-none"
+              : solid
+                ? "max-w-[92%] sm:max-w-5xl rounded-full border-white/40 bg-white/80 shadow-[0_8px_32px_rgba(0,0,0,0.08)] backdrop-blur-xl backdrop-saturate-150"
+                : "max-w-full rounded-none border-transparent bg-transparent shadow-none backdrop-blur-none"
           }`}
         >
           <a
