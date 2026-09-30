@@ -88,29 +88,76 @@ export type KompetisiItem = {
 export const KOMPETISI: KompetisiItem[] = [
   {
     title: "PIMNAS & PKM",
-    body: "Pekan Ilmiah Mahasiswa Nasional dan Program Kreativitas Mahasiswa sebagai wadah penalaran ilmiah nasional.",
+    body: "Pekan Ilmiah Mahasiswa Nasional dan Program Kreativitas Mahasiswa — ajang penalaran ilmiah tertinggi bagi mahasiswa se-Indonesia. Mahasiswa SiberMu berkompetisi melalui karya tulis, penelitian, dan inovasi yang berdampak bagi masyarakat.",
     mediaLabel: "Slot logo PIMNAS & PKM (1/1)",
+    src: "/logo/PIMNAS.jpg",
   },
   {
     title: "GEMASTIK",
-    body: "Pagelaran Mahasiswa Nasional Bidang Teknologi Informasi dan Komunikasi bagi talenta digital mahasiswa SiberMu.",
+    body: "Pagelaran Mahasiswa Nasional Bidang Teknologi Informasi dan Komunikasi yang diselenggarakan Kemendikbudristek. Mencakup kategori pemrograman, keamanan siber, data mining, hingga pengembangan aplikasi inovatif.",
     mediaLabel: "Slot logo GEMASTIK (1/1)",
+    src: "/logo/GEMASTIK.png",
   },
   {
     title: "LIDM",
-    body: "Lomba Inovasi Digital Mahasiswa untuk mendorong inovasi pendidikan berbasis teknologi.",
+    body: "Lomba Inovasi Digital Mahasiswa yang mendorong terciptanya solusi teknologi untuk dunia pendidikan. Mahasiswa mengembangkan prototipe digital mulai dari aplikasi pembelajaran hingga platform edukasi berbasis AI.",
     mediaLabel: "Slot logo LIDM (1/1)",
+    src: "/logo/LIDM.webp",
   },
   {
-    title: "KDMI & NUDC",
-    body: "Kompetisi Debat Mahasiswa Indonesia dan National University Debating Championship untuk mengasah kemampuan komunikasi dan daya kritis.",
-    mediaLabel: "Slot logo KDMI & NUDC (1/1)",
+    title: "SATRIA DATA",
+    body: "Statistika Ria dan Festival Sains Data — kompetisi nasional di bidang statistika dan ilmu data. Peserta mengolah dataset nyata untuk menghasilkan insight dan solusi berbasis data yang aplikatif.",
+    mediaLabel: "Slot logo SATRIA DATA (1/1)",
+    src: "/logo/SATRIA.jpeg",
   },
   {
-    title: "Kompetisi PUSPRESMA PTMA",
-    body: "Berbagai ajang kejuaraan dan kompetisi yang diselenggarakan oleh Pusat Prestasi Perguruan Tinggi Muhammadiyah dan 'Aisyiyah.",
-    mediaLabel: "Slot logo PUSPRESMA PTMA (1/1)",
+    title: "KBMI & KBMK",
+    body: "Kompetisi Bisnis Mahasiswa Indonesia serta Kompetisi Nasional Mahasiswa Bidang Ilmu Bisnis, Manajemen, dan Keuangan. Wadah bagi mahasiswa untuk mengembangkan ide bisnis inovatif dan mempresentasikan rencana usaha di tingkat nasional.",
+    mediaLabel: "Slot logo KBMI & KBMK (1/1)",
+    src: "/logo/KBMK.webp",
   },
+  {
+    title: "MAWAPRES & KDMI",
+    body: "Pemilihan Mahasiswa Berprestasi dan Kompetisi Debat Mahasiswa Indonesia. Mengasah kemampuan berpikir kritis, public speaking, dan argumentasi dalam isu-isu strategis nasional maupun global.",
+    mediaLabel: "Slot logo MAWAPRES & KDMI (1/1)",
+    src: "/logo/KDMI.webp",
+  },
+  {
+    title: "Ajang PUSPRESMA PTMA",
+    body: "Berbagai kompetisi ilmiah yang diselenggarakan oleh Pusat Prestasi Perguruan Tinggi Muhammadiyah dan 'Aisyiyah. Ajang ini menjadi wadah unjuk prestasi mahasiswa di lingkungan PTMA se-Indonesia dalam bidang akademik dan non-akademik.",
+    mediaLabel: "Slot logo Ajang PUSPRESMA PTMA (1/1)",
+    src: "/logo/PTMA.jpeg",
+  },
+  {
+    title: "MTQMN",
+    body: "Musabaqah Tilawatil Qur’an Mahasiswa Nasional — ajang syiar keislaman dan pemuliaan kitab suci Al-Qur’an di tingkat perguruan tinggi se-Indonesia. Mahasiswa mengasah kemampuan dalam cabang tilawah, hifzh, hingga karya tulis ilmiah kandungan Al-Qur’an.",
+    mediaLabel: "Slot logo MTQMN (1/1)",
+    src: "/logo/MTQMN.jpg",
+  },
+  {
+    title: "Pekan Seni Mahasiswa PTMA",
+    body: "Ajang unjuk bakat seni antar-Perguruan Tinggi Muhammadiyah dan 'Aisyiyah. Mencakup seni tari, musik, teater, dan seni rupa sebagai ekspresi kreativitas mahasiswa yang berkarakter Islami.",
+    mediaLabel: "Slot logo Pekan Seni Mahasiswa PTMA (1/1)",
+    src: "/logo/PekanSeniPTMA.jpeg",
+  },
+  {
+    title: "Global Youth Action",
+    body: "Ajang dan program kepemudaan tingkat internasional yang mempertemukan mahasiswa dari berbagai negara. Mahasiswa SiberMu berkolaborasi dalam proyek sosial lintas budaya dan kepemimpinan global.",
+    mediaLabel: "Slot logo Global Youth Action (1/1)",
+    src: "/logo/GlobalYouthAction.png",
+  },
+  {
+    title: "Youth Innovation Forum",
+    body: "Forum inovasi pemuda di tingkat internasional yang mendorong pertukaran ide kreatif dan solusi global. Mahasiswa mempresentasikan proyek inovatif di hadapan delegasi dari berbagai universitas dunia.",
+    mediaLabel: "Slot logo Youth Innovation Forum (1/1)",
+    src: "/logo/GlobalYouthInnovationForum.png",
+  },
+  {
+    title: "Student Exchange & Student Mobility",
+    body: "Program pertukaran dan mobilitas mahasiswa tingkat internasional untuk memperluas wawasan akademik lintas negara. Mahasiswa mendapat pengalaman belajar di kampus mitra luar negeri dan membangun jejaring global.",
+    mediaLabel: "Slot logo Student Exchange & Student Mobility (1/1)",
+    src: "/logo/StudentExchange.jpeg",
+  }
 ];
 
 export type KegiatanInternasionalItem = {

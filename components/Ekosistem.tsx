@@ -9,44 +9,8 @@ import RevealText from "./RevealText";
 
 export default function Ekosistem() {
   const innerRef = useRef<HTMLDivElement>(null);
-  const mediaRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const el = mediaRef.current;
-    if (!el) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { autoAlpha: 0, y: 32, filter: "blur(10px)", scale: 0.96 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          filter: "blur(0px)",
-          scale: 1,
-          duration: 1,
-          ease: "power2.out",
-          clearProps: "filter,transform",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 80%",
-            once: true,
-            toggleActions: "play none none none",
-          },
-        },
-      );
-    }, el);
-
-    const onLoad = () => ScrollTrigger.refresh();
-    window.addEventListener("load", onLoad);
-    return () => {
-      window.removeEventListener("load", onLoad);
-      ctx.revert();
-    };
-  }, []);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -57,25 +21,37 @@ export default function Ekosistem() {
     const prestasiEl = document.getElementById("prestasi");
     if (!inner || !bidangEl) return;
 
+    const st = {
+      trigger: bidangEl,
+      start: "top 50%",
+      endTrigger: prestasiEl ?? bidangEl,
+      end: prestasiEl ? "top 40%" : "top 15%",
+      scrub: 1,
+    };
+
     const ctx = gsap.context(() => {
-      // Zoom kontinu sampai Prestasi, dipetakan ke progres scroll dengan
-      // batas wajar agar konten tetap terbaca-kabur (tidak lenyap).
+      // Zoom + blur bersama
       gsap.fromTo(
         inner,
         { scale: 1, filter: "blur(0px)" },
-        {
-          scale: 1.25,
-          filter: "blur(10px)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: bidangEl,
-            start: "top 50%",
-            endTrigger: prestasiEl ?? bidangEl,
-            end: prestasiEl ? "top 40%" : "top 15%",
-            scrub: 1,
-          },
-        },
+        { scale: 1.25, filter: "blur(10px)", ease: "none", scrollTrigger: st },
       );
+
+      // Parallax: teks bergerak lebih cepat ke atas dari gambar
+      if (textRef.current) {
+        gsap.to(textRef.current, {
+          y: -60,
+          ease: "none",
+          scrollTrigger: st,
+        });
+      }
+      if (imageRef.current) {
+        gsap.to(imageRef.current, {
+          y: -20,
+          ease: "none",
+          scrollTrigger: st,
+        });
+      }
     }, inner);
 
     const onLoad = () => ScrollTrigger.refresh();
@@ -90,41 +66,40 @@ export default function Ekosistem() {
     <section
       id="ekosistem"
       aria-labelledby="ekosistem-heading"
-      className="sticky top-0 z-10 w-full overflow-visible bg-paper"
+      className="sticky top-0 z-10 flex min-h-[100svh] w-full items-center overflow-hidden bg-paper"
       style={{ contain: "layout" }}
     >
       <div
         ref={innerRef}
-        className="mx-auto grid min-h-[100svh] w-full max-w-7xl origin-center grid-cols-1 content-center items-center gap-10 overflow-visible px-6 py-16 will-change-transform sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-24"
+        className="absolute inset-0 origin-center will-change-transform"
       >
-        {/* Teks: kiri di desktop, bawah di mobile */}
-        <div className="order-2 text-left lg:order-1">
-          <RevealText
-            as="h1"
-            id="ekosistem-heading"
-            text="Ekosistem"
-            className="text-left font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+        {/* Gambar AIK Gedung — menutupi sisi kanan */}
+        <div ref={imageRef} className="absolute inset-y-0 right-0 w-full will-change-transform lg:w-[55%]">
+          <Image
+            src="/assets/AIKGedung.png"
+            alt="Gedung kampus SiberMu"
+            fill
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            className="object-cover object-center"
+            priority={false}
           />
-          <RevealText
-            as="p"
-            text="Di bawah naungan Biro Al-Islam dan Kemuhammadiyahan serta Kemahasiswaan, Bidang Kemahasiswaan Universitas Siber Muhammadiyah hadir sebagai pusat pengembangan potensi mahasiswa melalui organisasi, kompetisi, kreativitas, kewirausahaan, dan berbagai program pengembangan diri."
-            className="mt-6 max-w-xl text-left font-sans text-[1.05rem] leading-7 text-ink-500"
-          />
+          {/* Gradient overlay agar teks tetap terbaca */}
+          <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/80 to-transparent lg:via-paper/50" />
         </div>
 
-        {/* Gambar: kanan di desktop, atas di mobile */}
-        <div className="order-1 pt-6 lg:order-2 lg:pt-0">
-          <div
-            ref={mediaRef}
-            className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] bg-mist will-change-transform"
-          >
-            <Image
-              src="/assets/gedung.png"
-              alt="Gedung kampus SiberMu"
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-              priority={false}
+        {/* Teks */}
+        <div ref={textRef} className="relative z-10 mx-auto flex h-full w-full max-w-7xl items-center px-6 will-change-transform sm:px-8">
+          <div className="max-w-xl py-16 lg:py-24">
+            <RevealText
+              as="h1"
+              id="ekosistem-heading"
+              text="Ekosistem"
+              className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+            />
+            <RevealText
+              as="p"
+              text="Di bawah naungan Biro Al-Islam dan Kemuhammadiyahan serta Kemahasiswaan, Bidang Kemahasiswaan Universitas Siber Muhammadiyah hadir sebagai pusat pengembangan potensi mahasiswa melalui organisasi, kompetisi, kreativitas, kewirausahaan, dan berbagai program pengembangan diri."
+              className="mt-6 max-w-xl font-sans text-[1.05rem] leading-7 text-ink-500"
             />
           </div>
         </div>
