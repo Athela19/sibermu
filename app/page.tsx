@@ -3,7 +3,6 @@ import Ekosistem from "@/components/Ekosistem";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import HeroAIK from "@/components/HeroAIK";
-import Internasional from "@/components/Internasional";
 import Kompetisi from "@/components/Kompetisi";
 import Navbar from "@/components/Navbar";
 import PillarAIK from "@/components/PillarAIK";
@@ -31,7 +30,6 @@ export default function Home() {
           <BidangKemahasiswaan />
           <Prestasi />
           <Kompetisi />
-          <Internasional />
           <UKM />
         </div>
         <section
