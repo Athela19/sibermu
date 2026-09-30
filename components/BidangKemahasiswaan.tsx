@@ -73,7 +73,7 @@ export default function BidangKemahasiswaan() {
     <section
       ref={sectionRef}
       id="bidang-kemahasiswaan"
-      aria-label="bidang kemahasiswaan"
+      aria-label="Bidang Kemahasiswaan"
       className="relative z-20 -mt-6 flex min-h-[100svh] w-full flex-col justify-end overflow-hidden bg-transparent pt-0 lg:-mt-10"
     >
       {/* Dome utama + teks mengikuti alur dome */}
@@ -87,7 +87,7 @@ export default function BidangKemahasiswaan() {
           className="absolute inset-0 hidden h-full w-full lg:block"
           preserveAspectRatio="none"
           role="img"
-          aria-label="bidang kemahasiswaan"
+          aria-label="Bidang Kemahasiswaan"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -119,7 +119,7 @@ export default function BidangKemahasiswaan() {
               textAnchor="middle"
               dominantBaseline="middle"
             >
-              bidang kemahasiswaan
+              Bidang Kemahasiswaan
             </textPath>
           </text>
         </svg>
@@ -129,7 +129,7 @@ export default function BidangKemahasiswaan() {
           className="absolute inset-0 h-full w-full lg:hidden"
           preserveAspectRatio="xMidYMax meet"
           role="img"
-          aria-label="bidang kemahasiswaan"
+          aria-label="Bidang Kemahasiswaan"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -161,7 +161,7 @@ export default function BidangKemahasiswaan() {
               textAnchor="middle"
               dominantBaseline="middle"
             >
-              bidang kemahasiswaan
+              Bidang Kemahasiswaan
             </textPath>
           </text>
         </svg>
@@ -173,7 +173,7 @@ export default function BidangKemahasiswaan() {
             berkembang, berkarya, dan memberikan dampak.
           </p>
         </div>
-        <h2 className="sr-only">bidang kemahasiswaan</h2>
+        <h2 className="sr-only">Bidang Kemahasiswaan</h2>
       </div>
       {/* Penutup sambungan navy — menutup celah saat dome terangkat (scrub y: 32 mobile / 80 desktop) agar tak ada garis pemisah ke Prestasi */}
       <div

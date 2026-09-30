@@ -8,8 +8,9 @@ import { KOMPETISI } from "@/lib/content";
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const CLOUD_SIZE = 420;
-const ICON_RENDER_SIZE = 44;
+const CLOUD_SIZE = 640;
+const SPHERE_RADIUS = 210;
+const ICON_RENDER_SIZE = 80;
 const ICON_HALF = ICON_RENDER_SIZE / 2;
 
 /* ------------------------------------------------------------------ */
@@ -67,9 +68,9 @@ export default function Kompetisi() {
       const r = Math.sqrt(Math.max(0, 1 - y * y));
       const phi = i * increment;
       return {
-        x: Math.cos(phi) * r * 110,
-        y: y * 110,
-        z: Math.sin(phi) * r * 110,
+        x: Math.cos(phi) * r * SPHERE_RADIUS,
+        y: y * SPHERE_RADIUS,
+        z: Math.sin(phi) * r * SPHERE_RADIUS,
         id: i,
       };
     });
@@ -135,12 +136,12 @@ export default function Kompetisi() {
 
         const sx = canvas.width / 2 + rx;
         const sy = canvas.height / 2 + ry;
-        const scale = (rz2 + 200) / 300;
-        const radius = ICON_HALF * scale;
+        const scale = (rz2 + 420) / 540;
+        const hitRadius = Math.max(32, (ICON_HALF + 8) * scale);
 
         const dx = cx - sx;
         const dy = cy - sy;
-        if (dx * dx + dy * dy < radius * radius && rz2 > bestDepth) {
+        if (dx * dx + dy * dy < hitRadius * hitRadius && rz2 > bestDepth) {
           bestDepth = rz2;
           bestIdx = pos.id;
         }
@@ -153,10 +154,13 @@ export default function Kompetisi() {
   /* --- Mouse / touch handlers -------------------------------------- */
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const canvas = canvasRef.current;
+      const rect = canvas?.getBoundingClientRect();
+      if (!canvas || !rect) return;
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
 
       const hit = hitTest(x, y);
       if (hit >= 0) {
@@ -184,18 +188,23 @@ export default function Kompetisi() {
 
       isDraggingRef.current = true;
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
-      (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
+      try {
+        (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
+      } catch {}
     },
     [hitTest, positions],
   );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
+      const canvas = canvasRef.current;
+      const rect = canvas?.getBoundingClientRect();
+      if (canvas && rect) {
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
         mousePosRef.current = {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top) * scaleY,
         };
       }
       if (isDraggingRef.current) {
@@ -274,8 +283,8 @@ export default function Kompetisi() {
         .sort((a, b) => a.depth - b.depth);
 
       for (const p of sorted) {
-        const scale = (p.depth + 200) / 300;
-        const opacity = Math.max(0.15, Math.min(1, (p.depth + 150) / 200));
+        const scale = (p.depth + 420) / 540;
+        const opacity = Math.max(0.2, Math.min(1, (p.depth + 220) / 360));
         const isActive = p.id === active;
 
         ctx.save();
@@ -305,16 +314,16 @@ export default function Kompetisi() {
           ctx.fillStyle = "white";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.font = "bold 14px sans-serif";
+          ctx.font = "bold 22px sans-serif";
           ctx.fillText(KOMPETISI[p.id]?.title?.charAt(0) ?? "", 0, 0);
         }
 
         /* Active ring */
         if (isActive) {
           ctx.beginPath();
-          ctx.arc(0, 0, ICON_HALF + 3, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(255,255,255,0.7)";
-          ctx.lineWidth = 2;
+          ctx.arc(0, 0, ICON_HALF + 4, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.85)";
+          ctx.lineWidth = 3;
           ctx.stroke();
         }
 
@@ -373,7 +382,7 @@ export default function Kompetisi() {
         </div>
 
         {/* Icon Cloud */}
-        <div className="relative order-1 mx-auto lg:order-2">
+        <div className="relative order-1 mx-auto flex items-center justify-center lg:order-2">
           <canvas
             ref={canvasRef}
             width={CLOUD_SIZE}
@@ -382,8 +391,8 @@ export default function Kompetisi() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
-            className="max-w-full cursor-grab touch-none active:cursor-grabbing"
-            style={{ width: CLOUD_SIZE, height: CLOUD_SIZE }}
+            className="w-full max-w-[640px] aspect-square cursor-grab touch-none active:cursor-grabbing"
+            style={{ width: "100%", maxWidth: CLOUD_SIZE, height: "auto", aspectRatio: "1 / 1" }}
             aria-label="Logo kompetisi interaktif — klik untuk tampilkan deskripsi"
             role="img"
           />

@@ -9,5 +9,5 @@ export const SITE = {
   ogImageAlt: "Logo Universitas Siber Muhammadiyah",
   sameAs: ["https://www.instagram.com/sibermu"],
   ctaLabel: "Daftar",
-  ctaHref: "#kontak",
+  ctaHref: "https://sibermu.ac.id/",
 } as const;

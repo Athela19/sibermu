@@ -6,7 +6,6 @@ export const NAV_LINKS = [
   { label: "Fasilitas", href: "#kemahasiswaan" },
   { label: "AIK", href: "#aik" },
   { label: "Pilar AIK", href: "#pilar-aik" },
-  { label: "Kontak", href: "#kontak" },
 ] as const;
 
 export const HERO = {

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CreditsModal from "./CreditsModal";
 import { SITE } from "@/lib/site";
 
 /**
@@ -61,17 +62,14 @@ export default function Footer() {
 
         {/* Institution info */}
         <div className="mt-4 flex flex-col items-center gap-1.5 sm:mt-6">
-          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-white/50">
-            Universitas
-          </p>
-          <p className="font-sans text-sm font-medium leading-snug text-white/80 sm:text-base">
+          <p className="font-sans text-sm font-bold leading-snug text-white/80 sm:text-base">
             {SITE.fullName}
           </p>
           <p className="font-sans text-sm leading-snug text-white/80 sm:text-base">
-            Jl. Raya Bedali No.16, Lawang
+            Pakuncen, Wirobrajan, Kota Yogyakarta, 
           </p>
           <p className="font-sans text-sm leading-snug text-white/80 sm:text-base">
-            Malang, Jawa Timur 65215
+            Daerah Istimewa Yogyakarta 55253
           </p>
         </div>
 
@@ -116,12 +114,13 @@ export default function Footer() {
           </div>
 
           {/* Right */}
-          <div className="flex flex-col items-center gap-1 text-center sm:items-end sm:text-right">
-            <p className="font-sans text-[11px] uppercase tracking-[0.06em] text-white/30">
-              Karya Lomba Landing Page 2026
+          <div className="flex flex-col items-center gap-1.5 text-center sm:items-end sm:text-right">
+            <CreditsModal />
+            <p className="font-sans text-xs font-medium text-white/50">
+              Achmad Fadil Nur Ramdhani
             </p>
             <p className="font-sans text-xs font-medium text-white/50">
-              Bidang Kemahasiswaan SiberMu
+              Muhamad Syarif Nur Rohman 
             </p>
           </div>
         </div>
