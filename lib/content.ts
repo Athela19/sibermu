@@ -46,13 +46,13 @@ export const PRESTASI: PrestasiItem[] = [
   {
     title: "Juara 1 Essay Writing Competition Adrenaline 2023 (Regional Jawa-Bali) - Rahmat Simbolon (Administrasi Kesehatan)",
     mediaLabel: "Slot foto sertifikat Juara 1 Essay Adrenaline 2023 FK UKWMS (1/1)",
-    src: "/assets/prestasi01.jpg",
+    src: "/assets/prestasi05.jpg",
     alt: "Sertifikat Juara 1 Essay Adrenaline 2023",
   },
   {
     title: "Juara 2 MEDJONSON (Medical Djogja Scientific Competition) Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
     mediaLabel: "Slot foto sertifikat Juara 2 MEDJONSON 2023 FKK UMY (1/1)",
-    src: "/assets/prestasi02.jpg",
+    src: "/assets/prestasi04.jpg",
     alt: "Sertifikat Juara 2 MEDJONSON 2023",
   },
   {
@@ -64,13 +64,13 @@ export const PRESTASI: PrestasiItem[] = [
   {
     title: "Juara 1 Essay Competition Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
     mediaLabel: "Slot foto sertifikat Juara 1 Essay Competition 2023 FEB UWKS (1/1)",
-    src: "/assets/prestasi04.jpg",
+    src: "/assets/prestasi02.jpg",
     alt: "Sertifikat Juara 1 Essay Competition 2023",
   },
   {
     title: "Juara 2 GEBYAR EKONOMI BEM FEB Tingkat Nasional 2023 - Rahmat Simbolon (Administrasi Kesehatan)",
     mediaLabel: "Slot foto sertifikat Juara 2 GEBYAR EKONOMI BEM FEB UNISNU (1/1)",
-    src: "/assets/prestasi05.jpg",
+    src: "/assets/prestasi01.jpg",
     alt: "Sertifikat Juara 2 GEBYAR EKONOMI BEM FEB UNISNU 2023",
   },
 ];
@@ -165,22 +165,6 @@ export type KegiatanInternasionalItem = {
   alt?: string;
 };
 
-// Program internasional resmi mahasiswa SiberMu
-export const KEGIATAN_INTERNASIONAL: KegiatanInternasionalItem[] = [
-  {
-    mediaLabel: "Slot dokumentasi program Global Youth Action",
-    alt: "Global Youth Action SiberMu",
-  },
-  {
-    mediaLabel: "Slot dokumentasi kegiatan Youth Innovation Forum",
-    alt: "Youth Innovation Forum SiberMu",
-  },
-  {
-    mediaLabel: "Slot dokumentasi Student Exchange & Student Mobility",
-    alt: "Student Exchange dan Mobility SiberMu",
-  },
-];
-
 export const FASILITAS_MAHASISWA: StickySplitItem[] = [
   {
     title: "Learning Management System (LMS) Handal",
@@ -244,7 +228,7 @@ export const UKM_LIST: UkmItem[] = [
       "Wadah bagi mahasiswa dalam menyalurkan minat, bakat, serta pengetahuan di bidang Bahasa Inggris, terutama untuk meningkatkan keterampilan berbicara di depan umum (public speaking).",
     pembina: "Afriansyah Tanjung, S.H., M.Kn. & Muhammad Fauzan Gustafi, M.Kom.",
     mediaLabel: "Slot logo dan dokumentasi kegiatan UKM English Club SiberMu",
-    src: "/assets/ukm01.jpg",
+    src: "/assets/ukm04.jpg",
     alt: "Kegiatan UKM English Club SiberMu",
   },
   {
@@ -253,7 +237,7 @@ export const UKM_LIST: UkmItem[] = [
       "Wadah pengembangan potensi kewirausahaan digital melalui program kerja pelatihan bisnis digital, workshop e-commerce, kompetisi bisnis, dan pelatihan keuangan bisnis.",
     pembina: "Rakhmat Prasetyo Agung Nugroho, M.Kom. & Amalina Nur Arifah, S.E., M.Sc.",
     mediaLabel: "Slot dokumentasi kegiatan UKM Bisnis Digital SiberMu",
-    src: "/assets/ukm02.jpg",
+    src: "/assets/ukm03.jpg",
     alt: "Kegiatan UKM Bisnis Digital SiberMu",
   },
   {
@@ -262,7 +246,7 @@ export const UKM_LIST: UkmItem[] = [
       "Wadah kreativitas mahasiswa dalam bidang desain grafis, teknologi imersif, dan pembuatan konten kreatif digital.",
     pembina: "Khairina Eka Setyaputri, S.T., M.Kom. & Desy Eliana, S.KM., M.PH.",
     mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Digital Creator SiberMu",
-    src: "/assets/ukm03.jpg",
+    src: "/assets/ukm02.jpg",
     alt: "Kegiatan UKM Digital Creator SiberMu",
   },
   {
@@ -271,7 +255,7 @@ export const UKM_LIST: UkmItem[] = [
       "Wadah pengembangan minat dan bakat mahasiswa dalam bidang pemrograman, pengembangan perangkat lunak, dan eksplorasi teknologi komputasi.",
     pembina: "",
     mediaLabel: "Slot dokumentasi karya dan kegiatan UKM Coding SiberMu",
-    src: "/assets/ukm04.jpg",
+    src: "/assets/ukm01.jpg",
     alt: "Kegiatan UKM Coding SiberMu",
   },
 ];

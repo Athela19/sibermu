@@ -6,6 +6,43 @@ import gsap from "gsap";
 import { SITE } from "@/lib/site";
 
 const LETTERS = ["S", "I", "B", "E", "R", "M", "U"];
+/** Hard cap so splash never blocks indefinitely on broken images. */
+const IMAGE_WAIT_TIMEOUT_MS = 10_000;
+
+/**
+ * Resolves when every `<img>` currently in the document has finished loading
+ * (or errored), or when the timeout expires — whichever comes first.
+ */
+function waitForAllImages(timeoutMs: number): Promise<void> {
+  return new Promise((resolve) => {
+    const imgs = Array.from(document.querySelectorAll<HTMLImageElement>("img"));
+    const pending = imgs.filter((img) => !img.complete);
+    if (pending.length === 0) {
+      resolve();
+      return;
+    }
+
+    let settled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    let remaining = pending.length;
+    const onDone = () => {
+      remaining -= 1;
+      if (remaining <= 0) settle();
+    };
+
+    for (const img of pending) {
+      img.addEventListener("load", onDone, { once: true });
+      img.addEventListener("error", onDone, { once: true });
+    }
+
+    setTimeout(settle, timeoutMs);
+  });
+}
 
 export default function SplashScreen({
   onIntroDone,
@@ -26,12 +63,28 @@ export default function SplashScreen({
     const root = rootRef.current;
     if (!root) return;
 
-    const finish = () => {
+    /* ── dual gate: animation done + images loaded ─────────────── */
+    let animDone = false;
+    let imgsDone = false;
+
+    const tryFinish = () => {
+      if (!animDone || !imgsDone) return;
       if (finishedRef.current) return;
       finishedRef.current = true;
       setDone(true);
       doneRef.current?.();
     };
+
+    const onAnimDone = () => {
+      animDone = true;
+      tryFinish();
+    };
+
+    // Start waiting for images immediately (runs in parallel with anim).
+    waitForAllImages(IMAGE_WAIT_TIMEOUT_MS).then(() => {
+      imgsDone = true;
+      tryFinish();
+    });
 
     const textEl = root.querySelector<HTMLElement>("[data-splash-text]");
     const letterEls = Array.from(
@@ -50,7 +103,7 @@ export default function SplashScreen({
           opacity: 0,
           duration: 0.3,
           delay: 0.5,
-          onComplete: finish,
+          onComplete: onAnimDone,
         });
         return;
       }
@@ -68,7 +121,7 @@ export default function SplashScreen({
         force3D: true,
       });
 
-      const tl = gsap.timeline({ onComplete: finish });
+      const tl = gsap.timeline({ onComplete: onAnimDone });
       tl.to(
         "[data-splash-logo]",
         {
@@ -113,7 +166,13 @@ export default function SplashScreen({
       tl.to(root, { opacity: 0, duration: 0.9, ease: "power1.in" }, 2.6);
     }, root);
 
-    const fallback = window.setTimeout(finish, 4000);
+    const fallback = window.setTimeout(() => {
+      // Hard fallback: force both gates open after 4s + timeout margin.
+      animDone = true;
+      imgsDone = true;
+      tryFinish();
+    }, Math.max(4000, IMAGE_WAIT_TIMEOUT_MS + 1000));
+
     return () => {
       window.clearTimeout(fallback);
       ctx.revert();
@@ -182,3 +241,4 @@ export default function SplashScreen({
     </div>
   );
 }
+
