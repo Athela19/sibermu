@@ -1,207 +1,408 @@
 "use client";
 
-import {
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
-import MediaSlot from "./MediaSlot";
 import { KOMPETISI } from "@/lib/content";
 
-const BALL_SLOTS = 20;
-const BALL_RADIUS_PCT = 34;
-const BALL_SIZE_MIN = 35;
-const BALL_SIZE_MAX = 74;
-const BALL_OPACITY_MIN = 0.4;
-const COS_X = Math.cos((-15 * Math.PI) / 180);
-const SIN_X = Math.sin((-15 * Math.PI) / 180);
-const FIB_OFFSET = 2 / BALL_SLOTS;
-const FIB_INCREMENT = Math.PI * (3 - Math.sqrt(5));
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
 
-type PoolEntry = { item: (typeof KOMPETISI)[number]; compIndex: number };
-type SlotDef = { x: number; y: number; z: number; owner: PoolEntry };
+const CLOUD_SIZE = 420;
+const ICON_RENDER_SIZE = 44;
+const ICON_HALF = ICON_RENDER_SIZE / 2;
 
-function makeSlots(pool: PoolEntry[]): SlotDef[] {
-  if (pool.length === 0) return [];
-  return Array.from({ length: BALL_SLOTS }, (_, i) => {
-    const y = i * FIB_OFFSET - 1 + FIB_OFFSET / 2;
-    const r = Math.sqrt(Math.max(0, 1 - y * y));
-    const phi = i * FIB_INCREMENT;
-    return {
-      x: Math.cos(phi) * r,
-      y,
-      z: Math.sin(phi) * r,
-      owner: pool[i % pool.length],
-    };
-  });
+/* ------------------------------------------------------------------ */
+/*  Easing                                                             */
+/* ------------------------------------------------------------------ */
+
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
 }
 
-function projectDepth(slot: SlotDef, ryDeg: number) {
-  const ry = (ryDeg * Math.PI) / 180;
-  const cosY = Math.cos(ry);
-  const sinY = Math.sin(ry);
-  const x1 = slot.x * cosY - slot.z * sinY;
-  const z1 = slot.x * sinY + slot.z * cosY;
-  const y1 = slot.y * COS_X - z1 * SIN_X;
-  const z2 = slot.y * SIN_X + z1 * COS_X;
-  return { x: x1, y: y1, depth: (z2 + 1) / 2 };
-}
-
-function frontCompIndex(slots: SlotDef[], ryDeg: number) {
-  let best = 0;
-  let bestDepth = -Infinity;
-  for (let i = 0; i < slots.length; i++) {
-    const depth = projectDepth(slots[i], ryDeg).depth;
-    if (depth > bestDepth) {
-      bestDepth = depth;
-      best = slots[i].owner.compIndex;
-    }
-  }
-  return best;
-}
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
 
 export default function Kompetisi() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>(0);
+  const rotationRef = useRef({ x: 0, y: 0 });
+  const iconCanvasesRef = useRef<HTMLCanvasElement[]>([]);
+  const imagesLoadedRef = useRef<boolean[]>([]);
+  const isDraggingRef = useRef(false);
+  const lastMouseRef = useRef({ x: 0, y: 0 });
+  const mousePosRef = useRef({ x: CLOUD_SIZE / 2, y: CLOUD_SIZE / 2 });
+
+  const [active, setActive] = useState<number | null>(null);
+  const prefersReducedMotion = React.useSyncExternalStore(
+    (callback) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", callback);
+      return () => mq.removeEventListener("change", callback);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false
+  );
+  const [userPaused, setUserPaused] = useState<boolean | null>(null);
+  const isPaused = userPaused !== null ? userPaused : prefersReducedMotion;
+  const [targetRotation, setTargetRotation] = useState<{
+    x: number;
+    y: number;
+    startX: number;
+    startY: number;
+    startTime: number;
+    duration: number;
+  } | null>(null);
+
   const count = KOMPETISI.length;
 
-  const pool: PoolEntry[] = useMemo(() => {
-    const entries = KOMPETISI.map((item, compIndex) => ({ item, compIndex }));
-    const withSrc = entries.filter((entry) => entry.item.src);
-    return withSrc.length > 0 ? withSrc : entries;
+  /* --- Sphere positions (Fibonacci) -------------------------------- */
+  const positions = React.useMemo(() => {
+    const n = count || 1;
+    const offset = 2 / n;
+    const increment = Math.PI * (3 - Math.sqrt(5));
+    return Array.from({ length: n }, (_, i) => {
+      const y = i * offset - 1 + offset / 2;
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
+      const phi = i * increment;
+      return {
+        x: Math.cos(phi) * r * 110,
+        y: y * 110,
+        z: Math.sin(phi) * r * 110,
+        id: i,
+      };
+    });
+  }, [count]);
+
+
+  /* --- Pre-render logo images to off-screen canvases --------------- */
+  useEffect(() => {
+    imagesLoadedRef.current = new Array(count).fill(false);
+    iconCanvasesRef.current = KOMPETISI.map((item, index) => {
+      const offscreen = document.createElement("canvas");
+      offscreen.width = ICON_RENDER_SIZE * 2;
+      offscreen.height = ICON_RENDER_SIZE * 2;
+      const ctx = offscreen.getContext("2d");
+      if (ctx && item.src) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = item.src;
+        img.onload = () => {
+          ctx.clearRect(0, 0, offscreen.width, offscreen.height);
+          ctx.beginPath();
+          ctx.arc(
+            ICON_RENDER_SIZE,
+            ICON_RENDER_SIZE,
+            ICON_RENDER_SIZE,
+            0,
+            Math.PI * 2,
+          );
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            ICON_RENDER_SIZE * 2,
+            ICON_RENDER_SIZE * 2,
+          );
+          imagesLoadedRef.current[index] = true;
+        };
+      }
+      return offscreen;
+    });
+  }, [count]);
+
+  /* --- Hit-test helper --------------------------------------------- */
+  const hitTest = useCallback(
+    (cx: number, cy: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return -1;
+      const cosX = Math.cos(rotationRef.current.x);
+      const sinX = Math.sin(rotationRef.current.x);
+      const cosY = Math.cos(rotationRef.current.y);
+      const sinY = Math.sin(rotationRef.current.y);
+
+      let bestIdx = -1;
+      let bestDepth = -Infinity;
+
+      for (const pos of positions) {
+        const rx = pos.x * cosY - pos.z * sinY;
+        const rz = pos.x * sinY + pos.z * cosY;
+        const ry = pos.y * cosX + rz * sinX;
+        const rz2 = -pos.y * sinX + rz * cosX;
+
+        const sx = canvas.width / 2 + rx;
+        const sy = canvas.height / 2 + ry;
+        const scale = (rz2 + 200) / 300;
+        const radius = ICON_HALF * scale;
+
+        const dx = cx - sx;
+        const dy = cy - sy;
+        if (dx * dx + dy * dy < radius * radius && rz2 > bestDepth) {
+          bestDepth = rz2;
+          bestIdx = pos.id;
+        }
+      }
+      return bestIdx;
+    },
+    [positions],
+  );
+
+  /* --- Mouse / touch handlers -------------------------------------- */
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const hit = hitTest(x, y);
+      if (hit >= 0) {
+        const pos = positions[hit];
+        const targetX = -Math.atan2(
+          pos.y,
+          Math.sqrt(pos.x * pos.x + pos.z * pos.z),
+        );
+        const targetY = Math.atan2(pos.x, pos.z);
+        const cur = rotationRef.current;
+        const dist = Math.sqrt(
+          (targetX - cur.x) ** 2 + (targetY - cur.y) ** 2,
+        );
+        setTargetRotation({
+          x: targetX,
+          y: targetY,
+          startX: cur.x,
+          startY: cur.y,
+          startTime: performance.now(),
+          duration: Math.min(2000, Math.max(800, dist * 1000)),
+        });
+        setActive(hit);
+        return;
+      }
+
+      isDraggingRef.current = true;
+      lastMouseRef.current = { x: e.clientX, y: e.clientY };
+      (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
+    },
+    [hitTest, positions],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        mousePosRef.current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+      }
+      if (isDraggingRef.current) {
+        rotationRef.current = {
+          x: rotationRef.current.x + (e.clientY - lastMouseRef.current.y) * 0.002,
+          y: rotationRef.current.y + (e.clientX - lastMouseRef.current.x) * 0.002,
+        };
+        lastMouseRef.current = { x: e.clientX, y: e.clientY };
+      }
+    },
+    [],
+  );
+
+  const handlePointerUp = useCallback(() => {
+    isDraggingRef.current = false;
   }, []);
 
-  const slots = useMemo(() => makeSlots(pool), [pool]);
+  /* --- Animation loop ---------------------------------------------- */
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
 
-  const [active, setActive] = useState(() => frontCompIndex(slots, 0));
-  const [orbit, setOrbit] = useState(0);
+    let running = true;
 
-  useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const el = sectionRef.current;
-    if (!el || count === 0) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const animate = () => {
+      if (!running) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: el,
-        start: "top top",
-        end: () => `+=${window.innerHeight * 0.2}`,
-        pin: true,
-        pinSpacing: false,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          const rotation = self.progress * 360;
-          const index = frontCompIndex(slots, rotation);
-          setActive((prev) => (prev === index ? prev : index));
-          setOrbit(rotation);
-        },
-      });
-    }, el);
+      const cX = canvas.width / 2;
+      const cY = canvas.height / 2;
+      const mp = mousePosRef.current;
 
-    const onLoad = () => ScrollTrigger.refresh();
-    window.addEventListener("load", onLoad);
-    return () => {
-      window.removeEventListener("load", onLoad);
-      ctx.revert();
+      /* Targeted rotation animation */
+      if (targetRotation) {
+        const elapsed = performance.now() - targetRotation.startTime;
+        const progress = Math.min(1, elapsed / targetRotation.duration);
+        const eased = easeOutCubic(progress);
+        rotationRef.current = {
+          x:
+            targetRotation.startX +
+            (targetRotation.x - targetRotation.startX) * eased,
+          y:
+            targetRotation.startY +
+            (targetRotation.y - targetRotation.startY) * eased,
+        };
+        if (progress >= 1) setTargetRotation(null);
+      } else if (!isDraggingRef.current && !isPaused) {
+        /* Idle auto-rotation influenced by mouse */
+        const dx = mp.x - cX;
+        const dy = mp.y - cY;
+        const maxDist = Math.sqrt(cX * cX + cY * cY);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const speed = 0.002 + (dist / maxDist) * 0.006;
+        rotationRef.current = {
+          x: rotationRef.current.x + (dy / canvas.height) * speed,
+          y: rotationRef.current.y + (dx / canvas.width) * speed,
+        };
+      }
+
+      /* Projection & draw */
+      const cosX = Math.cos(rotationRef.current.x);
+      const sinX = Math.sin(rotationRef.current.x);
+      const cosY = Math.cos(rotationRef.current.y);
+      const sinY = Math.sin(rotationRef.current.y);
+
+      // Sort back-to-front
+      const sorted = positions
+        .map((pos) => {
+          const rx = pos.x * cosY - pos.z * sinY;
+          const rz = pos.x * sinY + pos.z * cosY;
+          const ry = pos.y * cosX + rz * sinX;
+          const rz2 = -pos.y * sinX + rz * cosX;
+          return { ...pos, sx: cX + rx, sy: cY + ry, depth: rz2 };
+        })
+        .sort((a, b) => a.depth - b.depth);
+
+      for (const p of sorted) {
+        const scale = (p.depth + 200) / 300;
+        const opacity = Math.max(0.15, Math.min(1, (p.depth + 150) / 200));
+        const isActive = p.id === active;
+
+        ctx.save();
+        ctx.translate(p.sx, p.sy);
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = opacity;
+
+        if (iconCanvasesRef.current[p.id] && imagesLoadedRef.current[p.id]) {
+          /* Grayscale for non-active */
+          if (!isActive) ctx.filter = "grayscale(100%)";
+          ctx.drawImage(
+            iconCanvasesRef.current[p.id],
+            -ICON_HALF,
+            -ICON_HALF,
+            ICON_RENDER_SIZE,
+            ICON_RENDER_SIZE,
+          );
+          ctx.filter = "none";
+        } else {
+          /* Placeholder circle */
+          ctx.beginPath();
+          ctx.arc(0, 0, ICON_HALF, 0, Math.PI * 2);
+          ctx.fillStyle = isActive
+            ? "rgba(0,124,196,0.6)"
+            : "rgba(255,255,255,0.15)";
+          ctx.fill();
+          ctx.fillStyle = "white";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = "bold 14px sans-serif";
+          ctx.fillText(KOMPETISI[p.id]?.title?.charAt(0) ?? "", 0, 0);
+        }
+
+        /* Active ring */
+        if (isActive) {
+          ctx.beginPath();
+          ctx.arc(0, 0, ICON_HALF + 3, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.7)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
     };
-  }, [count, slots]);
+
+    animate();
+    return () => {
+      running = false;
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [positions, active, isPaused, targetRotation]);
 
   if (count === 0) return null;
-  const item = KOMPETISI[active];
-
-  const select = (index: number) => {
-    setActive(((index % count) + count) % count);
-  };
-
-  const activate =
-    (compIndex: number) => (e: KeyboardEvent<HTMLElement>) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        select(compIndex);
-      }
-    };
+  const item = active !== null ? KOMPETISI[active] : null;
 
   return (
     <section
-      ref={sectionRef}
       id="kompetisi"
       aria-labelledby="kompetisi-heading"
       className="relative z-10 -mt-px flex min-h-[100svh] w-full items-center overflow-hidden bg-primary"
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 px-6 pb-12 pt-6 sm:px-8 lg:grid-cols-2 lg:gap-16 lg:py-16">
+        {/* Teks — reaktif mengikuti logo aktif */}
         <div className="order-2 lg:order-1">
-          <div aria-live="polite" className="max-w-xl">
-            <h2
-              id="kompetisi-heading"
-              className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-white"
-            >
-              {item.title}
-            </h2>
-            <p className="mt-4 font-sans text-[1.05rem] leading-7 text-white/70">
-              {item.body}
-            </p>
+          <div aria-live="polite" className="max-w-xl min-h-[120px]">
+            {item ? (
+              <>
+                <h2
+                  id="kompetisi-heading"
+                  className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-white transition-opacity duration-300"
+                >
+                  {item.title}
+                </h2>
+                <p className="mt-4 font-sans text-[1.05rem] leading-7 text-white/70 transition-opacity duration-300">
+                  {item.body}
+                </p>
+              </>
+            ) : (
+              <>
+                <h2
+                  id="kompetisi-heading"
+                  className="font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-white"
+                >
+                  Kompetisi
+                </h2>
+                <p className="mt-4 font-sans text-[1.05rem] leading-7 text-white/70">
+                  Pilih logo untuk melihat detail kompetisi.
+                </p>
+              </>
+            )}
           </div>
         </div>
 
-        <div
-          role="group"
-          aria-label="Logo kompetisi — pilih untuk tampilkan deskripsi"
-          onKeyDown={(e) => {
-            if (e.key === "ArrowLeft") select(active - 1);
-            if (e.key === "ArrowRight") select(active + 1);
-          }}
-          className="relative order-1 mx-auto aspect-square w-full max-w-[520px] lg:order-2"
-        >
-          {slots.map((slot, i) => {
-            const compIndex = slot.owner.compIndex;
-            const isActive = compIndex === active;
-            const p = projectDepth(slot, orbit);
-            const size = Math.round(
-              BALL_SIZE_MIN + p.depth * (BALL_SIZE_MAX - BALL_SIZE_MIN),
-            );
-            const top = (50 - p.y * BALL_RADIUS_PCT).toFixed(2);
-            const left = (50 + p.x * BALL_RADIUS_PCT).toFixed(2);
-            const opacity = (
-              BALL_OPACITY_MIN +
-              p.depth * (1 - BALL_OPACITY_MIN)
-            ).toFixed(2);
-            return (
-              <figure
-                key={i}
-                tabIndex={0}
-                role="button"
-                aria-pressed={isActive}
-                aria-label={`${slot.owner.item.title} — tampilkan deskripsi`}
-                onClick={() => select(compIndex)}
-                onKeyDown={activate(compIndex)}
-                style={{
-                  top: `${top}%`,
-                  left: `${left}%`,
-                  width: size,
-                  height: size,
-                  transform: "translate(-50%, -50%)",
-                  opacity,
-                  zIndex: Math.round(p.depth * 10),
-                }}
-                className={`absolute cursor-pointer overflow-hidden rounded-full outline-none transition duration-500 ${
-                  isActive ? "scale-110 grayscale-0 ring-2 ring-white/70" : "grayscale"
-                }`}
-              >
-                <MediaSlot
-                  label={slot.owner.item.mediaLabel}
-                  ratio="1 / 1"
-                  src={slot.owner.item.src}
-                  alt={slot.owner.item.alt ?? ""}
-                  className="rounded-full"
-                />
-              </figure>
-            );
-          })}
+        {/* Icon Cloud */}
+        <div className="relative order-1 mx-auto lg:order-2">
+          <canvas
+            ref={canvasRef}
+            width={CLOUD_SIZE}
+            height={CLOUD_SIZE}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+            className="max-w-full cursor-grab touch-none active:cursor-grabbing"
+            style={{ width: CLOUD_SIZE, height: CLOUD_SIZE }}
+            aria-label="Logo kompetisi interaktif — klik untuk tampilkan deskripsi"
+            role="img"
+          />
+          {/* Play/Pause control (a11y: WCAG 2.2.2) */}
+          <button
+            onClick={() => setUserPaused(!isPaused)}
+            aria-label={isPaused ? "Putar animasi" : "Jeda animasi"}
+            className="absolute right-2 top-2 rounded-full bg-white/10 p-2 text-white/60 backdrop-blur transition hover:bg-white/20 hover:text-white"
+          >
+            {isPaused ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </section>
