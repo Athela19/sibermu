@@ -120,7 +120,7 @@ export default function Footer() {
               Achmad Fadil Nur Ramdhani
             </p>
             <p className="font-sans text-xs font-medium text-white/50">
-              Muhamad Syarif Nur Rohman 
+              Muhamad Syarif Nurrohman 
             </p>
           </div>
         </div>
