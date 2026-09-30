@@ -54,10 +54,10 @@ function PrestasiCard({
         className="rounded-[20px] bg-white shadow-md"
       />
       <figcaption
-        className={`pointer-events-none absolute inset-x-0 bottom-0 rounded-b-[20px] bg-gradient-to-t from-black/80 via-black/30 to-transparent p-4 pt-10 transition duration-300 ${
+        className={`pointer-events-none absolute inset-x-0 bottom-0 rounded-b-[20px] bg-gradient-to-t from-black/85 via-black/50 to-transparent p-4 pt-10 transition duration-300 ${
           active
             ? "translate-y-0 opacity-100"
-            : "translate-y-2 opacity-0 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+            : "translate-y-2 opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-visible:translate-y-0 sm:group-focus-visible:opacity-100"
         }`}
       >
         <span className="font-sans text-sm font-bold text-white">

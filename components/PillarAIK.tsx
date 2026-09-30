@@ -40,7 +40,9 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
     const el = sectionRef.current;
     if (!el || items.length === 0 || reduced) return;
 
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
       // Set initial states: overlays hidden
       overlaysRef.current.forEach((overlay) => {
         if (overlay) gsap.set(overlay, { autoAlpha: 0 });
@@ -104,8 +106,6 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           );
         }
 
-
-
         // Collapse previous pillar & hide its overlay
         if (i > 0) {
           const prevPillar = pillarsRef.current[i - 1];
@@ -134,13 +134,13 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           }
         }
       });
-    }, el);
+    });
 
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);
     return () => {
       window.removeEventListener("load", onLoad);
-      ctx.revert();
+      mm.revert();
     };
   }, [items, reduced]);
 
@@ -175,7 +175,7 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
     return (
       <section
         id="pilar-aik"
-        aria-labelledby="pilar-aik-heading"
+        aria-label="Pilar AIK: Tiga Pilar Pembinaan"
         className="w-full bg-paper px-6 py-16 sm:px-8 lg:py-24"
       >
         <div className="mx-auto max-w-7xl">
@@ -220,14 +220,61 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
     <section
       ref={sectionRef}
       id="pilar-aik"
-      aria-labelledby="pilar-aik-heading"
+      aria-label="Pilar AIK: Tiga Pilar Pembinaan"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="relative h-[100svh] w-full overflow-hidden bg-paper outline-none"
+      className="relative w-full bg-paper outline-none lg:h-[100svh] lg:overflow-hidden"
     >
-      <div className="mx-auto flex h-full max-w-[1600px] items-stretch gap-3 px-4 py-6 sm:gap-4 sm:px-6 sm:py-8 lg:gap-5 lg:px-8 lg:py-10">
+      {/* Mobile view (< 1024px): clean vertical cards */}
+      <div className="block px-6 py-14 sm:px-8 sm:py-20 lg:hidden">
+        <div className="mx-auto max-w-xl">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-tertiary">
+            Pilar AIK
+          </p>
+          <h2 className="mt-2 font-display text-[clamp(2rem,6vw,2.75rem)] font-semibold leading-[1.1] text-primary">
+            Tiga Pilar Pembinaan
+          </h2>
+          <p className="mt-3 font-sans text-sm leading-relaxed text-ink-500 sm:text-base">
+            Pilar-pilar AIK SiberMu melandasi seluruh program pembinaan
+            keislaman, kaderisasi, dan pengabdian masyarakat.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-6">
+            {items.map((item, idx) => (
+              <div
+                key={item.title}
+                className="overflow-hidden rounded-[20px] border border-ink-100 bg-white shadow-sm"
+              >
+                <div className="relative aspect-[16/10] w-full overflow-hidden">
+                  <MediaSlot
+                    label={item.mediaLabel}
+                    ratio="auto"
+                    src={item.src}
+                    alt={item.alt ?? item.title}
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute top-3 left-3 rounded-full bg-primary/90 px-3 py-1 font-sans text-xs font-semibold text-white shadow-sm backdrop-blur-sm">
+                    Pilar 0{idx + 1}
+                  </div>
+                </div>
+                <div className="p-5 sm:p-6">
+                  <h3 className="font-display text-lg font-semibold text-primary sm:text-xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 whitespace-pre-line font-sans text-sm leading-relaxed text-ink-500">
+                    {item.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop view (>= 1024px): expanding 3-pillar layout */}
+      <div className="mx-auto hidden h-full max-w-[1600px] items-stretch gap-5 px-8 py-10 lg:flex">
         {/* Pillars container */}
-        <div className="flex min-w-0 flex-1 gap-3 sm:gap-4 lg:gap-5">
+        <div className="flex min-w-0 flex-1 gap-5">
           {items.map((item, i) => {
             const isActive = i === active;
             return (
@@ -260,9 +307,9 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
                   ref={(el) => {
                     overlaysRef.current[i] = el;
                   }}
-                  className="invisible absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-primary/90 via-primary/60 to-transparent p-5 sm:p-6 lg:p-8"
+                  className="invisible absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-primary/90 via-primary/60 to-transparent p-6 lg:p-8"
                 >
-                  <h3 className="font-display text-lg font-semibold text-white sm:text-xl lg:text-2xl">
+                  <h3 className="font-display text-xl font-semibold text-white lg:text-2xl">
                     {item.title}
                   </h3>
                   <p className="mt-2 whitespace-pre-line font-sans text-sm leading-relaxed text-white/85 sm:text-base">
@@ -274,10 +321,10 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           })}
         </div>
 
-        {/* Intro text (right side, fades out on first expand) */}
+        {/* Intro text (right side, desktop only) */}
         <div
           ref={introRef}
-          className="hidden w-[280px] shrink-0 flex-col justify-center will-change-transform lg:flex xl:w-[340px]"
+          className="w-[280px] shrink-0 flex-col justify-center will-change-transform lg:flex xl:w-[340px]"
         >
           <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-tertiary">
             Pilar AIK
@@ -317,11 +364,6 @@ export default function PillarAIK({ items = PILLAR_AIK_ITEMS }: PillarAIKProps) 
           </div>
         </div>
       </div>
-
-      {/* Heading for small screens (sr-only since pillars are visual) */}
-      <h2 id="pilar-aik-heading" className="sr-only lg:not-sr-only">
-        Tiga Pilar Pembinaan
-      </h2>
     </section>
   );
 }

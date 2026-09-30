@@ -151,6 +151,32 @@ export default function Kompetisi() {
     [positions],
   );
 
+  const selectItem = useCallback(
+    (hit: number) => {
+      const pos = positions[hit];
+      if (!pos) return;
+      const targetX = -Math.atan2(
+        pos.y,
+        Math.sqrt(pos.x * pos.x + pos.z * pos.z),
+      );
+      const targetY = Math.atan2(pos.x, pos.z);
+      const cur = rotationRef.current;
+      const dist = Math.sqrt(
+        (targetX - cur.x) ** 2 + (targetY - cur.y) ** 2,
+      );
+      setTargetRotation({
+        x: targetX,
+        y: targetY,
+        startX: cur.x,
+        startY: cur.y,
+        startTime: performance.now(),
+        duration: Math.min(2000, Math.max(800, dist * 1000)),
+      });
+      setActive(hit);
+    },
+    [positions],
+  );
+
   /* --- Mouse / touch handlers -------------------------------------- */
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -164,35 +190,19 @@ export default function Kompetisi() {
 
       const hit = hitTest(x, y);
       if (hit >= 0) {
-        const pos = positions[hit];
-        const targetX = -Math.atan2(
-          pos.y,
-          Math.sqrt(pos.x * pos.x + pos.z * pos.z),
-        );
-        const targetY = Math.atan2(pos.x, pos.z);
-        const cur = rotationRef.current;
-        const dist = Math.sqrt(
-          (targetX - cur.x) ** 2 + (targetY - cur.y) ** 2,
-        );
-        setTargetRotation({
-          x: targetX,
-          y: targetY,
-          startX: cur.x,
-          startY: cur.y,
-          startTime: performance.now(),
-          duration: Math.min(2000, Math.max(800, dist * 1000)),
-        });
-        setActive(hit);
+        selectItem(hit);
         return;
       }
 
-      isDraggingRef.current = true;
-      lastMouseRef.current = { x: e.clientX, y: e.clientY };
-      try {
-        (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
-      } catch {}
+      if (e.pointerType !== "touch") {
+        isDraggingRef.current = true;
+        lastMouseRef.current = { x: e.clientX, y: e.clientY };
+        try {
+          (e.target as HTMLCanvasElement).setPointerCapture(e.pointerId);
+        } catch {}
+      }
     },
-    [hitTest, positions],
+    [hitTest, selectItem],
   );
 
   const handlePointerMove = useCallback(
@@ -379,6 +389,26 @@ export default function Kompetisi() {
               </>
             )}
           </div>
+
+          {/* Mobile quick competition selector pills */}
+          <div className="mt-6 flex flex-wrap gap-2 lg:hidden" role="tablist" aria-label="Daftar Kompetisi">
+            {KOMPETISI.map((comp, idx) => (
+              <button
+                key={comp.title}
+                type="button"
+                role="tab"
+                aria-selected={idx === active}
+                onClick={() => selectItem(idx)}
+                className={`rounded-full px-3.5 py-1.5 font-sans text-xs font-semibold transition ${
+                  idx === active
+                    ? "bg-white text-primary shadow"
+                    : "bg-white/10 text-white/80 hover:bg-white/20 active:bg-white/30"
+                }`}
+              >
+                {comp.title}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Icon Cloud */}
@@ -391,7 +421,7 @@ export default function Kompetisi() {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
-            className="w-full max-w-[640px] aspect-square cursor-grab touch-none active:cursor-grabbing"
+            className="w-full max-w-[640px] aspect-square cursor-grab touch-pan-y lg:touch-none active:cursor-grabbing"
             style={{ width: "100%", maxWidth: CLOUD_SIZE, height: "auto", aspectRatio: "1 / 1" }}
             aria-label="Logo kompetisi interaktif — klik untuk tampilkan deskripsi"
             role="img"

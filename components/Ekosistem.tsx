@@ -84,7 +84,7 @@ export default function Ekosistem() {
             priority={false}
           />
           {/* Gradient overlay agar teks tetap terbaca */}
-          <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/80 to-transparent lg:via-paper/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-paper/95 via-paper/90 to-paper/70 lg:bg-gradient-to-r lg:from-paper lg:via-paper/80 lg:to-transparent" />
         </div>
 
         {/* Teks */}

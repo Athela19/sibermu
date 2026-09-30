@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import MediaSlot from "./MediaSlot";
 import { UKM_LIST, type UkmItem } from "@/lib/content";
 
@@ -12,6 +13,7 @@ type UKMProps = {
 
 export default function UKM({ items = UKM_LIST }: UKMProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const touchStartRef = useRef({ x: 0, y: 0 });
   const [active, setActive] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -76,6 +78,22 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
     } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
       e.preventDefault();
       goTo(active - 1);
+    }
+  };
+
+  const handleTouchStart = (e: TouchEvent<HTMLElement>) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchEnd = (e: TouchEvent<HTMLElement>) => {
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) goTo(active + 1);
+      else goTo(active - 1);
     }
   };
 
@@ -159,11 +177,13 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
       aria-labelledby="ukm-heading"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="relative z-20 -mt-px flex h-[100svh] w-full flex-col justify-center overflow-hidden bg-primary px-6 py-6 outline-none sm:px-8 lg:px-12"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="relative z-20 -mt-px flex min-h-[100svh] w-full flex-col justify-center overflow-hidden bg-primary px-6 py-6 outline-none sm:px-8 lg:px-12"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center">
         {/* Header judul "UKM" dan indikator langkah */}
-        <div className="mb-6 flex items-baseline justify-between sm:mb-8 lg:mb-10">
+        <div className="mb-4 flex items-baseline justify-between sm:mb-8 lg:mb-10">
           <h2
             id="ukm-heading"
             className="font-sans text-[clamp(2.75rem,5.5vw,4.5rem)] font-bold tracking-tight text-white leading-none"
@@ -171,7 +191,7 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
             UKM
           </h2>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <span className="font-sans text-sm font-semibold tracking-widest text-white/60">
               <span className="text-white">{String(active + 1).padStart(2, "0")}</span>
               <span className="mx-1">/</span>
@@ -179,7 +199,7 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
             </span>
 
             <div
-              className="hidden sm:flex items-center gap-1.5"
+              className="flex items-center gap-1.5"
               role="tablist"
               aria-label="Pilih UKM"
             >
@@ -193,17 +213,39 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
                   onClick={() => goTo(idx)}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     idx === active
-                      ? "w-7 bg-white"
-                      : "w-2 bg-white/30 hover:bg-white/60"
+                      ? "w-5 sm:w-7 bg-white"
+                      : "w-1.5 sm:w-2 bg-white/30 hover:bg-white/60"
                   }`}
                 />
               ))}
+            </div>
+
+            {/* Mobile quick prev/next buttons */}
+            <div className="flex items-center gap-1 sm:hidden">
+              <button
+                type="button"
+                onClick={() => goTo(active - 1)}
+                disabled={active === 0}
+                aria-label="UKM Sebelumnya"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white transition disabled:opacity-20 hover:bg-white/20 active:bg-white/30"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => goTo(active + 1)}
+                disabled={active === items.length - 1}
+                aria-label="UKM Berikutnya"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-white transition disabled:opacity-20 hover:bg-white/20 active:bg-white/30"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
 
         {/* 2-Kolom: Kiri Foto MediaSlot, Kanan Teks Deskripsi & Pembina */}
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-14">
+        <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-14">
           {/* Kolom Kiri: Tumpukan Gambar (Layout tetap sama di tiap item) */}
           <div className="lg:col-span-6 xl:col-span-7">
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[20px] bg-mist/5 shadow-2xl">
@@ -261,12 +303,14 @@ export default function UKM({ items = UKM_LIST }: UKMProps) {
                       </p>
                     </div>
 
-                    <div className="mt-8 sm:mt-12">
-                      <p className="font-sans text-sm text-white/70">Pembina:</p>
-                      <p className="mt-1 font-sans text-base sm:text-lg font-medium text-white">
-                        {item.pembina}
-                      </p>
-                    </div>
+                    {item.pembina ? (
+                      <div className="mt-6 sm:mt-10">
+                        <p className="font-sans text-sm text-white/70">Pembina:</p>
+                        <p className="mt-1 font-sans text-base sm:text-lg font-medium text-white">
+                          {item.pembina}
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}

@@ -35,11 +35,13 @@ export default function HeroAIK() {
     const c2 = card2Ref.current;
     if (!pin || !img || !text || !c1 || !c2 || reduced) return;
 
-    // Set initial states
-    gsap.set(c1, { autoAlpha: 0, y: 40 });
-    gsap.set(c2, { autoAlpha: 0, y: 40 });
+    const mm = gsap.matchMedia();
 
-    const ctx = gsap.context(() => {
+    mm.add("(min-width: 1024px)", () => {
+      // Set initial states
+      gsap.set(c1, { autoAlpha: 0, y: 40 });
+      gsap.set(c2, { autoAlpha: 0, y: 40 });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: pin,
@@ -49,7 +51,7 @@ export default function HeroAIK() {
           anticipatePin: 1,
           scrub: 0.6,
           snap: {
-            snapTo: [0, 0.50, 0.82, 1],
+            snapTo: [0, 0.5, 0.82, 1],
             duration: { min: 0.15, max: 0.3 },
             delay: 0.2,
             ease: "power2.out",
@@ -107,13 +109,13 @@ export default function HeroAIK() {
         { autoAlpha: 0, y: -20, duration: 0.1, ease: "power2.in" },
         0.88,
       );
-    }, pin);
+    });
 
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);
     return () => {
       window.removeEventListener("load", onLoad);
-      ctx.revert();
+      mm.revert();
     };
   }, [reduced]);
 
@@ -179,9 +181,59 @@ export default function HeroAIK() {
       aria-labelledby="hero-aik-heading"
       className="relative w-full bg-paper"
     >
+      {/* Mobile view (< lg): Clean layout without 3.5vh scroll trap */}
+      <div className="block px-6 py-12 sm:px-8 sm:py-16 lg:hidden">
+        <div className="flex flex-col items-center gap-3 text-center sm:gap-4">
+          <span className="rounded-full bg-tertiary/90 px-4 py-1.5 font-sans text-xs font-bold uppercase tracking-[0.08em] text-white shadow-sm">
+            {AIK_HERO.badge}
+          </span>
+          <h2
+            id="hero-aik-heading-mobile"
+            className="font-display text-[clamp(2.25rem,6vw,3.5rem)] font-bold leading-none text-primary"
+          >
+            {AIK_HERO.heading}
+          </h2>
+          <p className="max-w-xl font-sans text-base leading-relaxed text-ink-900">
+            {AIK_HERO.intro}
+          </p>
+        </div>
+
+        <div className="relative mt-8 aspect-[16/10] w-full overflow-hidden rounded-2xl shadow-sm">
+          <Image
+            src={AIK_HERO.imageSrc}
+            alt={AIK_HERO.imageAlt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 1920px"
+            className="object-cover object-bottom"
+          />
+        </div>
+
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          {SUB_AIK_ITEMS.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-2xl border border-line bg-mist/60 p-6 shadow-sm"
+            >
+              <h3 className="font-display text-xl font-semibold text-primary">
+                {item.title}
+              </h3>
+              <ul className="mt-4 space-y-2.5 font-sans text-sm leading-relaxed text-ink-500">
+                {item.points.map((point) => (
+                  <li key={point} className="flex items-start gap-2.5">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-tertiary" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop view (lg+): Pinned zoom & pan stage */}
       <div
         ref={pinRef}
-        className="relative h-[100svh] w-full overflow-hidden"
+        className="relative hidden h-[100svh] w-full overflow-hidden lg:block"
       >
         {/* Background image — pinned and zoomed via GSAP */}
         <div

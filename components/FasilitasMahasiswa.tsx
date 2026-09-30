@@ -232,28 +232,29 @@ export default function FasilitasMahasiswa() {
         aria-label="Fasilitas Mahasiswa"
         className="relative w-full"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[calc(224px+36svh+14rem)] lg:bottom-[500px]">
-          <div className="pointer-events-auto sticky top-16 z-20 -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8 lg:top-[82px]">
+        {/* Header desktop */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[500px] hidden lg:block">
+          <div className="pointer-events-auto sticky top-[82px] z-20 -mx-8 px-8 py-3 text-center">
             <RevealText
               as="h2"
               id="fasilitas-heading"
               text="Fasilitas Mahasiswa"
-              className="mt-6 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary sm:mt-8"
+              className="mt-8 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
             />
           </div>
         </div>
 
         <div
           aria-hidden="true"
-          className="invisible -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8"
+          className="invisible -mx-8 hidden px-8 py-3 text-center lg:block"
         >
-          <p className="mt-6 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] sm:mt-8">
+          <p className="mt-8 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08]">
             Fasilitas Mahasiswa
           </p>
         </div>
 
         {/* Jarak header ke konten */}
-        <div className="mt-16 sm:mt-20 lg:mt-28">
+        <div className="mt-4 sm:mt-8 lg:mt-28">
           {isStatic ? (
             <div className="flex flex-col gap-12">
               {ITEMS.map((item) => (
@@ -289,14 +290,19 @@ export default function FasilitasMahasiswa() {
           ) : (
             <>
               {/* MOBILE: deck gambar + teks sticky */}
-              <div className="sticky top-[224px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
-                <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
+              <div className="sticky top-[76px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
+                <div className="mb-2 text-center">
+                  <h2 className="font-display text-2xl font-semibold leading-tight text-primary sm:text-3xl">
+                    Fasilitas Mahasiswa
+                  </h2>
+                </div>
+                <div className="relative -mx-6 h-[28svh] min-h-[190px] max-h-[250px] overflow-hidden sm:-mx-8">
                   {ITEMS.map((item, i) => (
                     <div
                       key={item.title}
                       aria-hidden={i !== active}
                       style={{ transform: deckTransform(i, i === active, true) }}
-                      className={`absolute inset-x-4 inset-y-3 transition-all duration-500 ease-out ${
+                      className={`absolute inset-x-4 inset-y-2 transition-all duration-500 ease-out ${
                         i <= active
                           ? "translate-x-0"
                           : "pointer-events-none translate-x-[calc(100%+2rem)]"
@@ -312,7 +318,7 @@ export default function FasilitasMahasiswa() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-[10%]">
+                <div className="mt-2">
                   {renderTextStack(`${ID}-teks-mobile`, 0)}
                 </div>
               </div>
