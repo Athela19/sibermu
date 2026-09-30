@@ -232,13 +232,13 @@ export default function FasilitasMahasiswa() {
         aria-label="Fasilitas Mahasiswa"
         className="relative w-full"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[calc(196px+36svh+14rem)] lg:bottom-[640px]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-[calc(224px+36svh+14rem)] lg:bottom-[500px]">
           <div className="pointer-events-auto sticky top-16 z-20 -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8 lg:top-[82px]">
             <RevealText
               as="h2"
               id="fasilitas-heading"
               text="Fasilitas Mahasiswa"
-              className="mt-12 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary"
+              className="mt-6 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] text-primary sm:mt-8"
             />
           </div>
         </div>
@@ -247,13 +247,13 @@ export default function FasilitasMahasiswa() {
           aria-hidden="true"
           className="invisible -mx-6 px-6 py-3 text-center sm:-mx-8 sm:px-8"
         >
-          <p className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08]">
+          <p className="mt-6 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[1.08] sm:mt-8">
             Fasilitas Mahasiswa
           </p>
         </div>
 
-        {/* Jarak header ke konten (dulu ada di root) */}
-        <div className="mt-10 sm:mt-14 lg:mt-16">
+        {/* Jarak header ke konten */}
+        <div className="mt-16 sm:mt-20 lg:mt-28">
           {isStatic ? (
             <div className="flex flex-col gap-12">
               {ITEMS.map((item) => (
@@ -289,7 +289,7 @@ export default function FasilitasMahasiswa() {
           ) : (
             <>
               {/* MOBILE: deck gambar + teks sticky */}
-              <div className="sticky top-[196px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
+              <div className="sticky top-[224px] z-10 -mx-6 bg-paper/95 px-6 pb-4 pt-2 backdrop-blur-sm sm:-mx-8 sm:px-8 lg:hidden">
                 <div className="relative -mx-6 h-[36svh] min-h-[240px] overflow-hidden sm:-mx-8">
                   {ITEMS.map((item, i) => (
                     <div
@@ -319,7 +319,7 @@ export default function FasilitasMahasiswa() {
 
               <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
                 <div className="hidden lg:col-span-5 lg:block">
-                  <div className="flex h-[420px] items-center justify-center lg:sticky lg:top-[220px] lg:self-start">
+                  <div className="flex h-[420px] items-center justify-center lg:sticky lg:top-[280px] lg:self-start">
                     {renderTextStack(`${ID}-teks-desktop`, ITEMS.length)}
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function FasilitasMahasiswa() {
                         ref={(el) => {
                           desktopMediaRefs.current[i] = el;
                         }}
-                        className="flex justify-center lg:sticky lg:top-[220px]"
+                        className="flex justify-center lg:sticky lg:top-[280px]"
                         style={{ zIndex: i + 1 }}
                       >
                         <div
